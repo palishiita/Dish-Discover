@@ -4,29 +4,31 @@ import 'package:dish_discover/entities/recipe.dart';
 
 class User {
   String? username;
-  String? _password;
-  String? _email;
+  String? password;
+  String? email;
   List<Recipe>? likedRecipes;
   bool? isPremium;
+  bool isModerator;
   List<Comment>? addedComments;
   List<Recipe>? addedRecipes;
   ui.Image? image;
-  String? _description;
+  String? description;
   DateTime? unbanDate;
   List<Recipe>? savedRecipes;
 
   User(
-      this.username,
-      this._password,
-      this._email,
+      {this.username,
+      this.password,
+      this.email,
       this.likedRecipes,
       this.isPremium,
+      required this.isModerator,
       this.addedComments,
       this.addedRecipes,
       this.image,
-      this._description,
+      this.description,
       this.unbanDate,
-      this.savedRecipes);
+      this.savedRecipes});
 
   void addRecipe(Recipe recipe) {
     likedRecipes?.add(recipe);
@@ -52,9 +54,9 @@ class User {
       ui.Image? image,
       String? description}) {
     this.username = username ?? this.username;
-    _password = password ?? _password;
+    this.password = password ?? password;
     this.image = image ?? this.image;
-    _description = description ?? _description;
+    this.description = description ?? description;
   }
 
   void getPremium() {
@@ -100,17 +102,18 @@ class User {
 
 class Moderator extends User {
   Moderator(
-      super.username,
+      {super.username,
       super.password,
       super.email,
       super.likedRecipes,
       super.isPremium,
+      super.isModerator = true,
       super.addedComments,
       super.addedRecipes,
       super.image,
       super.description,
       super.unbanDate,
-      super.savedRecipes);
+      super.savedRecipes});
 
   void viewReportTickets() {
     // ????????????????????????

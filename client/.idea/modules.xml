@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/dish_discover/dish_discover_client.iml" filepath="$PROJECT_DIR$/dish_discover/dish_discover_client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dish_discover/dish_discover.iml" filepath="$PROJECT_DIR$/dish_discover/dish_discover.iml" />
     </modules>
   </component>
 </project>
