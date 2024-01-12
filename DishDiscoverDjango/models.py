@@ -21,6 +21,7 @@ class User(models.Model):
     description = models.CharField(max_length=150, null=True, blank=True)
     is_premium = models.BooleanField()
     unban_date = models.DateField(null=True, blank=True)
+    preferred_tags = models.ManyToManyField(Tag, through='PreferredTag')
 
 # Preferred Tags Model
 class PreferredTag(models.Model):
@@ -59,7 +60,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=50)
     calorie_density = models.FloatField()
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
+    
 # Report Tickets Model
 class ReportTicket(models.Model):
     report_id = models.IntegerField(primary_key=True)
@@ -68,7 +69,7 @@ class ReportTicket(models.Model):
     issuer = models.ForeignKey(User, related_name='issuer', on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
     reason = models.CharField(max_length=150)
-
+    
 # Recipe Model
 class Recipe(models.Model):
     recipe_id = models.IntegerField(primary_key=True)
@@ -78,6 +79,8 @@ class Recipe(models.Model):
     picture = models.BinaryField(null=True, blank=True)
     description = models.CharField(max_length=150)
     is_boosted = models.BooleanField()
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
+    tags = models.ManyToManyField(Tag, through='RecipeTag')
 
 # Recipe Tags Model
 class RecipeTag(models.Model):
