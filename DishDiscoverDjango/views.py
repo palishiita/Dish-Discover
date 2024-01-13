@@ -43,7 +43,7 @@ def get_Ingredients(request):
 
 def get_Recipes(request):
     recipes = Recipe.objects.all()
-    data = [{'recipe_id': recipe.recipe_id, 'name': recipe.name, 'description': recipe.description, 'picture': recipe.picture, 'calories': recipe.calories, 'servings': recipe.servings, 'prep_time': recipe.prep_time, 'cook_time': recipe.cook_time, 'difficulty': recipe.difficulty, 'instructions': recipe.instructions, 'is_public': recipe.is_public} for recipe in recipes]
+    data = [{'recipe_id': recipe.recipe_id, 'author': recipe.author.user_id, 'recipe_name': recipe.recipe_name, 'content': recipe.content, 'picture': recipe.picture, 'description': recipe.description, 'is_boosted': recipe.is_boosted} for recipe in recipes]
     return JsonResponse({'recipes': data})
 
 def get_RecipeIngredients(request):
