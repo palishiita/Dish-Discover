@@ -1,5 +1,4 @@
-from DishDiscoverDjango.models import TagCategory, Tag, User, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
-import time
+from DishDiscoverDjango.models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
 
 tagCategories = [
     TagCategory(category_name='Cousine'),
@@ -32,15 +31,15 @@ tags=Tag.objects.all()
 
 # Create Users
 users = [
-    User(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False),
-    User(username='jane_doe', has_mod_rights=False, email='jane@example.com', password='password456', is_premium=True)
+    DishDiscoverUser(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False),
+    DishDiscoverUser(username='jane_doe', has_mod_rights=False, email='jane@example.com', password='password456', is_premium=True)
 ]
 
 for element in users:
     print(element)
     element.save()
 
-users = User.objects.all()
+users = DishDiscoverUser.objects.all()
 
 # Create Preferred Tags
 prefferedTags = [

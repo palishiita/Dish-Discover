@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Tag Category Model
 class TagCategory(models.Model):
@@ -11,21 +12,19 @@ class Tag(models.Model):
     is_predefined = models.BooleanField()
 
 # User Model
-class User(models.Model):
+class DishDiscoverUser(User):
     user_id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=50)
     has_mod_rights = models.BooleanField()
-    email = models.EmailField()
-    password = models.CharField(max_length=50)
     picture = models.BinaryField(null=True, blank=True)
     description = models.CharField(max_length=150, null=True, blank=True)
     is_premium = models.BooleanField()
     unban_date = models.DateField(null=True, blank=True)
     preferred_tags = models.ManyToManyField(Tag, through='PreferredTag')
 
+
 # Preferred Tags Model
 class PreferredTag(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     weight = models.FloatField()
     class Meta:
@@ -34,13 +33,13 @@ class PreferredTag(models.Model):
 # Comment Model
 class Comment(models.Model):
     comment_id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     content = models.CharField(max_length=1000)
 
 # Saved Recipes Model
 class SavedRecipe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     is_recommendation = models.BooleanField()
     class Meta:
@@ -48,7 +47,7 @@ class SavedRecipe(models.Model):
 
 # Liked Recipes Model
 class LikedRecipe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     is_recommendation = models.BooleanField()
     class Meta:
@@ -65,15 +64,15 @@ class Ingredient(models.Model):
 class ReportTicket(models.Model):
     report_id = models.IntegerField(primary_key=True)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
-    violator = models.ForeignKey(User, related_name='violator', on_delete=models.CASCADE)
-    issuer = models.ForeignKey(User, related_name='issuer', on_delete=models.CASCADE)
+    violator = models.ForeignKey(DishDiscoverUser, related_name='violator', on_delete=models.CASCADE)
+    issuer = models.ForeignKey(DishDiscoverUser, related_name='issuer', on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
     reason = models.CharField(max_length=150)
     
 # Recipe Model
 class Recipe(models.Model):
     recipe_id = models.IntegerField(primary_key=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe_name = models.CharField(max_length=50)
     content = models.CharField(max_length=10000)
     picture = models.BinaryField(null=True, blank=True)

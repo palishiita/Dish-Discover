@@ -1,8 +1,8 @@
 from django.contrib import admin
-from DishDiscoverDjango.models import TagCategory, Tag, User, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
+from .models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
 admin.site.register(TagCategory)
 admin.site.register(Tag)
-admin.site.register(User)
+admin.site.register(DishDiscoverUser)
 admin.site.register(PreferredTag)
 admin.site.register(Comment)
 admin.site.register(SavedRecipe)
