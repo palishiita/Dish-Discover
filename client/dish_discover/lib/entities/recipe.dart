@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:dish_discover/entities/tag.dart';
 import 'package:dish_discover/entities/user.dart';
+import 'package:flutter/cupertino.dart';
 
-class Recipe {
+class Recipe extends ChangeNotifier {
   User? author;
   String? title;
   DateTime? _publicationDate;
