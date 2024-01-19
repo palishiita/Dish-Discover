@@ -15,7 +15,8 @@ urlpatterns = [
     path('ingredients/', get_Ingredients, name='get_ingredients'),
     path('recipes/', get_Recipes, name='get_recipes'),
     path('recipeingredients/', get_RecipeIngredients, name='get_recipeingredients'),
-    path('recipetags/', get_RecipeTags, name='get_recipetags'),
+    path('recipetags/', get_RecipeTags, name='get_ recipetags'),
+    path('recipe/<id>/', get_Recipe, name= 'get_recipe'),
 
     #path('users/', UserList.as_view(), name='user-list'),
     #path('recipes/', RecipeList.as_view(), name='recipe-list'),

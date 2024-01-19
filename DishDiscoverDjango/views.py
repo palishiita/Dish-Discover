@@ -88,3 +88,9 @@ def get_RecipeTags(request):
     data = [{'recipe': recipetag.recipe.recipe_id, 'tag': recipetag.tag.name} for recipetag in recipetags]
     return JsonResponse({'recipetags': data})
 
+def get_Recipe(request, id):
+    recipe = Recipe.objects.get(recipe_id = id)
+    data = {'recipe_id': recipe.recipe_id, 'author': recipe.author.user_id, 'recipe_name': recipe.recipe_name, 'content': recipe.content, 'picture': recipe.picture, 'description': recipe.description, 'is_boosted': recipe.is_boosted} 
+    return JsonResponse({'recipetags': data})
+    
+
