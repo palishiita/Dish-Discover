@@ -1,5 +1,6 @@
 from DishDiscoverDjango.models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
 
+
 tagCategories = [
     TagCategory(category_name='Cousine'),
     TagCategory(category_name='Difficulty'),

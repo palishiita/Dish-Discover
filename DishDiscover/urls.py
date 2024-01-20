@@ -4,5 +4,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('DishDiscoverDjango.urls')),  # Change 'recipes' to 'DishDiscoverDjango'
+    path('api/auth/', include('authorisation.urls')),  # Change 'recipes' to 'DishDiscoverDjango'
+    path('api/recipes/', include('DishDiscoverDjango.urls')),
 ]
