@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import User
 
 
 # Tag Category Model
@@ -17,7 +16,7 @@ class Tag(models.Model):
     is_predefined = models.BooleanField()
 
 # User Model
-class DishDiscoverUser(AbstractUser):
+class DishDiscoverUser(User):
     user_id = models.IntegerField(primary_key=True)
     has_mod_rights = models.BooleanField()
     picture = models.BinaryField(null=True, blank=True)
@@ -25,10 +24,6 @@ class DishDiscoverUser(AbstractUser):
     is_premium = models.BooleanField()
     unban_date = models.DateField(null=True, blank=True)
     preferred_tags = models.ManyToManyField(Tag, through='PreferredTag', related_name='users_preferred_tags')
-
-    # Add these lines to resolve the conflicts
-    groups = models.ManyToManyField(Group, related_name='dishdiscover_user_groups')
-    user_permissions = models.ManyToManyField(Permission, related_name='dishdiscover_user_permissions')
 
 
 # Preferred Tags Model

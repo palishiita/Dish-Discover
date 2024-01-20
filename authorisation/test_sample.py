@@ -5,8 +5,6 @@ from DishDiscoverDjango.models import DishDiscoverUser, Recipe
 import json
 import pytest 
 
-def test_dummy():
-    assert True
 
 @pytest.mark.django_db
 def test_get_recipe_view():
@@ -23,7 +21,7 @@ def test_get_recipe_view():
     client = Client()
 
     # Build the URL for the view with the recipe ID
-    url = f'/api/recipe/{recipe.recipe_id}/'
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/'
 
     response = client.get(url)
 
@@ -45,3 +43,4 @@ def test_get_recipe_view():
     assert recipe_data['author'] == recipe.author.user_id
     assert recipe_data['recipe_name'] == recipe.recipe_name
     # Add more assertions for other fields as needed
+
