@@ -9,6 +9,7 @@ from .serializers import *
 
 from .serializers import RegistrationSerializer
 
+@api_view(['POST', ])
 
 def registration_view(request):
 

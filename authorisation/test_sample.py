@@ -4,6 +4,7 @@ from django.urls import reverse
 from DishDiscoverDjango.models import DishDiscoverUser, Recipe
 import json
 import pytest 
+from rest_framework.test import APIClient
 
 
 @pytest.mark.django_db
@@ -44,3 +45,25 @@ def test_get_recipe_view():
     assert recipe_data['recipe_name'] == recipe.recipe_name
     # Add more assertions for other fields as needed
 
+
+@pytest.mark.django_db
+def test_registration_view_success():
+    client = APIClient()
+
+    # Prepare data for a valid registration
+    valid_data = {
+        'username': 'testuser',
+        'email': 'test@example.com',
+        'password': 'testpassword',
+    }
+
+    url = '/api/auth/register'
+
+    # Make a POST request to the registration view
+    response = client.post(url, valid_data)
+
+    # Check if the response status code is 200 (OK)
+    assert response.status_code == 200
+
+
+    # Check if the serializer is val

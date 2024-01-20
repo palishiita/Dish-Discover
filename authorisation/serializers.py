@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from DishDiscoverDjango.models import DishDiscoverUser
+from rest_framework.decorators import api_view
+
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
