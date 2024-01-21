@@ -1,4 +1,5 @@
 import 'package:dish_discover/widgets/inputs/custom_search_bar.dart';
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -35,17 +36,18 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: 50,
-          scrolledUnderElevation: 0.0,
-          title: const Text(
-              'DishDiscover'), //Image.asset('assets/images/logo.png')),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () => Navigator.pushNamed(context, '/me'),
-                icon: const Icon(Icons.account_circle_rounded))
-          ],
-        ),
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            title: Text('DishDiscover',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium), //Image.asset('assets/images/logo.png')),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                  onPressed: () => Navigator.pushNamed(context, '/me'),
+                  icon: const Icon(Icons.account_circle_rounded))
+            ]),
         body: Column(children: [
           const CustomSearchBar(),
           Expanded(
@@ -60,6 +62,6 @@ class _HomePageState extends State<HomePage>
         bottomNavigationBar: TabBar(
             controller: tabController,
             tabs: List.filled(AppState.currentUser!.isModerator ? 3 : 2,
-                const Tab(text: '.'))));
+                const Tab(text: 'o'))));
   }
 }

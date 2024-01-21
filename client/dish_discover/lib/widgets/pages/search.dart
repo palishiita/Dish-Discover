@@ -1,9 +1,10 @@
 import 'package:dish_discover/widgets/inputs/custom_search_bar.dart';
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/recipe.dart';
-import '../small/recipe_card.dart';
-import '../small/tab_title.dart';
+import '../display/tab_title.dart';
+import '../display_with_input/recipe_card.dart';
 
 class SearchPage extends StatelessWidget {
   final String searchPhrase;
@@ -18,10 +19,11 @@ class SearchPage extends StatelessWidget {
     return Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-          toolbarHeight: 50,
+          toolbarHeight: appBarHeight,
           scrolledUnderElevation: 0.0,
           title: const Text('Search'),
           centerTitle: true,
+          leading: const BackButton(),
           actions: [
             IconButton(
                 onPressed: () => scaffoldKey.currentState!.openEndDrawer(),
@@ -30,7 +32,7 @@ class SearchPage extends StatelessWidget {
         ),
         body: Column(children: [
           CustomSearchBar(initialSearchPhrase: searchPhrase),
-          Expanded(child: RecipeList(recipes: recipes))
+          RecipeList(recipes: recipes)
         ]),
         endDrawer: const Drawer(
             shape: RoundedRectangleBorder(

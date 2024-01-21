@@ -13,19 +13,26 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late TextEditingController usernameController;
+  late TextEditingController emailController;
   late TextEditingController passwordController;
+  late TextEditingController repeatPasswordController;
 
   @override
   void initState() {
     super.initState();
     usernameController = TextEditingController();
+    emailController = TextEditingController();
     passwordController = TextEditingController();
+    repeatPasswordController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            leading: const BackButton()),
         body: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -34,13 +41,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   CustomTextField(
                       controller: usernameController, hintText: 'Username'),
                   CustomTextField(
-                      controller: usernameController, hintText: 'Email'),
+                      controller: emailController, hintText: 'Email'),
                   CustomTextField(
                       controller: passwordController,
                       hintText: 'Password',
                       obscure: true),
                   CustomTextField(
-                      controller: passwordController,
+                      controller: repeatPasswordController,
                       hintText: 'Repeat password',
                       obscure: true),
                   Align(

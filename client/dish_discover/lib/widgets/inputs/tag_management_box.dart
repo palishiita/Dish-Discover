@@ -10,8 +10,10 @@ class TagManagementBox extends StatefulWidget {
 class _TagManagementBoxState extends State<TagManagementBox> {
   @override
   Widget build(BuildContext context) {
-    return const AspectRatio(
-        aspectRatio: 0.6,
-        child: Card(child: Center(child: Text('Tag Management Box'))));
+    return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: AspectRatio(
+            aspectRatio: 0.6,
+            child: Card(child: Center(child: Text('Tag Management Box')))));
   }
 }

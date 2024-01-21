@@ -1,6 +1,7 @@
 import 'package:dish_discover/widgets/dialogs/terms_dialog.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/pages/payment.dart';
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/app_state.dart';
@@ -13,7 +14,10 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController textController = TextEditingController();
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            leading: const BackButton()),
         body: ListView(children: [
           ListTile(
               title: const Text("Buy Premium"),

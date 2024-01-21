@@ -1,6 +1,6 @@
-import 'package:dish_discover/widgets/small/tab_title.dart';
 import 'package:flutter/material.dart';
 
+import '../display/tab_title.dart';
 import '../style/style.dart';
 
 class TermsDialog extends StatelessWidget {

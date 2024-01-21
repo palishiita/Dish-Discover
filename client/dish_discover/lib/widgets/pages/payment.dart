@@ -1,3 +1,4 @@
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -8,8 +9,11 @@ class PaymentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          toolbarHeight: appBarHeight,
+          scrolledUnderElevation: 0.0,
           title: Text('Buy ${buyingPremium ? 'Premium' : 'recipe boost'}'),
-          centerTitle: true),
+          centerTitle: true,
+          leading: const BackButton()),
       body: const Placeholder(child: Center(child: Text('PayPal WebView'))),
     );
   }

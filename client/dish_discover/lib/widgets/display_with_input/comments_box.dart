@@ -1,4 +1,4 @@
-import 'package:dish_discover/widgets/small/tab_title.dart';
+import 'package:dish_discover/widgets/display/tab_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,12 +12,12 @@ class CommentsBox extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
 
-    return ConstrainedBox(
-        constraints: const BoxConstraints.tightFor(height: 100),
-        child: Center(
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: Card(
             child: Column(children: [
           const TabTitle(title: "Comments"),
-          Text(recipe.comments?.toString() ?? 'null')
+          Center(child: Text((recipe.comments ?? []).toString()))
         ])));
   }
 }
