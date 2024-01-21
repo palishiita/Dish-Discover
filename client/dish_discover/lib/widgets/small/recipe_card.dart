@@ -1,23 +1,31 @@
+import 'package:dish_discover/widgets/pages/view_recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_top/scroll_to_top.dart';
 
 import '../../entities/recipe.dart';
+import 'no_results_card.dart';
 
-class RecipeCard extends StatefulWidget {
-  ChangeNotifierProvider<Recipe> recipeProvider;
-  RecipeCard({super.key, required this.recipeProvider});
+class RecipeCard extends ConsumerStatefulWidget {
+  final ChangeNotifierProvider<Recipe> recipeProvider;
+  const RecipeCard({super.key, required this.recipeProvider});
 
   @override
-  State<StatefulWidget> createState() => _RecipeCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _RecipeCardState();
 }
 
-class _RecipeCardState extends State<RecipeCard> {
+class _RecipeCardState extends ConsumerState<RecipeCard> {
   @override
   Widget build(BuildContext context) {
-    return const AspectRatio(
-        aspectRatio: 1.2,
-        child: Card(child: Center(child: Text('Recipe Card'))));
+    Recipe recipe = ref.watch(widget.recipeProvider);
+
+    return GestureDetector(
+        child: AspectRatio(
+            aspectRatio: 1.2,
+            child: Card(child: Center(child: Text('Recipe: ${recipe.title}')))),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                ViewRecipePage(recipeProvider: widget.recipeProvider))));
   }
 }
 
@@ -26,7 +34,7 @@ class RecipeList extends StatefulWidget {
   const RecipeList({super.key, required this.recipes});
 
   @override
-  State<StatefulWidget> createState() => _RecipeCardState();
+  State<StatefulWidget> createState() => _RecipeListState();
 }
 
 class _RecipeListState extends State<RecipeList> {
@@ -40,12 +48,15 @@ class _RecipeListState extends State<RecipeList> {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollToTop(
-        scrollController: scrollController,
-        child: ListView.builder(
-            controller: scrollController,
-            itemBuilder: (context, index) => RecipeCard(
-                recipeProvider: ChangeNotifierProvider<Recipe>(
-                    (ref) => widget.recipes[index]))));
+    return widget.recipes.isEmpty
+        ? const SingleChildScrollView(child: NoResultsCard())
+        : ScrollToTop(
+            scrollController: scrollController,
+            child: ListView.builder(
+                controller: scrollController,
+                itemCount: widget.recipes.length,
+                itemBuilder: (context, index) => RecipeCard(
+                    recipeProvider: ChangeNotifierProvider<Recipe>(
+                        (ref) => widget.recipes[index]))));
   }
 }

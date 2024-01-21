@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
 import '../../../entities/recipe.dart';
-import '../../small/no_results_card.dart';
 import '../../small/tab_title.dart';
 
 class SavedTab extends StatefulWidget {
@@ -29,9 +28,7 @@ class _SavedTabState extends State<SavedTab> {
       const TabTitle(title: 'Saved'),
       Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
-          child: recipes.isEmpty
-              ? const NoResultsCard()
-              : RecipeList(recipes: recipes))
+          child: RecipeList(recipes: recipes))
     ]));
   }
 }

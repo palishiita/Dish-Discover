@@ -1,6 +1,8 @@
 import 'package:dish_discover/widgets/small/tab_title.dart';
 import 'package:flutter/material.dart';
 
+import '../style/style.dart';
+
 class TermsDialog extends StatelessWidget {
   /// Simple Material dialog for confirmation with custom message.
   /// On cancel or click away, closes the dialog. On confirm, executes onConfirm.
@@ -9,8 +11,12 @@ class TermsDialog extends StatelessWidget {
   /// Calls a simple Material dialog for confirmation with custom message.
   /// On cancel or click away, closes the dialog. On confirm, executes onConfirm.
   static void callDialog(BuildContext context) {
-    showBottomSheet(
-        context: context, builder: (context) => const TermsDialog());
+    showModalBottomSheet(
+        context: context,
+        enableDrag: false,
+        backgroundColor: containerColor(context),
+        useSafeArea: true,
+        builder: (context) => const TermsDialog());
   }
 
   @override

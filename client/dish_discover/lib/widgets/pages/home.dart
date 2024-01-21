@@ -45,8 +45,6 @@ class _HomePageState extends State<HomePage>
                 onPressed: () => Navigator.pushNamed(context, '/me'),
                 icon: const Icon(Icons.account_circle_rounded))
           ],
-          // bottom: const PreferredSize(
-          //     preferredSize: Size(100, 10), child: CustomSearchBar())), //,
         ),
         body: Column(children: [
           const CustomSearchBar(),

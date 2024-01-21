@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatefulWidget {
-  const CustomSearchBar({super.key});
+  final bool goToSearchPage;
+  final String initialSearchPhrase;
+  const CustomSearchBar(
+      {super.key, this.initialSearchPhrase = "", this.goToSearchPage = true});
 
   @override
   State<StatefulWidget> createState() => _CustomSearchBar();
@@ -14,6 +17,7 @@ class _CustomSearchBar extends State<CustomSearchBar> {
   void initState() {
     super.initState();
     searchController = SearchController();
+    searchController.text = widget.initialSearchPhrase;
   }
 
   @override
@@ -29,7 +33,12 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                   icon: const Icon(Icons.search_rounded),
                   onPressed: () {
                     if (searchController.text.isNotEmpty) {
-                      setState(() {});
+                      setState(() {
+                        if (widget.goToSearchPage) {
+                          Navigator.of(context).pushNamed("/search",
+                              arguments: searchController.text);
+                        }
+                      });
                     } else {
                       searchController.openView();
                     }
@@ -45,21 +54,17 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                   icon: const Icon(Icons.search_rounded),
                   onPressed: () => setState(() {
                         searchController.closeView(null);
+
+                        if (widget.goToSearchPage) {
+                          Navigator.of(context).pushNamed("/search",
+                              arguments: searchController.text);
+                        }
                       }))
             ],
             suggestionsBuilder: (context, controller) {
               return [
                 // TODO suggestions?
-                'title: ',
-                'category: ',
-                'description: ',
-                'timeRequired: ',
-                'deadline(DD/MM/YYYY): ',
-                'isRepeating: ',
-                'repeatsEvery: ',
-                'reminder: ',
-                'points: ',
-                'isSpecialChallenge: '
+                'suggestions'
               ].map((suggestion) => ListTile(
                   title: Text(suggestion),
                   onTap: () {

@@ -42,19 +42,23 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-        titleTextStyle: Theme.of(context).textTheme.labelLarge,
-        title: Text(title),
-        content:
-            Column(children: [Text(subtitle), message ?? Container(), child]),
-        actions: [
-          FilledButton.icon(
-              label: const Text('Confirm'),
-              icon: const Icon(Icons.check_rounded),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onPressed();
-              })
-        ]);
+    return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: AlertDialog(
+                titleTextStyle: Theme.of(context).textTheme.labelLarge,
+                title: Text(title),
+                content: Column(
+                    children: [Text(subtitle), message ?? Container(), child]),
+                actions: [
+                  Center(
+                      child: OutlinedButton(
+                          child: Text(buttonLabel),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            onPressed();
+                          }))
+                ])));
   }
 }

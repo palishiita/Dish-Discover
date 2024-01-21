@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class BuyPage extends StatelessWidget {
+class PaymentPage extends StatelessWidget {
   final bool buyingPremium;
-  const BuyPage({super.key, required this.buyingPremium});
+  const PaymentPage({super.key, required this.buyingPremium});
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 class Recipe extends ChangeNotifier {
   User? author;
   String? title;
-  DateTime? _publicationDate;
+  DateTime? publicationDate;
   String? description;
   String? steps;
   Image? coverImage;
@@ -15,16 +15,16 @@ class Recipe extends ChangeNotifier {
   bool? isBoosted;
 
   Recipe(
-      this.author,
+      {this.author,
       this.title,
-      this._publicationDate,
+      this.publicationDate,
       this.description,
       this.steps,
       this.coverImage,
       this.ingredients,
       this.tags,
       this.comments,
-      this.isBoosted);
+      this.isBoosted});
 
   void editRecipe(
       {String? title,

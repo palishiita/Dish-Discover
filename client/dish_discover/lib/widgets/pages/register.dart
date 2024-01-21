@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../dialogs/terms_dialog.dart';
 import '../inputs/custom_text_field.dart';
 import '../style/style.dart';
 
@@ -24,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(),
         body: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -32,23 +34,32 @@ class _RegisterPageState extends State<RegisterPage> {
                   CustomTextField(
                       controller: usernameController, hintText: 'Username'),
                   CustomTextField(
+                      controller: usernameController, hintText: 'Email'),
+                  CustomTextField(
                       controller: passwordController,
                       hintText: 'Password',
                       obscure: true),
+                  CustomTextField(
+                      controller: passwordController,
+                      hintText: 'Repeat password',
+                      obscure: true),
                   Align(
-                      widthFactor: 200,
-                      alignment: Alignment.centerLeft,
-                      child: Text('Recover password',
-                          style: textStyle.merge(const TextStyle(
-                              decoration: TextDecoration.underline)))),
-                  Align(
-                      widthFactor: 200,
                       alignment: Alignment.bottomRight,
-                      child: TextButton(
-                          child: Text('Login', style: textStyle),
+                      child: OutlinedButton(
+                          child: Text('Register', style: textStyle),
                           onPressed: () => Navigator.of(context)
                               .pushNamedAndRemoveUntil('/dashboard',
-                                  (route) => (route.toString() == '/'))))
+                                  (route) => (route.toString() == '/')))),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: TextButton(
+                        child: const Text(
+                            "By registering you agree to our Terms & Conditions",
+                            style: TextStyle(
+                                fontSize: 11,
+                                decoration: TextDecoration.underline)),
+                        onPressed: () => TermsDialog.callDialog(context)),
+                  )
                 ]))));
   }
 }

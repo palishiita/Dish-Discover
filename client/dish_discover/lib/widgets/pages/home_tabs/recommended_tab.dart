@@ -1,5 +1,5 @@
-import 'package:dish_discover/widgets/small/no_results_card.dart';
 import 'package:dish_discover/widgets/small/recipe_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
@@ -20,18 +20,22 @@ class _RecommendedTabState extends State<RecommendedTab> {
   void initState() {
     super.initState();
     recipes = AppState.currentUser!.getRecommendations();
+    if (kDebugMode && recipes.isEmpty) {
+      // recipes = [
+      //   Recipe(title: 'Test 1'),
+      //   Recipe(title: 'Test 2'),
+      //   Recipe(title: 'Test 3')
+      // ];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(children: [
+    return Column(children: [
       const TabTitle(title: 'Recommended'),
       Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
-          child: recipes.isEmpty
-              ? const NoResultsCard()
-              : RecipeList(recipes: recipes))
-    ]));
+          child: RecipeList(recipes: recipes))
+    ]);
   }
 }

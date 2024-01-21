@@ -1,7 +1,5 @@
-import 'dart:ui' as ui;
-
 import 'package:dish_discover/entities/recipe.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class User extends ChangeNotifier {
   String? username;
@@ -12,7 +10,7 @@ class User extends ChangeNotifier {
   bool isModerator;
   List<Comment>? addedComments;
   List<Recipe>? addedRecipes;
-  ui.Image? image;
+  Image? image;
   String? description;
   DateTime? unbanDate;
   List<Recipe>? savedRecipes;
@@ -50,10 +48,7 @@ class User extends ChangeNotifier {
   }
 
   void editProfile(
-      {String? username,
-      String? password,
-      ui.Image? image,
-      String? description}) {
+      {String? username, String? password, Image? image, String? description}) {
     this.username = username ?? this.username;
     this.password = password ?? password;
     this.image = image ?? this.image;
