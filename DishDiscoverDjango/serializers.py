@@ -28,3 +28,13 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
+
+class SavedRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavedRecipe
+        fields = '__all__'
+
+class LikedRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= LikedRecipe
+        fields = '__all__'

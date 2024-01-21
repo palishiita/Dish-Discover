@@ -6,11 +6,14 @@ import json
 import pytest 
 from rest_framework.test import APIClient
 
-# RECIPESTESTS
+
+def create_user():
+    return DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    
 @pytest.mark.django_db
 
 def test_get_recipe_view():
-    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    user = create_user()
     recipe = Recipe.objects.create(
         recipe_id=10,
         author_id=user.id,
@@ -52,8 +55,7 @@ def test_get_recipe_tags():
         TagCategory(category_name='Ingredient'),
         TagCategory(category_name='Other')
         ]
-    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
-
+    user = create_user()
     tags = [
         Tag(name='Polish',tag_category=tagCategories[0],is_predefined = True),
         Tag(name='Easy',tag_category=tagCategories[1],is_predefined = True),
@@ -82,7 +84,7 @@ def test_get_recipe_tags():
 
 @pytest.mark.django_db
 def test_get_recipe_ingredients():
-    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    user = create_user()
     recipe = Recipe.objects.create(
         recipe_id=10,
         author_id=user.id,
@@ -107,16 +109,40 @@ def test_get_recipe_ingredients():
 
 @pytest.mark.django_db
 def test_get_all_recipes():
-    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
-    client = Client()
+    
+    client = APIClient()
 
     # Build the URL for the view with the recipe ID
     url = f'/api/recipes/recipes/'
+    user = User.objects.create_user(username='testuser', password='123')
+    client.force_authenticate(user)
     response = client.get(url)
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
 
     data = json.loads(response.content)
+
+
+@pytest.mark.django_db
+def test_get_liked_recipes():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    LikedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True),
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = f'/api/recipes/recipes/liked/'
+    response = client.get(url)
+
+    assert response.status_code == 200, response.json()
+
+
 
 @pytest.mark.django_db
 def test_get_all_tags():
@@ -177,3 +203,4 @@ def test_registration():
 
 
     # Check if the serializer is val
+

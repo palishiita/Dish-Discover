@@ -40,11 +40,6 @@ def get_TagCategories(request):
     data = [{'category_name': category.category_name} for category in categories]
     return JsonResponse({'categories': data})
 
-def get_Users(request):
-    users = DishDiscoverUser.objects.all()
-    data = [{'user_id': user.user_id, 'username': user.username, 'has_mod_rights': user.has_mod_rights, 'email': user.email, 'password': user.password, 'picture': user.picture, 'description': user.description, 'is_premium': user.is_premium, 'unban_date': user.unban_date} for user in users]
-    return JsonResponse({'users': data})
-
 def get_PreferredTags(request):
     preferredtags = PreferredTag.objects.all()
     data = [{'user': preferredtag.user.user_id, 'tag': preferredtag.tag.name, 'weight': preferredtag.weight} for preferredtag in preferredtags]
@@ -59,16 +54,6 @@ def get_SavedRecipes(request):
     savedrecipes = SavedRecipe.objects.all()
     data = [{'user': savedrecipe.user.user_id, 'recipe': savedrecipe.recipe.recipe_id, 'is_recommendation': savedrecipe.is_recommendation} for savedrecipe in savedrecipes]
     return JsonResponse({'savedrecipes': data})
-
-def get_LikedRecipes(request):
-    likedrecipes = LikedRecipe.objects.all()
-    data = [{'user': likedrecipe.user.user_id, 'recipe': likedrecipe.recipe.recipe_id, 'is_recommendation': likedrecipe.is_recommendation} for likedrecipe in likedrecipes]
-    return JsonResponse({'likedrecipes': data})
-
-def get_Ingredients(request):
-    ingredients = Ingredient.objects.all()
-    data = [{'ingredient_id': ingredient.ingredient_id, 'name': ingredient.name, 'calorie_density': ingredient.calorie_density} for ingredient in ingredients]
-    return JsonResponse({'ingredients': data})
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -94,8 +79,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def  liked (self, request, pk=None):
+       user = request.user
+       liked_recipes = LikedRecipe.objects.filter(user=user)
+       serializer = LikedRecipeSerializer(liked_recipes, many = True)
+       return Response(serializer.data)
 
 class TagsViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
 

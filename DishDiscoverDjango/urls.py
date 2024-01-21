@@ -8,14 +8,13 @@ urlpatterns = [
     # path('login/', LoginView.as_view(), name='login'),
     path('tagcategories/', get_TagCategories, name='get_tagcategories'),
     path('tags/', TagsViewSet.as_view({'get':'list'}), name='get_tags'),
-    path('users/', get_Users, name='get_users'),
     path('tags/preferred', get_PreferredTags, name='get_preferredtags'),
     path('comments/', get_Comments, name='get_comments'), 
     path('ingredients/', IngredientViewSet.as_view({'get':'list'}), name='get_ingredients'),
     path('ingredients/<int:pk>/', IngredientViewSet.as_view({'get':'retrieve'}), name='get_ingredients'),
     ##RECIPES
     path('recipes/saved/', get_SavedRecipes, name='get_savedrecipes'),
-    path('recipes/liked/', get_LikedRecipes, name='get_likedrecipes'),
+    path('recipes/liked/', RecipeViewSet.as_view({'get':'liked'}), name='get_liked_recipes'),
     
     path('recipes/', RecipeViewSet.as_view({'get':'list'}), name='get_recipes'),
     path('recipes/<int:pk>/tags/', RecipeViewSet.as_view({'get':'tags'}), name='get_ recipetags'),
