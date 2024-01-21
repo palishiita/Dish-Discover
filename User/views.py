@@ -20,3 +20,10 @@ class UserViewSet(viewsets.ModelViewSet):
         saved_recipes = SavedRecipe.objects.filter(user=user)
         serializer = SavedRecipeSerializer(saved_recipes, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['GET'])
+    def liked_recipes(self, request, pk=None):
+        user = self.get_object()
+        liked_recipes = LikedRecipe.objects.filet(user=user)
+        serializer = LikedRecipeSerializer(liked_recipes, many=True)
+        

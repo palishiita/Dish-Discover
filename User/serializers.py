@@ -12,3 +12,6 @@ class SavedRecipeSerializer(serializers.ModelSerializer):
         model = SavedRecipe
         fields = '__all__'
 
+class LikedRecipeSerializer(serializers.ModelSerializer):
+    model= LikedRecipe
+    fields = '__all__'
