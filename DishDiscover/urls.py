@@ -6,4 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authorisation.urls')),  # Change 'recipes' to 'DishDiscoverDjango'
     path('api/recipes/', include('DishDiscoverDjango.urls')),
+    path('api/user/', include('User.urls')),
 ]
+

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'DishDiscoverDjango',
     'django_extensions',
     'authorisation',
+    'User',
 ]
 
 MIDDLEWARE = [

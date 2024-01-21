@@ -70,21 +70,11 @@ def get_Ingredients(request):
     data = [{'ingredient_id': ingredient.ingredient_id, 'name': ingredient.name, 'calorie_density': ingredient.calorie_density} for ingredient in ingredients]
     return JsonResponse({'ingredients': data})
 
-def get_Recipes(request):
-    recipes = Recipe.objects.all()
-    data = [{'recipe_id': recipe.recipe_id, 'author': recipe.author.user_id, 'recipe_name': recipe.recipe_name, 'content': recipe.content, 'picture': recipe.picture, 'description': recipe.description, 'is_boosted': recipe.is_boosted} for recipe in recipes]
-    return JsonResponse({'recipes': data})
 
-def get_RecipeIngredients(request):
-    recipeingredients = RecipeIngredient.objects.all()
-    data = [{'recipe': recipeingredient.recipe.recipe_id, 'ingredient': recipeingredient.ingredient.ingredient_id, 'quantity': recipeingredient.quantity, 'unit': recipeingredient.unit} for recipeingredient in recipeingredients]
-    return JsonResponse({'recipeingredients': data})
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class =IngredientSerializer
 
-def get_RecipeTags(request):
-    recipetags = RecipeTag.objects.all()
-    data = [{'recipe': recipetag.recipe.recipe_id, 'tag': recipetag.tag.name} for recipetag in recipetags]
-    return JsonResponse({'recipetags': data})
-    
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()

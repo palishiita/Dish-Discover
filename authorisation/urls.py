@@ -1,7 +1,5 @@
 from django.urls import path
-from authorisation.views import (
-    registration_view,
-)
+from authorisation.views import *
 
 
 urlpatterns = [

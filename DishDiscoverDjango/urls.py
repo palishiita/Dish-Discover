@@ -10,17 +10,18 @@ urlpatterns = [
     path('tags/', TagsViewSet.as_view({'get':'list'}), name='get_tags'),
     path('users/', get_Users, name='get_users'),
     path('tags/preferred', get_PreferredTags, name='get_preferredtags'),
-    path('comments/', get_Comments, name='get_comments'),
+    path('comments/', get_Comments, name='get_comments'), 
+    path('ingredients/', IngredientViewSet.as_view({'get':'list'}), name='get_ingredients'),
+    path('ingredients/<int:pk>/', IngredientViewSet.as_view({'get':'retrieve'}), name='get_ingredients'),
+    ##RECIPES
     path('recipes/saved/', get_SavedRecipes, name='get_savedrecipes'),
     path('recipes/liked/', get_LikedRecipes, name='get_likedrecipes'),
-    path('ingredients/', get_Ingredients, name='get_ingredients'),
+    
     path('recipes/', RecipeViewSet.as_view({'get':'list'}), name='get_recipes'),
     path('recipes/<int:pk>/tags/', RecipeViewSet.as_view({'get':'tags'}), name='get_ recipetags'),
     path('recipes/<int:pk>/ingredients/', RecipeViewSet.as_view({'get': 'ingredients'}), name='get_recipeingredients'),  
     # path('recipes/<id>/', get_Recipe, name= 'get_recipe'),
-    path('recipes/<int:pk>/', RecipeViewSet.as_view({'get': 'retrieve'}), name= 'get_recipe'),
-
-
+    path('recipes/<int:pk>/', RecipeViewSet.as_view({'get': 'retrieve'}), name= 'get _recipe'),
     #path('users/', UserList.as_view(), name='user-list'),
     #path('recipes/', RecipeList.as_view(), name='recipe-list'),
 ]

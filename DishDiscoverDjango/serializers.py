@@ -2,10 +2,7 @@
 from rest_framework import serializers
 from .models import *  # Fix the import statement
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = DishDiscoverUser
-#         fields = '__all__'
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,4 +22,9 @@ class RecipeTagSerializer(serializers.ModelSerializer):
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
+        fields = '__all__'
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
         fields = '__all__'

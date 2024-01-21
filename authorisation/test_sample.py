@@ -6,7 +6,7 @@ import json
 import pytest 
 from rest_framework.test import APIClient
 
-
+# RECIPESTESTS
 @pytest.mark.django_db
 
 def test_get_recipe_view():
@@ -60,6 +60,7 @@ def test_get_recipe_tags():
         Tag(name='Tomato',tag_category=tagCategories[2],is_predefined = True),
         Tag(name='Avocado',tag_category=tagCategories[2],is_predefined = True)
         ]
+    
     recipe = Recipe.objects.create(
         recipe_id=10,
         author_id=user.id,
@@ -95,6 +96,7 @@ def test_get_recipe_ingredients():
     RecipeIngredient(recipe=recipe, ingredient= Ingredient(name='Tomato', calorie_density=20.0), amount=200.0, unit='g'),
     RecipeIngredient(recipe=recipe, ingredient=Ingredient(name='Avocado', calorie_density=50.0), amount=250.0, unit='g')
     ]
+
     client = Client()
     url = f'api/recipes/recipes/{recipe.recipe_id}/ingredients/'
     response = client.get(url)
@@ -118,15 +120,44 @@ def test_get_all_recipes():
 
 @pytest.mark.django_db
 def test_get_all_tags():
+
+    tags = [
+        Tag(name='Polish',is_predefined = True),
+        Tag(name='Easy',is_predefined = True),
+        Tag(name='Tomato',is_predefined = True),
+        Tag(name='Avocado',is_predefined = True)
+        ]
     user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
     client = Client()
     url = f'/api/recipes/tags/'
     response = client.get(url)
     assert response.status_code == 200
 
+## TEST INGREDIENS
 
 @pytest.mark.django_db
-def test_registration_view_success():
+def test_get_all_ingredients():
+    user =  DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    client = Client()
+    url = f'/api/recipes/ingredients/'
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_get_ingredient():
+    tagCategory =  TagCategory.objects.create(category_name='Cousine')
+    tag = Tag.objects.create(name='Polish',tag_category=tagCategory,is_predefined = True)
+    ingredient = Ingredient.objects.create(ingredient_id=10, name='Tomato', calorie_density=20.0, tag=tag)
+
+    client = Client()
+    url = f'/api/recipes/ingredients/{ingredient.ingredient_id}/'
+    response = client.get(url)
+
+    assert response.status_code == 200, response.json()
+
+
+@pytest.mark.django_db
+def test_registration():
     client = APIClient()
 
     # Prepare data for a valid registration
