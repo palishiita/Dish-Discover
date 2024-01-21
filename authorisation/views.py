@@ -12,14 +12,13 @@ from .serializers import RegistrationSerializer
 @api_view(['POST', ])
 
 def registration_view(request):
-
     if request.method == 'POST':
         serializer = RegistrationSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            user = serializer.create()
+            user = serializer.save()
             data['response'] = 'successfully registered a new user'
-            data['email'] = user.emal
+            data['email'] = user.email
             data['username'] = user.username
         else: 
             data: serializer.errors

@@ -17,9 +17,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user = DishDiscoverUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
+            has_mod_rights=False,
+            is_premium=False,
         )
-        password = self.validated_data('password')
-        password2= self.validated_data('password2')
+        password = self.validated_data['password']
+        password2= self.validated_data['password2']
         
         if password != password2:
             raise serializers.ValidationError({'password': 'Password must match!'})

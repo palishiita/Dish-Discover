@@ -264,11 +264,13 @@ def test_registration():
         'username': 'testuser',
         'email': 'test@example.com',
         'password': 'testpassword',
+        'password2': 'testpassword',
     }
 
     url = '/api/auth/register'
     response = client.post(url, valid_data)
-    
+
 
     assert response.status_code == 200, response.json()
+    assert DishDiscoverUser.objects.filter(email="test@example.com").count() == 1
   
