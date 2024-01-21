@@ -1,7 +1,7 @@
 # myapp/tests.py
 from django.test import Client
 from django.urls import reverse
-from DishDiscoverDjango.models import DishDiscoverUser, Recipe
+from DishDiscoverDjango.models import *
 import json
 import pytest 
 from rest_framework.test import APIClient
@@ -44,6 +44,43 @@ def test_get_recipe_view():
     # Add more assertions for other fields as needed
 
 @pytest.mark.django_db
+def test_get_recipe_tags():
+    client =Client()
+    tagCategories = [
+        TagCategory(category_name='Cousine'),
+        TagCategory(category_name='Difficulty'),
+        TagCategory(category_name='Ingredient'),
+        TagCategory(category_name='Other')
+        ]
+    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+
+    tags = [
+        Tag(name='Polish',tag_category=tagCategories[0],is_predefined = True),
+        Tag(name='Easy',tag_category=tagCategories[1],is_predefined = True),
+        Tag(name='Tomato',tag_category=tagCategories[2],is_predefined = True),
+        Tag(name='Avocado',tag_category=tagCategories[2],is_predefined = True)
+        ]
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author_id=user.id,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+
+    recipeTags = [
+        RecipeTag(recipe=recipe, tag=tags[0], weight=0.8),
+        RecipeTag(recipe=recipe, tag=tags[1], weight=0.5),
+        RecipeTag(recipe=recipe, tag=tags[2], weight=0.9),
+    ]
+
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/tags/'
+    response = client.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_get_all_recipes():
     user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
     client = Client()
@@ -63,6 +100,7 @@ def test_get_all_tags():
     url = f'/api/recipes/tags/'
     response = client.get(url)
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_registration_view_success():

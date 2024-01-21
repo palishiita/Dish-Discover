@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 
 
@@ -38,11 +39,6 @@ def get_TagCategories(request):
     categories = TagCategory.objects.all()
     data = [{'category_name': category.category_name} for category in categories]
     return JsonResponse({'categories': data})
-
-def get_Tags(request):
-    tags = Tag.objects.all()
-    data = [{'name': tag.name, 'tag_category': tag.tag_category.category_name, 'is_predefined': tag.is_predefined} for tag in tags]
-    return JsonResponse({'tags': data})
 
 def get_Users(request):
     users = DishDiscoverUser.objects.all()
@@ -89,10 +85,20 @@ def get_RecipeTags(request):
     data = [{'recipe': recipetag.recipe.recipe_id, 'tag': recipetag.tag.name} for recipetag in recipetags]
     return JsonResponse({'recipetags': data})
     
+# class RecipeTagViewSet(viewsets.ModelsViewSet):
+#     queryset = RecipeTag.objects.all()
+#     serializer_class = RecipeTagSerializer
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+
+    @action(detail=True, methods=['get'])
+    def tags(self, request, pk=None):
+        recipe = self.get_object()
+        recipe_tags = RecipeTag.objects.filter(recipe=recipe)
+        serializer = RecipeTagSerializer(recipe_tags, many=True)
+        return Response(serializer.data)
 
 class TagsViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()

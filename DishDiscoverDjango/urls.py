@@ -16,8 +16,8 @@ urlpatterns = [
     path('ingredients/', get_Ingredients, name='get_ingredients'),
     path('recipes/', RecipeViewSet.as_view({'get':'list'}), name='get_recipes'),
     #TODO: eeee?
-    path('recipes/<id>/tags/', get_RecipeTags, name='get_ recipetags'),
-    path('recipes/<id>/ingredients/', get_RecipeIngredients, name='get_recipeingredients'),    
+    path('recipes/<int:pk>/tags/', RecipeViewSet.as_view({'get':'tags'}), name='get_ recipetags'),
+    path('recipes/<i4d>/ingredients/', get_RecipeIngredients, name='get_recipeingredients'),    
     # path('recipes/<id>/', get_Recipe, name= 'get_recipe'),
     path('recipes/<int:pk>/', RecipeViewSet.as_view({'get': 'retrieve'}), name= 'get_recipe'),
 

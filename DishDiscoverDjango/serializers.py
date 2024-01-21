@@ -16,3 +16,8 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag  # Fix the model reference
         fields = '__all__'
+        
+class RecipeTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeTag
+        fields = '__all__'
