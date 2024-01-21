@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
+from rest_framework import viewsets
 
 
 
@@ -87,10 +88,13 @@ def get_RecipeTags(request):
     recipetags = RecipeTag.objects.all()
     data = [{'recipe': recipetag.recipe.recipe_id, 'tag': recipetag.tag.name} for recipetag in recipetags]
     return JsonResponse({'recipetags': data})
-
-def get_Recipe(request, id):
-    recipe = Recipe.objects.get(recipe_id = id)
-    data = {'recipe_id': recipe.recipe_id, 'author': recipe.author.user_id, 'recipe_name': recipe.recipe_name, 'content': recipe.content, 'picture': recipe.picture, 'description': recipe.description, 'is_boosted': recipe.is_boosted} 
-    return JsonResponse({'recipe': data})
     
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+class TagsViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
