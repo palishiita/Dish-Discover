@@ -113,12 +113,14 @@ def test_get_recipe_ingredients():
     RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredients[1], amount=250.0, unit='g')
     ]
 
+
     client = Client()
     url = f'/api/recipes/recipes/{recipe.recipe_id}/ingredients/'
     response = client.get(url)
     data = response.json()
     
     assert response.status_code == 200
+    assert response['Content-Type'] == 'application/json'
     for item in data:
         assert 'amount' in item, response.json()
 
@@ -174,42 +176,63 @@ def test_get_liked_recipes():
     client.force_authenticate(user)
     url = f'/api/recipes/recipes/liked/'
     response = client.get(url)
+    data = response.json()
 
     assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
-
-
-
+    for item in data:
+        assert 'id' in item, response.json()
+        assert 'recipe' in item, response.json()
+        assert 'user' in item, response.json()
 
 
 @pytest.mark.django_db
 def test_get_all_tags():
 
+    tag_category = TagCategory.objects.create(category_name='Cousine')
     tags = [
-        Tag(name='Polish',is_predefined = True),
-        Tag(name='Easy',is_predefined = True),
-        Tag(name='Tomato',is_predefined = True),
-        Tag(name='Avocado',is_predefined = True)
+        Tag.objects.create(name='Polish',tag_category=tag_category, is_predefined = True),
+        Tag.objects.create(name='Easy',tag_category=tag_category, is_predefined = True),
+        Tag.objects.create(name='Tomato',tag_category=tag_category, is_predefined = True),
+        Tag.objects.create(name='Avocado',tag_category=tag_category, is_predefined = True)
         ]
-    user = DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    user = create_user()
     client = Client()
     url = f'/api/recipes/tags/'
     response = client.get(url)
+    data = response.json()
 
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
-
+    for item in data:
+        assert 'is_predefined' in item, response.json()
+        assert 'name' in item, response.json()
+        assert 'tag_category' in item, response.json()
 ## TEST INGREDIENS
+
 
 @pytest.mark.django_db
 def test_get_all_ingredients():
     user =  DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+    tag_category = TagCategory.objects.create(category_name='Cousine')   
+    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True)
+    ingredients = [
+        Ingredient.objects.create(ingredient_id = 1, name='Tomato', calorie_density=20.0, tag = tag),
+        Ingredient.objects.create(ingredient_id = 2, name='Avocado', calorie_density=50.0, tag =tag )
+    ]
     client = Client()
     url = f'/api/recipes/ingredients/'
     response = client.get(url)
+    data = response.json()
 
-    assert response.status_code == 200
+
+    assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
+    for item in data:
+        assert 'calorie_density' in item, response.json()
+        assert 'ingredient_id' in item, response.json()
+        assert 'tag' in item, response.json()
+
 
 @pytest.mark.django_db
 def test_get_ingredient():
@@ -220,10 +243,17 @@ def test_get_ingredient():
     client = Client()
     url = f'/api/recipes/ingredients/{ingredient.ingredient_id}/'
     response = client.get(url)
+    data = response.json()
 
     assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
+    assert 'calorie_density' in data, response.json()
+    assert 'ingredient_id' in data, response.json()
+    assert 'tag' in data, response.json()
 
+
+
+from rest_framework.authtoken.models import Token
 
 @pytest.mark.django_db
 def test_registration():
@@ -237,14 +267,8 @@ def test_registration():
     }
 
     url = '/api/auth/register'
-
-    # Make a POST request to the registration view
     response = client.post(url, valid_data)
+    
 
-    # Check if the response status code is 200 (OK)
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'application/json'
-
-
-    # Check if the serializer is val
-
+    assert response.status_code == 200, response.json()
+  
