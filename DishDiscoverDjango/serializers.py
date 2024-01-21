@@ -21,3 +21,8 @@ class RecipeTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeTag
         fields = '__all__'
+
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeIngredient
+        fields = '__all__'

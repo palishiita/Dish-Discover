@@ -85,9 +85,6 @@ def get_RecipeTags(request):
     data = [{'recipe': recipetag.recipe.recipe_id, 'tag': recipetag.tag.name} for recipetag in recipetags]
     return JsonResponse({'recipetags': data})
     
-# class RecipeTagViewSet(viewsets.ModelsViewSet):
-#     queryset = RecipeTag.objects.all()
-#     serializer_class = RecipeTagSerializer
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
@@ -99,6 +96,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe_tags = RecipeTag.objects.filter(recipe=recipe)
         serializer = RecipeTagSerializer(recipe_tags, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def ingredients (self, request, pk=None):
+        recipe = self.get_object()
+        recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
+        return Response(serializer.data)
+
 
 class TagsViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
