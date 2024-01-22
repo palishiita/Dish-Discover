@@ -86,8 +86,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
        serializer = LikedRecipeSerializer(liked_recipes, many = True)
        return Response(serializer.data)
 
-class TagsViewSet(viewsets.ModelViewSet):
+    @action(detail=True, methods=['get'])
+    def  saved (self, request, pk=None):
+       user = request.user
+       liked_recipes = SavedRecipe.objects.filter(user=user)
+       serializer = SavedRecipeSerializer(liked_recipes, many = True)
+       return Response(serializer.data)
+
+
+class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+    @action(detail=True, methods=['get'])
+    def preferred (self, request, pk=None):
+       user = request.user
+       preferred_tags = PreferredTag.objects.filter(user=user)
+       serializer = PreferredTagSerializer(preferred_tags, many = True)
+       return Response(serializer.data)
+
+
+
+class TagCategoryViewSet(viewsets.ModelViewSet):
+    queryset = TagCategory.objects.all()
+    serializer_class = TagCategorySerializer
 
 

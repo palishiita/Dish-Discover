@@ -3,24 +3,26 @@ from django.urls import path
 from .views import *
 from authorisation.views import registration_view
 
-urlpatterns = [
-    # path('register/', registration_view, name='register'),
-    # path('login/', LoginView.as_view(), name='login'),
-    path('tagcategories/', get_TagCategories, name='get_tagcategories'),
-    path('tags/', TagsViewSet.as_view({'get':'list'}), name='get_tags'),
-    path('tags/preferred', get_PreferredTags, name='get_preferredtags'),
-    path('comments/', get_Comments, name='get_comments'), 
+urlpatterns = [  
+    #TESTED 
+    # INGREDIENTS
     path('ingredients/', IngredientViewSet.as_view({'get':'list'}), name='get_ingredients'),
     path('ingredients/<int:pk>/', IngredientViewSet.as_view({'get':'retrieve'}), name='get_ingredients'),
-    ##RECIPES
-    path('recipes/saved/', get_SavedRecipes, name='get_savedrecipes'),
-    path('recipes/liked/', RecipeViewSet.as_view({'get':'liked'}), name='get_liked_recipes'),
-    
+    #RECIPES    
     path('recipes/', RecipeViewSet.as_view({'get':'list'}), name='get_recipes'),
     path('recipes/<int:pk>/tags/', RecipeViewSet.as_view({'get':'tags'}), name='get_ recipetags'),
     path('recipes/<int:pk>/ingredients/', RecipeViewSet.as_view({'get': 'ingredients'}), name='get_recipeingredients'),  
-    # path('recipes/<id>/', get_Recipe, name= 'get_recipe'),
     path('recipes/<int:pk>/', RecipeViewSet.as_view({'get': 'retrieve'}), name= 'get _recipe'),
-    #path('users/', UserList.as_view(), name='user-list'),
-    #path('recipes/', RecipeList.as_view(), name='recipe-list'),
+
+    path('recipes/saved/', RecipeViewSet.as_view({'get':'saved'}), name='get_savedrecipes'),
+    path('recipes/liked/', RecipeViewSet.as_view({'get':'liked'}), name='get_liked_recipes'),
+
+    #TAGS
+    path('tagcategories/', TagCategoryViewSet.as_view({'get':'list'}), name='get_tagcategories'),
+    path('tags/', TagViewSet.as_view({'get':'list'}), name='get_tags'),
+    path('tags/preferred/', TagViewSet.as_view({'get':'preferred'}), name='get_preferredtags'),
+
+    #NOT READY FOR TESTING        
+    path('comments/', get_Comments, name='get_comments'), 
+  
 ]

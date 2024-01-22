@@ -7,7 +7,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 
-from .serializers import RegistrationSerializer
+from .serializers import *
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 @api_view(['POST', ])
 
