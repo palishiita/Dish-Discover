@@ -24,7 +24,7 @@ urlpatterns = [
 
     #COMMENTS    
     path('comments/', CommentViewSet.as_view({'get':'list'}), name='get_comments'),
-     path('comments/byuser', CommentViewSet.as_view({'get':'by_user'}), name='get_comments'),
+    path('comments/byuser/', CommentViewSet.as_view({'get': 'by_user'}), name='comment-by-user')
 
   
 ]

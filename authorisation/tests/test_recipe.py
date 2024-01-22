@@ -117,6 +117,7 @@ def test_get_saved_recipes():
         is_boosted=False
     )
     SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True),
+    
     client = APIClient(user)
     client.force_authenticate(user)
     url = f'/api/recipes/recipes/saved/'
