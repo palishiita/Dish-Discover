@@ -1,126 +1,100 @@
 import 'package:dish_discover/entities/recipe.dart';
+import 'package:dish_discover/entities/tag.dart';
+import 'package:dish_discover/entities/ticket.dart';
+import 'package:dish_discover/entities/comment.dart';
+import 'package:dish_discover/entities/ingredient.dart';
 import 'package:flutter/material.dart';
 
-class User extends ChangeNotifier {
+class User extends ChangeNotifier{
+  int? id;
   String? username;
   String? password;
   String? email;
-  List<Recipe>? likedRecipes;
   bool? isPremium;
-  bool isModerator;
-  List<Comment>? addedComments;
-  List<Recipe>? addedRecipes;
   Image? image;
   String? description;
   DateTime? unbanDate;
+  bool isModerator;
+  List<Recipe>? likedRecipes;
   List<Recipe>? savedRecipes;
+  List<Recipe>? addedRecipes;
+  List<Comment>? addedComments;
+  List<Tag>? preferredTags;
 
-  User(
-      {this.username,
-      this.password,
-      this.email,
-      this.likedRecipes,
-      this.isPremium,
-      required this.isModerator,
-      this.addedComments,
-      this.addedRecipes,
-      this.image,
-      this.description,
-      this.unbanDate,
-      this.savedRecipes});
+  User({
+    this.id,
+    this.username,
+    this.password,
+    this.email,
+    this.isPremium,
+    this.image,
+    this.description,
+    this.unbanDate,
+    required this.isModerator,
+    this.likedRecipes,
+    this.savedRecipes,
+    this.addedRecipes,
+    this.addedComments,
+    this.preferredTags,
+  });
 
-  void addRecipe(Recipe recipe) {
-    likedRecipes?.add(recipe);
-  }
-
-  void addComment(Comment comment) {
-    addedComments?.add(comment);
-  }
-
-  void boostOwnRecipe(Recipe recipe) {
-    if (addedRecipes!.contains(recipe) && recipe.isBoosted != true) {
-      recipe.isBoosted = true;
+  void banUser(User user, DateTime date) {
+    if (isModerator == true) {
+      user.unbanDate = date;
     }
+    notifyListeners();
   }
 
-  void report(User user) {
-    ////////???????????????????
+  void likeRecipe(Recipe recipe) {
+    likedRecipes?.add(recipe);
+    notifyListeners();
   }
 
-  void editProfile(
-      {String? username, String? password, Image? image, String? description}) {
+  void saveRecipe(Recipe recipe) {
+    savedRecipes?.add(recipe);
+    notifyListeners();
+  }
+
+  Recipe addRecipe(int? recipeId, String? title, String? content, String? description, List<String>? steps, Image? image, bool? isBoosted, List<Ingredient>? ingredients, List<Tag> tags) {
+    Recipe recipe = Recipe(id: recipeId, authorId: id, title: title, content: content, description: description, steps: steps, image: image, isBoosted: isBoosted, ingredients: ingredients, tags: tags);
+    addedRecipes?.add(recipe);
+    notifyListeners();
+    return recipe;
+  }
+
+  void editProfile({String? username, String? password, Image? image, String? description}) {
     this.username = username ?? this.username;
-    this.password = password ?? password;
+    password = password ?? password;
     this.image = image ?? this.image;
-    this.description = description ?? description;
+    description = description ?? description;
+    notifyListeners();
   }
 
   void getPremium() {
     isPremium = true;
+    notifyListeners();
   }
 
-  void likeRecipe(Recipe recipe) {
-    if (!likedRecipes!.contains(recipe)) {
-      likedRecipes?.add(recipe);
+  Ticket reportUser(int reportId, Recipe? recipe, User issuer, User violator, Comment? comment, String reason) {
+    Ticket ticket = Ticket(reportId: reportId, recipeId: recipe?.id, violatorId: violator.id, issuerId: issuer.id, commentId: comment?.commentId, reason: reason);
+    notifyListeners();
+    return ticket;
+  }
+
+  Comment addComment(int commentId, Recipe recipe, String content) {
+    Comment comment = Comment(authorId: id, recipeId: recipe.id, commentId: commentId, content: content);
+    addedComments?.add(comment);
+    notifyListeners();
+    return comment;
+  }
+
+  void editComment(Comment comment, String content) {
+    if(id == comment.authorId) {
+      comment.content = content;
+      notifyListeners();
     }
   }
 
-  void unlikeRecipe(Recipe recipe) {
-    if (likedRecipes!.contains(recipe)) {
-      likedRecipes?.remove(recipe);
-    }
-  }
-
-  void saveRecipe(Recipe recipe) {
-    if (!savedRecipes!.contains(recipe)) {
-      savedRecipes?.add(recipe);
-    }
-  }
-
-  void unsaveRecipe(Recipe recipe) {
-    if (savedRecipes!.contains(recipe)) {
-      savedRecipes?.remove(recipe);
-    }
-  }
-
-  void searchRecipe(Recipe recipe) {
-    // ?????????????????????????
-  }
-
-  List<Recipe> getRecommendations() {
-    // ?????????????????????????
-    return [];
-  }
-
-  void createUser() {
-    // ?????????????????????????
-  }
-}
-
-class Moderator extends User {
-  Moderator(
-      {super.username,
-      super.password,
-      super.email,
-      super.likedRecipes,
-      super.isPremium,
-      super.isModerator = true,
-      super.addedComments,
-      super.addedRecipes,
-      super.image,
-      super.description,
-      super.unbanDate,
-      super.savedRecipes});
-
-  void viewReportTickets() {
-    // ????????????????????????
-  }
-
-  void banUser(User user, DateTime date) {
-    user.unbanDate = date;
-  }
-
-  void addPredefinedTag() {
-    // ??????????????????????????
+  Future<List<Recipe>> getRecommendations() async {
   }
 }
