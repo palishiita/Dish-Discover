@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:dish_discover/entities/tag.dart';
-import 'package:dish_discover/entities/user.dart';
+
 import 'package:dish_discover/entities/comment.dart';
+import 'package:dish_discover/entities/tag.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 import 'ingredient.dart';
 
@@ -34,6 +34,8 @@ class Recipe extends ChangeNotifier {
     this.comments,
   });
 
+  Recipe.fromJson(Map<String, dynamic> json);
+
   void editRecipe({
     String? title,
     String? description,
@@ -58,15 +60,15 @@ class Recipe extends ChangeNotifier {
   }
 
   Future<List<Recipe>> getRecipes() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/recipes/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipes'];
       return data.map((item) => Recipe.fromJson(item)).toList();
-
     } else {
-      throw Exception('Failed to load items, status code: ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to load items, status code: ${response.reasonPhrase}');
     }
   }
 }
-

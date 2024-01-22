@@ -21,6 +21,11 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
   @override
   Widget build(BuildContext context) {
     Ticket ticket = ref.watch(widget.ticketProvider);
+    String contentType = ticket.violatorId != null
+        ? 'User'
+        : ticket.commentId != null
+            ? 'Comment'
+            : 'Recipe';
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
@@ -30,17 +35,19 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                 child: Column(children: [
               ListTile(
                   leading: UserAvatar(
-                      image: ticket.reporter.image,
+                      image: null, // TODO get User avatar
                       diameter: 30,
-                      userProvider: ChangeNotifierProvider<User>(
-                          (ref) => ticket.reporter)),
-                  title: Text('Ticket #${ticket.id}'),
+                      userProvider: ChangeNotifierProvider<User>((ref) =>
+                          User(username: ticket.issuerId, isModerator: false))),
+                  title: Text('Ticket #${ticket.reportId}'),
                   subtitle: GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UserPage(
                               userProvider: ChangeNotifierProvider<User>(
-                                  (ref) => ticket.reporter)))),
-                      child: Text(ticket.reporter.username ?? 'null')),
+                                  (ref) => User(
+                                      username: ticket.issuerId,
+                                      isModerator: false))))),
+                      child: Text(ticket.issuerId ?? 'null')),
                   trailing: AspectRatio(
                       aspectRatio: 1.8,
                       child: Row(
@@ -52,7 +59,7 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                                 // TODO release ticket back into queue
                               }),
                           IconButton(
-                              padding: EdgeInsets.only(left: 20.0),
+                              padding: const EdgeInsets.only(left: 20.0),
                               icon: Icon(ticket.accepted
                                   ? Icons.delete
                                   : Icons.check_rounded),
@@ -71,26 +78,31 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                       alignment: Alignment.topLeft,
                       child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text(ticket.reason)))),
+                          child: Text(ticket.reason ?? '[Reason]')))),
               const Divider(height: 1.0),
               Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 5.0, horizontal: 10.0),
                   child: Row(children: [
-                    Expanded(
-                        child: Text(
-                            "${ticket.reporter.username}:${ticket.contentType}")),
+                    Expanded(child: Text("${ticket.issuerId}:$contentType")),
                     IconButton(
                         icon: const Icon(Icons.arrow_right_alt_rounded),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ticket.contentType == 'User'
+                              builder: (context) => contentType == 'User'
                                   ? UserPage(
-                                      userProvider: ticket.link
-                                          as ChangeNotifierProvider<User>)
+                                      userProvider:
+                                          ChangeNotifierProvider<User>((ref) =>
+                                              User(
+                                                  username: ticket.violatorId,
+                                                  isModerator: false)))
                                   : ViewRecipePage(
-                                      recipeProvider: ticket.link
-                                          as ChangeNotifierProvider<Recipe>)));
+                                      recipeProvider:
+                                          ChangeNotifierProvider<Recipe>(
+                                              (ref) => Recipe(
+                                                  id: ticket.recipeId,
+                                                  title:
+                                                      'Bad recipe/comment')))));
                         })
                   ]))
             ]))));

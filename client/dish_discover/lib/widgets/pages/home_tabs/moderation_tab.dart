@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../entities/app_state.dart';
 import '../../../entities/ticket.dart';
-import '../../../entities/user.dart';
 import '../../display/tab_title.dart';
 import '../../display_with_input/moderation_ticket.dart';
 import '../../display_with_input/tag_management_box.dart';
@@ -24,11 +23,10 @@ class _ModerationTabState extends State<ModerationTab> {
           child: ListView(children: [
         ModerationTicket(
             ticketProvider: ChangeNotifierProvider<Ticket>((ref) => Ticket(
-                AppState.currentUser!,
-                123,
-                'User',
-                '[Reason]',
-                ChangeNotifierProvider<User>((ref) => AppState.currentUser!)))),
+                reportId: 123,
+                violatorId: AppState.currentUser!.username,
+                issuerId: AppState.currentUser!.username,
+                reason: '[Reason]'))),
         const TagManagementBox()
       ]))
     ]);

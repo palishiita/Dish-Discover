@@ -23,8 +23,8 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
   @override
   Widget build(BuildContext context) {
     Recipe recipe = ref.watch(widget.recipeProvider);
-    User author =
-        recipe.author ?? User(username: 'unknown', isModerator: false);
+    User author = User(username: 'unknown', isModerator: false);
+    //recipe.author ?? User(username: 'unknown', isModerator: false); TODO get author as User
     bool likedRecipe =
         AppState.currentUser!.likedRecipes?.contains(recipe) ?? false;
     bool savedRecipe =
@@ -60,7 +60,7 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                               ? PopupMenuAction.ban
                               : PopupMenuAction.report)),
                   const Divider(height: 1.0),
-                  RecipeCover(cover: recipe.coverImage),
+                  RecipeCover(cover: recipe.image),
                   const Divider(height: 1.0),
                   LikeSaveIndicator(
                       likeButtonSelected: likedRecipe,

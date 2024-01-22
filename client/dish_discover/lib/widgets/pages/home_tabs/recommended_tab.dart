@@ -14,26 +14,26 @@ class RecommendedTab extends StatefulWidget {
 }
 
 class _RecommendedTabState extends State<RecommendedTab> {
-  late List<Recipe> recipes;
+  List<Recipe> recipes = [];
 
   @override
   void initState() {
     super.initState();
-    recipes = AppState.currentUser!.getRecommendations();
-    if (kDebugMode && recipes.isEmpty) {
-      recipes = [
-        Recipe(title: 'Test 1'),
-        Recipe(title: 'Test 2'),
-        Recipe(title: 'Test 3')
-      ];
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const TabTitle(title: 'Recommended'),
-      RecipeList(recipes: recipes)
-    ]);
+    return FutureBuilder(
+        future: Future<void>(() async => recipes = kDebugMode
+            ? [
+                Recipe(title: 'Test 1'),
+                Recipe(title: 'Test 2'),
+                Recipe(title: 'Test 3')
+              ]
+            : await AppState.currentUser!.getRecommendations()),
+        builder: (context, value) => Column(children: [
+              const TabTitle(title: 'Recommended'),
+              RecipeList(recipes: recipes)
+            ]));
   }
 }

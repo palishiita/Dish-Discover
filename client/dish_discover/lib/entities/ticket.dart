@@ -1,32 +1,20 @@
-import 'package:dish_discover/entities/user.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 
-class Ticket {
+class Ticket extends ChangeNotifier {
   int? reportId;
   int? recipeId;
-  int? violatorId;
-  int? issuerId;
+  String? violatorId; // NOTE: Usernames (strings) are primary keys
+  String? issuerId;
   int? commentId;
   String? reason;
+  bool accepted;
 
-  Ticket({
-    this.reportId,
-    this.recipeId,
-    this.violatorId,
-    this.issuerId,
-    this.commentId,
-    this.reason,
-  });
+  Ticket(
+      {this.reportId,
+      this.recipeId,
+      this.violatorId,
+      this.issuerId,
+      this.commentId,
+      this.reason,
+      this.accepted = false});
 }
-
-// class Ticket extends ChangeNotifier {
-//   final int id;
-//   final User reporter;
-//   final String contentType;
-//   final String reason;
-//   final ChangeNotifierProvider<ChangeNotifier> link;
-//   bool accepted;
-
-//   Ticket(this.reporter, this.id, this.contentType, this.reason, this.link,
-//       {this.accepted = false});
