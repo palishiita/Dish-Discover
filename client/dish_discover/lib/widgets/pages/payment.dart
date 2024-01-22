@@ -1,3 +1,4 @@
+import 'package:dish_discover/widgets/display_with_input/paypal_webview.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class PaymentPage extends StatelessWidget {
           title: Text('Buy ${buyingPremium ? 'Premium' : 'recipe boost'}'),
           centerTitle: true,
           leading: const BackButton()),
-      body: const Placeholder(child: Center(child: Text('PayPal WebView'))),
+      body: PayPalWebView(),
     );
   }
 }

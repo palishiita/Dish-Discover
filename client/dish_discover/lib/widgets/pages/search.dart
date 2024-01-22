@@ -3,8 +3,8 @@ import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/recipe.dart';
+import '../display/recipe_list.dart';
 import '../display/tab_title.dart';
-import '../display_with_input/recipe_card.dart';
 
 class SearchPage extends StatelessWidget {
   final String searchPhrase;

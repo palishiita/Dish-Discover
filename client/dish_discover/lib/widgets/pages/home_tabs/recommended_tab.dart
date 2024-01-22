@@ -1,9 +1,9 @@
-import 'package:dish_discover/widgets/display_with_input/recipe_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
 import '../../../entities/recipe.dart';
+import '../../display/recipe_list.dart';
 import '../../display/tab_title.dart';
 
 class RecommendedTab extends StatefulWidget {

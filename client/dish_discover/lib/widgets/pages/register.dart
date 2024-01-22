@@ -54,9 +54,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       alignment: Alignment.bottomRight,
                       child: OutlinedButton(
                           child: Text('Register', style: textStyle),
-                          onPressed: () => Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/dashboard',
-                                  (route) => (route.toString() == '/')))),
+                          onPressed: () {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/dashboard',
+                                (route) => (route.toString() == '/'));
+                            Navigator.of(context).pushNamed('/tutorial');
+                          })),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: TextButton(

@@ -1,71 +1,72 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:dish_discover/entities/tag.dart';
 import 'package:dish_discover/entities/user.dart';
+import 'package:dish_discover/entities/comment.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'ingredient.dart';
+
 class Recipe extends ChangeNotifier {
-  User? author;
+  int? id;
+  int? authorId;
   String? title;
-  DateTime? publicationDate;
+  String? content;
   String? description;
-  String? steps;
-  Image? coverImage;
+  List<String>? steps;
+  Image? image;
+  bool? isBoosted;
   List<Ingredient>? ingredients;
   List<Tag>? tags;
   List<Comment>? comments;
-  bool? isBoosted;
 
-  Recipe(
-      {this.author,
-      this.title,
-      this.publicationDate,
-      this.description,
-      this.steps,
-      this.coverImage,
-      this.ingredients,
-      this.tags,
-      this.comments,
-      this.isBoosted});
+  Recipe({
+    this.id,
+    this.authorId,
+    this.title,
+    this.content,
+    this.description,
+    this.steps,
+    this.image,
+    this.isBoosted,
+    this.ingredients,
+    this.tags,
+    this.comments,
+  });
 
-  void editRecipe(
-      {String? title,
-      String? description,
-      String? steps,
-      Image? coverImage,
-      List<Ingredient>? ingredients,
-      List<Tag>? tags}) {
+  void editRecipe({
+    String? title,
+    String? description,
+    String? content,
+    Image? image,
+  }) {
     this.title = title ?? this.title;
     this.description = description ?? this.description;
-    this.steps = steps ?? this.steps;
-    this.coverImage = coverImage ?? this.coverImage;
-    this.ingredients?.addAll(ingredients as Iterable<Ingredient>);
-    this.tags?.addAll(tags as Iterable<Tag>);
-  }
-}
-
-class Comment {
-  User? author;
-  Recipe? recipe;
-  DateTime? publicationDate;
-  String? content;
-
-  Comment(this.author, this.recipe, this.publicationDate, this.content);
-
-  void editComment(String? content) {
     this.content = content ?? this.content;
+    this.image = image ?? this.image;
+    notifyListeners();
   }
 
-  void deleteComment(Comment comment) {
-    if (author!.addedComments!.contains(comment)) {
-      author?.addedComments?.remove(comment);
+  void addIngredient(Ingredient ingredient) {
+    ingredients?.add(ingredient);
+    notifyListeners();
+  }
+
+  void addTag(Tag tag) {
+    tags?.add(tag);
+    notifyListeners();
+  }
+
+  Future<List<Recipe>> getRecipes() async {
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/'));
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body)['recipes'];
+      return data.map((item) => Recipe.fromJson(item)).toList();
+
+    } else {
+      throw Exception('Failed to load items, status code: ${response.reasonPhrase}');
     }
   }
 }
 
-class Ingredient {
-  String? name;
-  int? quantity;
-  int? caloricDensity;
-  String? unit;
-
-  Ingredient(this.name, this.quantity, this.caloricDensity, this.unit);
-}

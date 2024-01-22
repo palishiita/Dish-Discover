@@ -4,6 +4,7 @@ import 'package:dish_discover/widgets/pages/login.dart';
 import 'package:dish_discover/widgets/pages/register.dart';
 import 'package:dish_discover/widgets/pages/search.dart';
 import 'package:dish_discover/widgets/pages/settings.dart';
+import 'package:dish_discover/widgets/pages/tutorial.dart';
 import 'package:dish_discover/widgets/pages/user.dart';
 import 'package:dish_discover/widgets/pages/view_recipe.dart';
 import 'package:dish_discover/widgets/style/style.dart';
@@ -32,6 +33,7 @@ class DishDiscoverApp extends StatelessWidget {
         routes: {
           '/': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
+          '/tutorial': (context) => const TutorialPage(),
           '/dashboard': (context) => HomePage(),
           '/settings': (context) => const SettingsPage(),
           '/search': (context) => SearchPage(

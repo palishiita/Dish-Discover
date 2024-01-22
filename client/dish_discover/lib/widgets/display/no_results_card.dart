@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class NoResultsCard extends StatelessWidget {
-  const NoResultsCard({super.key});
+  final bool timedOut;
+  const NoResultsCard({super.key, this.timedOut = false});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
         child: AspectRatio(
             aspectRatio: 1.2,
             child: Card(
                 child: Center(
-                    child:
-                        Text("No content found :(\nYou might be offline")))));
+                    child: Text(timedOut
+                        ? "Connection timed out :(\nYou might be offline"
+                        : "Sorry, nothing to see here :(\n")))));
   }
 }

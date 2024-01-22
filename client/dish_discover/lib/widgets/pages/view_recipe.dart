@@ -33,7 +33,7 @@ class ViewRecipePage extends ConsumerWidget {
             ],
             flexibleSpace: AspectRatio(
                 aspectRatio: 4 / 3,
-                child: RecipeCover(cover: recipe.coverImage))),
+                child: RecipeCover(cover: recipe.image))),
         body: SingleChildScrollView(
             child: Column(children: [
           RecipeHeader(recipeProvider: recipeProvider),

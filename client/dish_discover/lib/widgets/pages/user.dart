@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
 import '../../entities/user.dart';
+import '../display/recipe_list.dart';
 import '../display/tab_title.dart';
 import '../display/user_header.dart';
-import '../display_with_input/recipe_card.dart';
 import '../inputs/popup_menu.dart';
 
 class UserPage extends ConsumerWidget {

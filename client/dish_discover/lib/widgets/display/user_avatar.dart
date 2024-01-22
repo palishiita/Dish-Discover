@@ -26,14 +26,11 @@ class UserAvatar extends StatelessWidget {
                 builder: (context) => UserPage(userProvider: userProvider!))),
         child: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Container(
-                width: diameter,
-                height: diameter,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: img.image,
-                        isAntiAlias: true)))));
+            child: CircleAvatar(
+                radius: diameter / 2,
+                foregroundImage: image?.image,
+                backgroundImage:
+                    Image.asset("assets/images/default_avatar.jpg").image,
+                backgroundColor: Colors.blueGrey)));
   }
 }
