@@ -104,7 +104,74 @@ def test_get_liked_recipes():
         assert 'user' in item, response.json()
 
 
+# LIKED RECIPES
+@pytest.mark.django_db
+def test_delete_liked_recipe():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    liked = LikedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = reverse('delete_liked_recipe', kwargs={'pk': liked.id})
+    response = client.delete(url)
+
+
+    assert LikedRecipe.objects.filter(user=user, recipe=recipe).count() == 0
+
+@pytest.mark.django_db
+def test_delete_liked_recipe_when_2_liked():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipes = [
+        Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+        ),
+        Recipe.objects.create(
+        recipe_id=11,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+        ),
+
+    ]
+        
+    liked_recipes = [
+        LikedRecipe.objects.create(user=user, recipe=recipes[0], is_recommendation=True),
+        LikedRecipe.objects.create(user=user, recipe=recipes[1], is_recommendation=True),
+
+    ]
+    
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = reverse('delete_liked_recipe', kwargs={'pk': liked_recipes[0].id})
+    response = client.delete(url)
+
+
+    assert LikedRecipe.objects.filter(user=user, recipe=recipes[0]).count() == 0
+    assert LikedRecipe.objects.all().count() == 1
+
+    # assert response.status_code == 200, response.json()
+    # assert response['Content-Type'] == 'application/json'
+    # for item in data:
+    #     assert 'id' in item, response.json()
+    #     assert 'recipe' in item, response.json()
+    #     assert 'user' in item, response.json()
+
 # SAVED RECIPES
+    
 @pytest.mark.django_db
 def test_get_saved_recipes():
     user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
@@ -131,147 +198,95 @@ def test_get_saved_recipes():
         assert 'recipe' in item, response.json()
         assert 'user' in item, response.json()
 
-# PREFERRED TAGS
-@pytest.mark.django_db
-def test_get_preferred_tags():
-    tag_category = TagCategory.objects.create(category_name='Cousine')      
-    user = create_user()
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
-        ]
-    preferred_tags=[
-        PreferredTag.objects.create(user=user, tag=tags[0], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[1], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[2], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[3], weight=0.8),
-    ]
-    
 
+@pytest.mark.django_db
+def test_delete_saved_recipe():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    saved = SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/tags/preferred/'
-    response = client.get(url)
-    data = response.json()
+    url = reverse('delete_saved_recipe', kwargs={'pk': saved.id})
+    response = client.delete(url)
 
-    assert response.status_code == 200, response.json()
-    assert response['Content-Type'] == 'application/json'
 
-    for item, tag in zip(data, preferred_tags):
-        assert 'id' in item, response.json()
-        assert 'tag' in item, response.json()
-        assert 'user' in item, response.json()
-        assert 'weight' in item, response.json()
-        assert item['id'] == tag.id, response.json()
-        assert item['tag'] == tag.tag.name, response.json()
-        assert item['user'] == tag.user.user_id, response.json()
-        assert item['weight'] == tag.weight, response.json()
+    assert SavedRecipe.objects.filter(user=user, recipe=recipe).count() == 0        
 
 
 
-# TAGS OF A SIGNLE RECIPE
 @pytest.mark.django_db
-def test_get_recipe_tags():
-    client =Client()    
-    tag_category = TagCategory.objects.create(category_name='Cousine')      
-    user = create_user()
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
-        ]
-    
-    recipe = Recipe.objects.create(
+def test_delete_saved_recipe_when_2_liked():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipes = [
+        Recipe.objects.create(
         recipe_id=10,
-        author_id=user.user_id,
+        author=user,
         recipe_name="Test Recipe",
         content="Test content",
         description="Test description",
         is_boosted=False
-    )
-
-    recipeTags = [
-        RecipeTag.objects.create(recipe=recipe, tag=tags[0], weight=0.8),
-        RecipeTag.objects.create(recipe=recipe, tag=tags[1], weight=0.5),
-        RecipeTag.objects.create(recipe=recipe, tag=tags[2], weight=0.9),
-    ]
-
-    url = f'/api/recipes/{recipe.recipe_id}/tags/'
-    response = client.get(url)
-    data = json.loads(response.content)
-
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'application/json'
-    for item, tag in zip(data, recipeTags):
-        assert 'id' in item, response.json()
-        assert 'tag' in item, response.json()
-        assert 'weight' in item, response.json()
-
-        assert item['recipe'] == tag.recipe.recipe_id,  response.json()
-
-
-# INGREDIENTS OF THE SINGLE RECIPE
-@pytest.mark.django_db
-def test_get_recipe_ingredients():
-    user = create_user()
-    recipe = Recipe.objects.create(
-        recipe_id=10,
-        author_id=user.user_id,
+        ),
+        Recipe.objects.create(
+        recipe_id=11,
+        author=user,
         recipe_name="Test Recipe",
         content="Test content",
         description="Test description",
         is_boosted=False
-    )
-    tag_category = TagCategory.objects.create(category_name='Cousine')   
-    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True)    
-    ingredients = [
-        Ingredient.objects.create(ingredient_id = 1, name='Tomato', calorie_density=20.0, tag = tag),
-        Ingredient.objects.create(ingredient_id = 2, name='Avocado', calorie_density=50.0, tag =tag )
+        ),
+
     ]
+        
+    saved_recipes = [
+        SavedRecipe.objects.create(user=user, recipe=recipes[0], is_recommendation=True),
+        SavedRecipe.objects.create(user=user, recipe=recipes[1], is_recommendation=True),
 
-    recipeIngredients = [
-    RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredients[0], amount=200.0, unit='g'),
-    RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredients[1], amount=250.0, unit='g')
     ]
-
-
-    client = Client()
-    url = f'/api/recipes/{recipe.recipe_id}/ingredients/'
-    response = client.get(url)
-    data = response.json()
     
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'application/json'
-    for item in data:
-        assert 'amount' in item, response.json()
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = reverse('delete_saved_recipe', kwargs={'pk': saved_recipes[0].id})
+    response = client.delete(url)
 
 
+    assert SavedRecipe.objects.filter(user=user, recipe=recipes[0]).count() == 0
+    assert SavedRecipe.objects.all().count() == 1
 
 
-
-
-
-# from rest_framework.authtoken.models import Token
 
 # @pytest.mark.django_db
-# def test_registration():
-#     client = APIClient()
+# @pytest.mark.django_db
+# def test_get_recipes_created_by_user():
+#     # Create multiple users
+#     user1 = DishDiscoverUser.objects.create(user_id=1, username='user1', email='user1@example.com', password='password1')
+#     user2 = DishDiscoverUser.objects.create(user_id=2, username='user2', email='user2@example.com', password='password2')
 
-#     # Prepare data for a valid registration
-#     valid_data = {
-#         'username': 'testuser',
-#         'email': 'test@example.com',
-#         'password': 'testpassword',
-#         'password2': 'testpassword',
-#     }
+#     # Create recipes for each user
+#     recipe_user1 = Recipe.objects.create(recipe_id=1, author=user1, recipe_name="Recipe by User 1", content="Content 1")
+#     recipe_user2 = Recipe.objects.create(recipe_id=2, author=user2, recipe_name="Recipe by User 2", content="Content 2")
 
-#     url = '/api/auth/register'
-#     response = client.post(url, valid_data)
+#     # Authenticate as user1
+#     client = Client()
+#     client.force_login(user1)
 
+#     # Call the endpoint associated with created_by_user action
+#     url = reverse('get_created_by_user')
+#     response = client.get(url)
 
-#     assert response.status_code == 200, response.json()
-#     assert DishDiscoverUser.objects.filter(email="test@example.com").count() == 1
-  
+#     # Check that the response contains the recipe created by user1 and not the one by user2
+#     assert response.status_code == 200
+#     data = response.json()
+#     assert len(data) == 1
+#     assert data[0]['recipe_id'] == recipe_user1.recipe_id
+#     assert data[0]['author'] == user1.user_id
+#     assert data[0]['recipe_name'] == "Recipe by User 1"
+
+#     # Logout to clear the authentication for subsequent tests
+#     client.logout()

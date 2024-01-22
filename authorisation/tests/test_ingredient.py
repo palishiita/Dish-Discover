@@ -49,3 +49,41 @@ def test_get_ingredient():
     assert 'calorie_density' in data, response.json()
     assert 'ingredient_id' in data, response.json()
     assert 'tag' in data, response.json()
+
+
+# INGREDIENTS OF THE SINGLE RECIPE
+@pytest.mark.django_db
+def test_get_recipe_ingredients():
+    user = create_user()
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author_id=user.user_id,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    tag_category = TagCategory.objects.create(category_name='Cousine')   
+    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True)    
+    ingredients = [
+        Ingredient.objects.create(ingredient_id = 1, name='Tomato', calorie_density=20.0, tag = tag),
+        Ingredient.objects.create(ingredient_id = 2, name='Avocado', calorie_density=50.0, tag =tag )
+    ]
+
+    recipeIngredients = [
+    RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredients[0], amount=200.0, unit='g'),
+    RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredients[1], amount=250.0, unit='g')
+    ]
+
+
+    client = Client()
+    url = f'/api/recipes/{recipe.recipe_id}/ingredients/'
+    response = client.get(url)
+    data = response.json()
+    
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/json'
+    for item in data:
+        assert 'amount' in item, response.json()
+
+

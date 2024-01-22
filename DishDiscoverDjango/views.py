@@ -43,6 +43,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
+    # def get_queryset(self):
+    #     # # Get the current user
+    #     # if self.action == 'created_by_user':
+    #     #     user = self.request.user
+    #     #     return Recipe.objects.filter(author=user)
+
+    #     # return super().get_queryset()  # Return the default queryset if not 'created_by_user'
+    
     @action(detail=True, methods=['get'])
     def tags(self, request, pk=None):
         recipe = self.get_object()
@@ -57,20 +65,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'])
-    def  liked (self, request, pk=None):
-       user = request.user
-       liked_recipes = LikedRecipe.objects.filter(user=user)
-       serializer = LikedRecipeSerializer(liked_recipes, many = True)
-       return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def  saved (self, request, pk=None):
-       user = request.user
-       liked_recipes = SavedRecipe.objects.filter(user=user)
-       serializer = SavedRecipeSerializer(liked_recipes, many = True)
-       return Response(serializer.data)
-    
     @action(detail=True, methods=['GET'])
     def comments (self, request, pk=None):
         recipe = self.get_object()
@@ -90,8 +84,28 @@ class TagViewSet(viewsets.ModelViewSet):
        serializer = PreferredTagSerializer(preferred_tags, many = True)
        return Response(serializer.data)
 
+class LikedRecipeViewSet(viewsets.ModelViewSet):
+    serializer_class = LikedRecipeSerializer
 
+    def get_queryset(self):       
+        return LikedRecipe.objects.filter(user=self.request.user)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
+class SavedRecipeViewSet(viewsets.ModelViewSet):
+    serializer_class = SavedRecipeSerializer
+
+    def get_queryset(self):       
+            return SavedRecipe.objects.filter(user=self.request.user)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class TagCategoryViewSet(viewsets.ModelViewSet):
     queryset = TagCategory.objects.all()

@@ -13,11 +13,16 @@ urlpatterns = [
     path('<int:pk>/', RecipeViewSet.as_view({'get': 'retrieve'}), name= 'get_recipe'),
     path('<int:pk>/tags/', RecipeViewSet.as_view({'get':'tags'}), name='get_recipetags'),
     path('<int:pk>/ingredients/', RecipeViewSet.as_view({'get': 'ingredients'}), name='get_recipeingredients'),
-    path('<int:pk>/comments/', RecipeViewSet.as_view({'get': 'comments'}), name='get_comments'),    
-    
+    path('<int:pk>/comments/', RecipeViewSet.as_view({'get': 'comments'}), name='get_comments'),       
 
-    path('saved/', RecipeViewSet.as_view({'get':'saved'}), name='get_savedrecipes'),
-    path('liked/', RecipeViewSet.as_view({'get':'liked'}), name='get_liked_recipes'),
+
+    # path('byuser', RecipeViewSet.as_view({'get':'created_by_user'}), name='get_created_by_user'),
+    path('saved/', SavedRecipeViewSet.as_view({'get':'list'}), name='get_savedrecipes'),
+    path('saved/<int:pk>', SavedRecipeViewSet.as_view({'delete':'destroy'}), name = 'delete_saved_recipe'),
+    path('liked/', LikedRecipeViewSet.as_view({'get':'list'}), name='get_liked_recipes'),
+    path('liked/<int:pk>/', LikedRecipeViewSet.as_view({'delete':'destroy'}), name='delete_liked_recipe'),
+
+
 
 
     #TAGS

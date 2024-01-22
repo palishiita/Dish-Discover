@@ -53,4 +53,84 @@ def test_tag_category():
         assert item['category_name'] == category.category_name, response.json()
 
 
+# PREFERRED TAGS
+@pytest.mark.django_db
+def test_get_preferred_tags():
+    tag_category = TagCategory.objects.create(category_name='Cousine')      
+    user = create_user()
+    tags = [
+        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
+        ]
+    preferred_tags=[
+        PreferredTag.objects.create(user=user, tag=tags[0], weight=0.8),
+        PreferredTag.objects.create(user=user, tag=tags[1], weight=0.8),
+        PreferredTag.objects.create(user=user, tag=tags[2], weight=0.8),
+        PreferredTag.objects.create(user=user, tag=tags[3], weight=0.8),
+    ]
+    
+
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = f'/api/recipes/tags/preferred/'
+    response = client.get(url)
+    data = response.json()
+
+    assert response.status_code == 200, response.json()
+    assert response['Content-Type'] == 'application/json'
+
+    for item, tag in zip(data, preferred_tags):
+        assert 'id' in item, response.json()
+        assert 'tag' in item, response.json()
+        assert 'user' in item, response.json()
+        assert 'weight' in item, response.json()
+        assert item['id'] == tag.id, response.json()
+        assert item['tag'] == tag.tag.name, response.json()
+        assert item['user'] == tag.user.user_id, response.json()
+        assert item['weight'] == tag.weight, response.json()
+
+
+
+# TAGS OF A SIGNLE RECIPE
+@pytest.mark.django_db
+def test_get_recipe_tags():
+    client =Client()    
+    tag_category = TagCategory.objects.create(category_name='Cousine')      
+    user = create_user()
+    tags = [
+        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
+        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
+        ]
+    
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author_id=user.user_id,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+
+    recipeTags = [
+        RecipeTag.objects.create(recipe=recipe, tag=tags[0], weight=0.8),
+        RecipeTag.objects.create(recipe=recipe, tag=tags[1], weight=0.5),
+        RecipeTag.objects.create(recipe=recipe, tag=tags[2], weight=0.9),
+    ]
+
+    url = f'/api/recipes/{recipe.recipe_id}/tags/'
+    response = client.get(url)
+    data = json.loads(response.content)
+
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/json'
+    for item, tag in zip(data, recipeTags):
+        assert 'id' in item, response.json()
+        assert 'tag' in item, response.json()
+        assert 'weight' in item, response.json()
+
+        assert item['recipe'] == tag.recipe.recipe_id,  response.json()
 
