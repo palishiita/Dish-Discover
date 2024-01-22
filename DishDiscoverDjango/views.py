@@ -34,28 +34,6 @@ from rest_framework.decorators import action
 #         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
-def get_TagCategories(request):
-    categories = TagCategory.objects.all()
-    data = [{'category_name': category.category_name} for category in categories]
-    return JsonResponse({'categories': data})
-
-def get_PreferredTags(request):
-    preferredtags = PreferredTag.objects.all()
-    data = [{'user': preferredtag.user.user_id, 'tag': preferredtag.tag.name, 'weight': preferredtag.weight} for preferredtag in preferredtags]
-    return JsonResponse({'preferredtags': data})
-
-def get_Comments(request):
-    comments = Comment.objects.all()
-    data = [{'comment_id': comment.comment_id, 'user': comment.user.user_id, 'recipe': comment.recipe.recipe_id, 'content': comment.content} for comment in comments]
-    return JsonResponse({'comments': data})
-
-def get_SavedRecipes(request):
-    savedrecipes = SavedRecipe.objects.all()
-    data = [{'user': savedrecipe.user.user_id, 'recipe': savedrecipe.recipe.recipe_id, 'is_recommendation': savedrecipe.is_recommendation} for savedrecipe in savedrecipes]
-    return JsonResponse({'savedrecipes': data})
-
-
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class =IngredientSerializer
@@ -92,6 +70,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
        liked_recipes = SavedRecipe.objects.filter(user=user)
        serializer = SavedRecipeSerializer(liked_recipes, many = True)
        return Response(serializer.data)
+    
+    @action(detail=True, methods=['GET'])
+    def comments (self, request, pk=None):
+        recipe = self.get_object()
+        recipe_comments = Comment.objects.filter(recipe=recipe)
+        serializer = CommentSerializer(recipe_comments, many=True)
+        return Response(serializer.data)
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -104,6 +89,7 @@ class TagViewSet(viewsets.ModelViewSet):
        preferred_tags = PreferredTag.objects.filter(user=user)
        serializer = PreferredTagSerializer(preferred_tags, many = True)
        return Response(serializer.data)
+
 
 
 

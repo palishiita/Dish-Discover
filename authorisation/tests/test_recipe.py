@@ -19,7 +19,7 @@ def test_get_all_recipes():
     client = APIClient()
 
     # Build the URL for the view with the recipe ID
-    url = f'/api/recipes/recipes/'
+    url = f'/api/recipes/'
     user = create_user()
 
     recipe = Recipe.objects.create(
@@ -62,7 +62,7 @@ def test_get_recipe_view():
     client = Client()
 
     # Build the URL for the view with the recipe ID
-    url = f'/api/recipes/recipes/{recipe.recipe_id}/'
+    url = f'/api/recipes/{recipe.recipe_id}/'
 
     response = client.get(url)
     data = json.loads(response.content)
@@ -92,7 +92,7 @@ def test_get_liked_recipes():
     LikedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True),
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/recipes/liked/'
+    url = f'/api/recipes/liked/'
     response = client.get(url)
     data = response.json()
 
@@ -120,7 +120,7 @@ def test_get_saved_recipes():
     
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/recipes/saved/'
+    url = f'/api/recipes/saved/'
     response = client.get(url)
     data = response.json()
 
@@ -199,7 +199,7 @@ def test_get_recipe_tags():
         RecipeTag.objects.create(recipe=recipe, tag=tags[2], weight=0.9),
     ]
 
-    url = f'/api/recipes/recipes/{recipe.recipe_id}/tags/'
+    url = f'/api/recipes/{recipe.recipe_id}/tags/'
     response = client.get(url)
     data = json.loads(response.content)
 
@@ -239,7 +239,7 @@ def test_get_recipe_ingredients():
 
 
     client = Client()
-    url = f'/api/recipes/recipes/{recipe.recipe_id}/ingredients/'
+    url = f'/api/recipes/{recipe.recipe_id}/ingredients/'
     response = client.get(url)
     data = response.json()
     
