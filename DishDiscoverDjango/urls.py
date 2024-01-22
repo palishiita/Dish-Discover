@@ -22,7 +22,9 @@ urlpatterns = [
     path('tags/', TagViewSet.as_view({'get':'list'}), name='get_tags'),
     path('tags/preferred/', TagViewSet.as_view({'get':'preferred'}), name='get_preferredtags'),
 
-    #NOT READY FOR TESTING        
-    path('comments/', get_Comments, name='get_comments'), 
+    #COMMENTS    
+    path('comments/', CommentViewSet.as_view({'get':'list'}), name='get_comments'),
+     path('comments/byuser', CommentViewSet.as_view({'get':'by_user'}), name='get_comments'),
+
   
 ]

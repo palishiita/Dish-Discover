@@ -112,3 +112,16 @@ class TagCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = TagCategorySerializer
 
 
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    @action(detail=True, methods=['GET'])
+    def by_user(self, request, pk=None):
+        user = request.user
+        user_comments = Comment.objects.filter(user=user)
+        serializer = CommentSerializer(user_comments, many = True)
+        return Response(serializer.data)
+
+
+

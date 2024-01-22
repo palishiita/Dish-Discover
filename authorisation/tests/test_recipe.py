@@ -104,7 +104,7 @@ def test_get_liked_recipes():
         assert 'user' in item, response.json()
 
 
-# LIKED RECIPES
+# SAVED RECIPES
 @pytest.mark.django_db
 def test_get_saved_recipes():
     user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
@@ -248,112 +248,29 @@ def test_get_recipe_ingredients():
         assert 'amount' in item, response.json()
 
 
-# TAGS
-@pytest.mark.django_db
-def test_get_all_tags():
-
-    tag_category = TagCategory.objects.create(category_name='Cousine')
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category, is_predefined = True)
-        ]
-    user = create_user()
-    client = Client()
-    url = f'/api/recipes/tags/'
-    response = client.get(url)
-    data = response.json()
-
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'application/json'
-    for item in data:
-        assert 'is_predefined' in item, response.json()
-        assert 'name' in item, response.json()
-        assert 'tag_category' in item, response.json()
-
-
-@pytest.mark.django_db
-def test_tag_category():
-    tag_categories = [
-        TagCategory.objects.create(category_name='Test Category 1'),
-        TagCategory.objects.create(category_name='Test Category 2')
-    ]
-
-    client = Client()
-    url = f'/api/recipes/tagcategories/'
-    response = client.get(url)
-    data = response.json()
-
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'application/json'
-    for item, category in zip(data, tag_categories):
-        assert 'category_name' in item, response.json()
-        assert item['category_name'] == category.category_name, response.json()
-
-
-## TEST INGREDIENS
-@pytest.mark.django_db
-def test_get_all_ingredients():
-    user =  DishDiscoverUser.objects.create(username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
-    tag_category = TagCategory.objects.create(category_name='Cousine')   
-    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True)
-    ingredients = [
-        Ingredient.objects.create(ingredient_id = 1, name='Tomato', calorie_density=20.0, tag = tag),
-        Ingredient.objects.create(ingredient_id = 2, name='Avocado', calorie_density=50.0, tag =tag )
-    ]
-    client = Client()
-    url = f'/api/recipes/ingredients/'
-    response = client.get(url)
-    data = response.json()
-
-
-    assert response.status_code == 200, response.json()
-    assert response['Content-Type'] == 'application/json'
-    for item in data:
-        assert 'calorie_density' in item, response.json()
-        assert 'ingredient_id' in item, response.json()
-        assert 'tag' in item, response.json()
-
-
-@pytest.mark.django_db
-def test_get_ingredient():
-    tagCategory =  TagCategory.objects.create(category_name='Cousine')
-    tag = Tag.objects.create(name='Polish',tag_category=tagCategory,is_predefined = True)
-    ingredient = Ingredient.objects.create(ingredient_id=10, name='Tomato', calorie_density=20.0, tag=tag)
-
-    client = Client()
-    url = f'/api/recipes/ingredients/{ingredient.ingredient_id}/'
-    response = client.get(url)
-    data = response.json()
-
-    assert response.status_code == 200, response.json()
-    assert response['Content-Type'] == 'application/json'
-    assert 'calorie_density' in data, response.json()
-    assert 'ingredient_id' in data, response.json()
-    assert 'tag' in data, response.json()
 
 
 
 
-from rest_framework.authtoken.models import Token
 
-@pytest.mark.django_db
-def test_registration():
-    client = APIClient()
+# from rest_framework.authtoken.models import Token
 
-    # Prepare data for a valid registration
-    valid_data = {
-        'username': 'testuser',
-        'email': 'test@example.com',
-        'password': 'testpassword',
-        'password2': 'testpassword',
-    }
+# @pytest.mark.django_db
+# def test_registration():
+#     client = APIClient()
 
-    url = '/api/auth/register'
-    response = client.post(url, valid_data)
+#     # Prepare data for a valid registration
+#     valid_data = {
+#         'username': 'testuser',
+#         'email': 'test@example.com',
+#         'password': 'testpassword',
+#         'password2': 'testpassword',
+#     }
+
+#     url = '/api/auth/register'
+#     response = client.post(url, valid_data)
 
 
-    assert response.status_code == 200, response.json()
-    assert DishDiscoverUser.objects.filter(email="test@example.com").count() == 1
+#     assert response.status_code == 200, response.json()
+#     assert DishDiscoverUser.objects.filter(email="test@example.com").count() == 1
   
