@@ -4,6 +4,8 @@ import 'package:dish_discover/entities/recipe.dart';
 import 'package:dish_discover/entities/tag.dart';
 import 'package:dish_discover/entities/ticket.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class User extends ChangeNotifier {
   int? id;
@@ -37,6 +39,34 @@ class User extends ChangeNotifier {
     this.addedComments,
     this.preferredTags,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      password: json['password'],
+      email: json['email'],
+      isPremium: json['is_premium'],
+      image: json['image'] != null ? Image.network(json['image']) : null,
+      description: json['description'],
+      unbanDate: json['unban_date'] != null ? DateTime.parse(json['unban_date']) : null,
+      isModerator: json['is_moderator'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'password': password,
+      'email': email,
+      'is_premium': isPremium,
+      'image': image?.toString(),
+      'description': description,
+      'unban_date': unbanDate?.toIso8601String(),
+      'is_moderator': isModerator,
+    };
+  }
 
   void banUser(User user, DateTime date) {
     if (isModerator == true) {
@@ -126,7 +156,32 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<List<Recipe>> getRecommendations() async {
+  Future<List<Recipe>> getRecommendations(User user) async {
     return [];
+  }
+
+  Future<void> addUser(User user) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:8000/api/users'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(user.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      print('User added successfully');
+    } else {
+      throw Exception('Failed to add user, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<User>> getUsers() async {
+    final response = await http.get(Uri.parse('http://localhost:8000/api/users'));
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body)['users'];
+      return data.map((item) => User.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load users, status code: ${response.statusCode}');
+    }
   }
 }
