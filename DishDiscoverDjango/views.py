@@ -98,7 +98,9 @@ class LikedRecipeViewSet(viewsets.ModelViewSet):
     
 class SavedRecipeViewSet(viewsets.ModelViewSet):
     serializer_class = SavedRecipeSerializer
+    queryset = SavedRecipe.objects.all()
 
+    
     def get_queryset(self):       
             return SavedRecipe.objects.filter(user=self.request.user)
     
@@ -106,6 +108,12 @@ class SavedRecipeViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    def perform_create(self,serializer):
+        serializer.save(
+        user=self.request.user,
+        recipe=self.kwargs.get('pk'),
+        )
+    
 
 class TagCategoryViewSet(viewsets.ModelViewSet):
     queryset = TagCategory.objects.all()

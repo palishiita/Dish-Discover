@@ -174,19 +174,22 @@ def test_delete_liked_recipe_when_2_liked():
     
 @pytest.mark.django_db
 def test_get_saved_recipes():
-    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    user1 = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    user2 = DishDiscoverUser.objects.create(user_id =11, username='mickey2_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+
     recipe = Recipe.objects.create(
         recipe_id=10,
-        author=user,
+        author=user1,
         recipe_name="Test Recipe",
         content="Test content",
         description="Test description",
         is_boosted=False
     )
-    SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True),
+    SavedRecipe.objects.create(user=user1, recipe=recipe, is_recommendation=True),
+    SavedRecipe.objects.create(user=user2, recipe=recipe, is_recommendation=True),
     
-    client = APIClient(user)
-    client.force_authenticate(user)
+    client = APIClient(user1)
+    client.force_authenticate(user1)
     url = f'/api/recipes/saved/'
     response = client.get(url)
     data = response.json()
@@ -260,7 +263,29 @@ def test_delete_saved_recipe_when_2_liked():
     assert SavedRecipe.objects.all().count() == 1
 
 
+@pytest.mark.django_db
+def test_add_saved_recipe():
+    user = DishDiscoverUser.objects.create(user_id=10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
 
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    saved_recipe = SavedRecipe(user=user, recipe=recipe, is_recommendation=True)
+    # saved_recipe = SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
+    client = APIClient()
+    client.force_authenticate(user)
+    
+    url = reverse('delete_saved_recipe', kwargs={'pk': recipe.recipe_id})
+    data = {'user': user.user_id, 'recipe': recipe, 'is_recommendation': True}
+    response = client.post(url, data)
+    breakpoint()
+    assert SavedRecipe.objects.filter(user=user, recipe=recipe).count() == 1
+    assert SavedRecipe.objects.all().count() == 1
 # @pytest.mark.django_db
 # @pytest.mark.django_db
 # def test_get_recipes_created_by_user():
