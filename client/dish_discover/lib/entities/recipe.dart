@@ -118,7 +118,7 @@ class Recipe extends ChangeNotifier {
         await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/'));
 
     if (response.statusCode == 200) {
-      final List data = json.decode(response.body)['recipes'];
+      final List data = json.decode(response.body)['recipe'];
       return data.map((item) => Recipe.fromJson(item)).toList();
     } else {
       throw Exception(

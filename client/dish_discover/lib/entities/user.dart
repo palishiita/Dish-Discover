@@ -205,4 +205,27 @@ class User extends ChangeNotifier {
     }
   }
 
+  static Future<List<Recipe>> getLikedRecipes() async { // recipes liked by current user
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/liked/'));
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body)['recipe'];
+      return data.map((item) => Recipe.fromJson(item)).toList();
+    } else {
+      throw Exception(
+          'Failed to load recipes, status code: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Recipe>> getSavedRecipes() async { // recipes saved by current user
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/saved/'));
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body)['recipe'];
+      return data.map((item) => Recipe.fromJson(item)).toList();
+    } else {
+      throw Exception(
+          'Failed to load recipes, status code: ${response.statusCode}');
+    }
+  }
 }
