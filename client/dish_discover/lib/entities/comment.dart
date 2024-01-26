@@ -1,5 +1,6 @@
 import "dart:convert";
 
+import "package:dish_discover/entities/user.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart";
 
@@ -8,8 +9,9 @@ class Comment extends ChangeNotifier {
   String? authorId;
   int? recipeId;
   String? content;
+  User? user;
 
-  Comment({this.authorId, this.recipeId, this.commentId, this.content});
+  Comment({this.authorId, this.recipeId, this.commentId, this.content, this.user});
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
@@ -55,5 +57,12 @@ class Comment extends ChangeNotifier {
       throw Exception(
           'Failed to load comments, status code: ${response.statusCode}');
     }
+  }
+
+  Map<String, dynamic> getAuthor() {
+    return {
+      'authorId': user?.username,
+      'image': user?.image,
+    };
   }
 }
