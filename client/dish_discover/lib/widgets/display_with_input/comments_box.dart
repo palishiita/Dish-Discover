@@ -1,5 +1,7 @@
+import 'package:dish_discover/widgets/dialogs/custom_dialog.dart';
 import 'package:dish_discover/widgets/display/tab_title.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +11,6 @@ import '../../entities/comment.dart';
 import '../../entities/recipe.dart';
 import '../../entities/user.dart';
 import '../display/user_avatar.dart';
-import '../inputs/popup_menu.dart';
 import '../pages/user.dart';
 
 class CommentTile extends ConsumerWidget {
@@ -35,18 +36,45 @@ class CommentTile extends ConsumerWidget {
                       userProvider:
                           ChangeNotifierProvider<User>((ref) => author)),
                   title: GestureDetector(
-                      onTap: author == null
-                          ? null
-                          : () => Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => UserPage(
-                                  userProvider: ChangeNotifierProvider<User>(
-                                      (ref) => author)))),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UserPage(
+                              userProvider: ChangeNotifierProvider<User>(
+                                  (ref) => author)))),
                       child: Text(author.username ?? 'null')),
-                  trailing: PopupMenu(
-                      action1: PopupMenuAction.share,
-                      action2: AppState.currentUser!.isModerator
-                          ? PopupMenuAction.ban
-                          : PopupMenuAction.report)),
+                  trailing: author.username
+                              ?.compareTo(AppState.currentUser!.username!) ==
+                          0
+                      ? IconButton(
+                          onPressed: () {
+                            CustomDialog(
+                                title: 'Delete comment',
+                                subtitle: '',
+                                message: null,
+                                buttonLabel: 'Delete',
+                                onPressed: () {
+                                  // TODO delete comment
+                                },
+                                child: CustomTextField(
+                                    controller: TextEditingController(),
+                                    hintText: 'Password',
+                                    obscure: true));
+                          },
+                          icon: const Icon(Icons.delete))
+                      : IconButton(
+                          onPressed: () {
+                            CustomDialog(
+                                title: 'Report content',
+                                subtitle: 'comment by ${author.username}',
+                                message: null,
+                                buttonLabel: 'Delete',
+                                onPressed: () {
+                                  // TODO report content
+                                },
+                                child: CustomTextField(
+                                    controller: TextEditingController(),
+                                    hintText: 'Reason'));
+                          },
+                          icon: const Icon(Icons.flag))),
               const Divider(height: 1.0),
               const Align(
                   alignment: Alignment.topLeft,
@@ -90,12 +118,16 @@ class CommentsBox extends ConsumerWidget {
                   onPressed: () {
                     // TODO recipe add comment
                   })),
-          Column(
-              children: List.generate(
-                  comments.length,
-                  (index) => CommentTile(
-                      commentProvider: ChangeNotifierProvider<Comment>(
-                          (ref) => comments[index]))))
+          Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Card(
+                  color: outerContainerColor(context),
+                  child: Column(
+                      children: List.generate(
+                          comments.length,
+                          (index) => CommentTile(
+                              commentProvider: ChangeNotifierProvider<Comment>(
+                                  (ref) => comments[index]))))))
         ])));
   }
 }

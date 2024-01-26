@@ -49,7 +49,7 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                                       isModerator: false))))),
                       child: Text(ticket.issuerId ?? 'null')),
                   trailing: AspectRatio(
-                      aspectRatio: 1.8,
+                      aspectRatio: 1.9,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -58,8 +58,8 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                               onPressed: () {
                                 // TODO release ticket back into queue
                               }),
+                          SizedBox(width: 8, height: 8),
                           IconButton(
-                              padding: const EdgeInsets.only(left: 20.0),
                               icon: Icon(ticket.accepted
                                   ? Icons.delete
                                   : Icons.check_rounded),

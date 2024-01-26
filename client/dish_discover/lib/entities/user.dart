@@ -93,7 +93,7 @@ class User extends ChangeNotifier {
       String? title,
       String? content,
       String? description,
-      List<String>? steps,
+      String? steps,
       Image? image,
       bool? isBoosted,
       List<Ingredient>? ingredients,

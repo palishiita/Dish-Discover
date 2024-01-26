@@ -8,7 +8,9 @@ import 'like_save_indicator.dart';
 
 class RecipeHeader extends ConsumerWidget {
   final ChangeNotifierProvider<Recipe> recipeProvider;
-  const RecipeHeader({super.key, required this.recipeProvider});
+  final bool forEditing;
+  const RecipeHeader(
+      {super.key, required this.recipeProvider, this.forEditing = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

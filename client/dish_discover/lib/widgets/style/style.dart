@@ -5,11 +5,13 @@ Color baseColor = Colors.orange[700]!;
 Color tabIndicatorColor = Colors.orange[900]!;
 Color likeColor = Colors.red[800]!;
 Color saveColor = Colors.cyan;
-Color imageShadowColor = const Color(0xff000000);
+Color imageShadowColor = Colors.transparent;
+Color buttonColor = baseColor;
+
+Color textEditorColor = Colors.white;
 
 Color backgroundColor(BuildContext context) =>
     Theme.of(context).colorScheme.background;
-Color buttonColor = baseColor;
 Color gradientStartColor(BuildContext context) =>
     Theme.of(context).colorScheme.primary;
 Color gradientEndColor(BuildContext context) =>

@@ -13,7 +13,7 @@ class Recipe extends ChangeNotifier {
   String? title;
   String? content;
   String? description;
-  List<String>? steps;
+  String? steps;
   Image? image;
   bool? isBoosted;
   List<Ingredient>? ingredients;
@@ -110,7 +110,8 @@ class Recipe extends ChangeNotifier {
       if (response.statusCode == 201) {
         print('Recipe saved successfully');
       } else {
-        throw Exception('Failed to save recipe, status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to save recipe, status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error saving recipe: $e');

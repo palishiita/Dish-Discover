@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
@@ -19,6 +20,12 @@ class _SavedTabState extends State<SavedTab> {
   void initState() {
     super.initState();
     recipes = AppState.currentUser!.savedRecipes ?? [];
+    if (kDebugMode && recipes.isEmpty) {
+      recipes = [
+        Recipe(
+            authorId: AppState.currentUser!.username, title: 'My test recipe')
+      ];
+    }
   }
 
   @override
