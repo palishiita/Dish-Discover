@@ -23,8 +23,6 @@ urlpatterns = [
     path('liked/<int:pk>/', LikedRecipeViewSet.as_view({'delete':'destroy'}), name='delete_liked_recipe'),
 
 
-
-
     #TAGS
     path('tagcategories/', TagCategoryViewSet.as_view({'get':'list'}), name='get_tagcategories'),
     path('tags/', TagViewSet.as_view({'get':'list'}), name='get_tags'),
@@ -32,7 +30,8 @@ urlpatterns = [
 
     #COMMENTS    
     path('comments/', CommentViewSet.as_view({'get':'list'}), name='get_comments'),
-    path('comments/byuser/', CommentViewSet.as_view({'get': 'by_user'}), name='comment_by_user')
+    path('comments/byuser/', CommentViewSet.as_view({'get': 'by_user'}), name='comment_by_user'),
 
-  
+    #LIKES RECIEVED BY USER
+    path('likes/', LikeViewSet.as_view({'get':'list'}), name='get_likes'),
 ]

@@ -139,6 +139,6 @@ class LikeViewSet(viewsets.ModelViewSet):
     def getUserSumLikes(self, request):
         user = request.user
         likes = LikedRecipe.objects.filter(recipe__author = user).count()
-        #serializer = LikedRecipeSerializer(likes, many = True)
-        return Response(likes)
+        serializer = LikeCountSerializer()
+        return Response(serializer.data)
 
