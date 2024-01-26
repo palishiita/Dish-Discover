@@ -6,9 +6,6 @@ from django.contrib.auth.models import User
 class TagCategory(models.Model):
     category_name = models.CharField(max_length=50, primary_key=True)
 
-
-
-
 # Tag Model
 class Tag(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
