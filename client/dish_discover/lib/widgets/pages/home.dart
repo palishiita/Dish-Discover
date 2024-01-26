@@ -60,8 +60,15 @@ class _HomePageState extends State<HomePage>
           ))
         ]),
         bottomNavigationBar: TabBar(
-            controller: tabController,
-            tabs: List.filled(AppState.currentUser!.isModerator ? 3 : 2,
-                const Tab(text: 'o'))));
+          controller: tabController,
+          tabs: List.filled(
+              AppState.currentUser!.isModerator ? 3 : 2,
+              const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 15),
+                  child: Icon(Icons.circle, size: 13))),
+          indicatorColor: baseColor.withAlpha(0),
+          labelColor: tabIndicatorColor,
+          unselectedLabelColor: Colors.blueGrey[200]!,
+        ));
   }
 }

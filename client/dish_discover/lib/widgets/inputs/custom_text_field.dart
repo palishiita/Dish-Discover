@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final int maxLength;
   final InputDecoration? decoration;
   final void Function(String)? onChanged;
+  final IconButton? trailingAction;
 
   /// Custom padded TextField for user input. Hides the character
   /// count that appears when using max length.
@@ -17,7 +18,8 @@ class CustomTextField extends StatelessWidget {
       this.obscure = false,
       this.maxLength = 45,
       this.decoration,
-      this.onChanged});
+      this.onChanged,
+      this.trailingAction});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,8 @@ class CustomTextField extends StatelessWidget {
                       filled: false,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0)),
-                      hintText: hintText),
+                      hintText: hintText,
+                      suffixIcon: trailingAction),
               onChanged: onChanged,
             )));
   }

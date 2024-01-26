@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Theme data, frequently used colors and other layout details.
 Color baseColor = Colors.orange[700]!;
+Color tabIndicatorColor = Colors.orange[900]!;
 Color likeColor = Colors.red[800]!;
 Color saveColor = Colors.cyan;
 Color imageShadowColor = const Color(0xff000000);

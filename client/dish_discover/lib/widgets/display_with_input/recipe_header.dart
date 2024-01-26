@@ -26,8 +26,14 @@ class RecipeHeader extends ConsumerWidget {
           LikeSaveIndicator(
               likeButtonSelected: likedRecipe,
               likeCount: 0, // recipe.likes
+              onLiked: () {
+                AppState.currentUser!.likeRecipe(recipe);
+              },
               saveButtonEnabled: savedRecipe,
               saveCount: 0, // recipe.saves
+              onSaved: () {
+                AppState.currentUser!.likeRecipe(recipe);
+              },
               center: true),
           const Divider()
         ]));

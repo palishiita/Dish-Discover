@@ -65,9 +65,19 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                   LikeSaveIndicator(
                       likeButtonSelected: likedRecipe,
                       likeCount: 0, //recipe.likes,
+                      onLiked: () {
+                        setState(() {
+                          AppState.currentUser!.likeRecipe(recipe);
+                          // TODO update recipe
+                        });
+                      },
                       saveButtonEnabled: savedRecipe,
-                      saveCount: 0 //recipe.saves
-                      )
+                      saveCount: 0, //recipe.saves
+                      onSaved: () {
+                        setState(() {
+                          AppState.currentUser!.saveRecipe(recipe);
+                        });
+                      })
                 ]))),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) =>

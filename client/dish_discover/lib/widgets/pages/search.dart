@@ -31,7 +31,8 @@ class SearchPage extends StatelessWidget {
           ],
         ),
         body: Column(children: [
-          CustomSearchBar(initialSearchPhrase: searchPhrase),
+          CustomSearchBar(
+              initialSearchPhrase: searchPhrase, goToSearchPage: false),
           RecipeList(recipes: recipes)
         ]),
         endDrawer: const Drawer(

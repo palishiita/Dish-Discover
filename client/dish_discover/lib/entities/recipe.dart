@@ -9,7 +9,7 @@ import 'ingredient.dart';
 
 class Recipe extends ChangeNotifier {
   int? id;
-  int? authorId;
+  String? authorId;
   String? title;
   String? content;
   String? description;

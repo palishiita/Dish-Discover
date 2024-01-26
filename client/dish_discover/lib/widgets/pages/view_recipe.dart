@@ -27,13 +27,16 @@ class ViewRecipePage extends ConsumerWidget {
             actions: [
               PopupMenu(
                   action1: PopupMenuAction.share,
-                  action2: AppState.currentUser!.isModerator
-                      ? PopupMenuAction.ban
-                      : PopupMenuAction.report),
+                  action2: recipe.authorId
+                              ?.compareTo(AppState.currentUser!.username!) ==
+                          0
+                      ? PopupMenuAction.edit
+                      : AppState.currentUser!.isModerator
+                          ? PopupMenuAction.ban
+                          : PopupMenuAction.report),
             ],
             flexibleSpace: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: RecipeCover(cover: recipe.image))),
+                aspectRatio: 4 / 3, child: RecipeCover(cover: recipe.image))),
         body: SingleChildScrollView(
             child: Column(children: [
           RecipeHeader(recipeProvider: recipeProvider),

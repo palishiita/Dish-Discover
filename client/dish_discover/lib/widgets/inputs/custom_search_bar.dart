@@ -37,6 +37,8 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                         if (widget.goToSearchPage) {
                           Navigator.of(context).pushNamed("/search",
                               arguments: searchController.text);
+                        } else {
+                          // TODO update search results
                         }
                       });
                     } else {
@@ -47,7 +49,11 @@ class _CustomSearchBar extends State<CustomSearchBar> {
             viewLeading: IconButton(
                 icon: const Icon(Icons.close_rounded),
                 onPressed: () => setState(() {
-                      searchController.text = '';
+                      if (searchController.text.isEmpty) {
+                        searchController.closeView('');
+                      } else {
+                        searchController.text = '';
+                      }
                     })),
             viewTrailing: [
               IconButton(
@@ -58,6 +64,8 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                         if (widget.goToSearchPage) {
                           Navigator.of(context).pushNamed("/search",
                               arguments: searchController.text);
+                        } else {
+                          // TODO update search results
                         }
                       }))
             ],

@@ -23,8 +23,10 @@ class UserHeader extends ConsumerWidget {
           LikeSaveIndicator(
               likeButtonSelected: true,
               likeCount: likeCount,
+              onLiked: () {},
               saveButtonEnabled: true,
               saveCount: saveCount,
+              onSaved: () {},
               center: true),
           const Divider()
         ]));

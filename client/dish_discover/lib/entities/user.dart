@@ -67,7 +67,7 @@ class User extends ChangeNotifier {
       List<Tag> tags) {
     Recipe recipe = Recipe(
         id: recipeId,
-        authorId: id,
+        authorId: username,
         title: title,
         content: content,
         description: description,
@@ -110,7 +110,7 @@ class User extends ChangeNotifier {
 
   Comment addComment(int commentId, Recipe recipe, String content) {
     Comment comment = Comment(
-        authorId: id,
+        authorId: username,
         recipeId: recipe.id,
         commentId: commentId,
         content: content);

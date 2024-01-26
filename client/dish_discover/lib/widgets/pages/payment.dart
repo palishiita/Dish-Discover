@@ -15,7 +15,7 @@ class PaymentPage extends StatelessWidget {
           title: Text('Buy ${buyingPremium ? 'Premium' : 'recipe boost'}'),
           centerTitle: true,
           leading: const BackButton()),
-      body: PayPalWebView(),
+      body: const PayPalWebView(),
     );
   }
 }
