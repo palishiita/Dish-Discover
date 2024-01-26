@@ -32,7 +32,7 @@ class Ingredient {
     };
   }
 
-  Future<void> addIngredient(Ingredient ingredient) async {
+  static Future<void> addIngredient(Ingredient ingredient) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/api/ingredients'),
       headers: {'Content-Type': 'application/json'},
@@ -46,7 +46,7 @@ class Ingredient {
     }
   }
 
-  Future<List<Ingredient>> getIngredients() async {
+  static Future<List<Ingredient>> getIngredients() async {
     final response = await http.get(Uri.parse('http://localhost:8000/api/ingredients'));
 
     if (response.statusCode == 200) {

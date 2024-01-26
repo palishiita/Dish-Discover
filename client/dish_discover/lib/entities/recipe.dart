@@ -113,7 +113,7 @@ class Recipe extends ChangeNotifier {
     };
   }
 
-  Future<List<Recipe>> getRecipes() async {
+  static Future<List<Recipe>> getRecipes() async {
     final response =
         await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/'));
 
@@ -126,7 +126,7 @@ class Recipe extends ChangeNotifier {
     }
   }
 
-  Future<Recipe> getRecipe(int recipeId) async {
+  static Future<Recipe> getRecipe(int recipeId) async {
     final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/$recipeId'));
 
     if (response.statusCode == 200) {
@@ -137,7 +137,7 @@ class Recipe extends ChangeNotifier {
     }
   }
 
-  Future<List<Ingredient>> getIngredientsForRecipe(int recipeId) async {
+  static Future<List<Ingredient>> getIngredientsForRecipe(int recipeId) async {
     final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/$recipeId/ingredients'));
 
     if (response.statusCode == 200) {
@@ -148,7 +148,7 @@ class Recipe extends ChangeNotifier {
     }
   }
 
-  Future<void> saveRecipe(Recipe recipe) async {
+  static Future<void> saveRecipe(Recipe recipe) async {
     try {
       final response = await http.post(
         Uri.parse('http://localhost:8000/api/recipes/recipes/${recipe.id}'),

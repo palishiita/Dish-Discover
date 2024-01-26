@@ -31,7 +31,7 @@ class Comment extends ChangeNotifier {
     };
   }
 
-  Future<void> addComment(Comment comment) async {
+  static Future<void> addComment(Comment comment) async {
     final Response response = await post(
       Uri.parse('http://localhost:8000/api/comments'),
       headers: {'Content-Type': 'application/json'},
@@ -46,7 +46,7 @@ class Comment extends ChangeNotifier {
     }
   }
 
-  Future<List<Comment>> getComments(int recipeId) async {
+  static Future<List<Comment>> getComments(int recipeId) async {
     final Response response = await get(
         Uri.parse('http://localhost:8000/api/recipes/$recipeId/comments'));
 

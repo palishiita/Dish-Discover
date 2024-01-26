@@ -166,7 +166,7 @@ class User extends ChangeNotifier {
     return [];
   }
 
-  Future<void> addUser(User user) async {
+  static Future<void> addUser(User user) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/api/recipes/users'),
       headers: {'Content-Type': 'application/json'},
@@ -181,7 +181,7 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<List<User>> getAllUsers() async {
+  static Future<List<User>> getAllUsers() async {
     final response =
         await http.get(Uri.parse('http://localhost:8000/api/user/users'));
 
@@ -194,7 +194,7 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<User> getUser(String username) async {
+  static Future<User> getUser(String username) async {
     final response = await http.get(Uri.parse('http://localhost:8000/api/user/users/$username'));
 
     if (response.statusCode == 200) {

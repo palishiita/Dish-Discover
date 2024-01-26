@@ -55,7 +55,7 @@ class Ticket extends ChangeNotifier {
     }
   }
 
-  Future<void> addTicket(Ticket ticket) async {
+  static Future<void> addTicket(Ticket ticket) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/api/tickets'),
       headers: {'Content-Type': 'application/json'},
@@ -70,7 +70,7 @@ class Ticket extends ChangeNotifier {
     }
   }
 
-  Future<List<Ticket>> getTickets() async {
+  static Future<List<Ticket>> getTickets() async {
     final response =
         await http.get(Uri.parse('http://localhost:8000/api/tickets'));
 

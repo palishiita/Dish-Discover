@@ -41,7 +41,7 @@ class Tag {
     };
   }
 
-  Future<void> addTag(Tag tag) async {
+  static Future<void> addTag(Tag tag) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/api/recipes/tags'),
       headers: {'Content-Type': 'application/json'},
@@ -55,7 +55,7 @@ class Tag {
     }
   }
 
-  Future<List<Tag>> getTags() async {
+  static Future<List<Tag>> getTags() async {
     final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/tags'));
 
     if (response.statusCode == 200) {
