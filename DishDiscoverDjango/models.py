@@ -58,7 +58,7 @@ class LikedRecipe(models.Model):
 class Ingredient(models.Model):
     ingredient_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
-    calorie_density = models.FloatField()
+    calorie_density = models.FloatField(null=True)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     
 # Report Tickets Model
