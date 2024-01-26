@@ -131,5 +131,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer = CommentSerializer(user_comments, many = True)
         return Response(serializer.data)
 
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = LikedRecipe.objects.all()
 
+    
+    @action(detail=True, methods=['get'])
+    def getUserSumLikes(self, request):
+        user = request.user
+        likes = LikedRecipe.objects.filter(recipe__author = user).count()
+        #serializer = LikedRecipeSerializer(likes, many = True)
+        return Response(likes)
 
