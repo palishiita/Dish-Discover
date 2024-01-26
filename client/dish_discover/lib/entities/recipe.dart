@@ -19,6 +19,8 @@ class Recipe extends ChangeNotifier {
   List<Ingredient>? ingredients;
   List<Tag>? tags;
   List<Comment>? comments;
+  int likeCount = 0;
+  int saveCount = 0;
 
   Recipe({
     this.id,
@@ -56,6 +58,7 @@ class Recipe extends ChangeNotifier {
       description: json['description'],
       isBoosted: json['is_boosted'],
       authorId: json['author'],
+      steps: json['steps'],
       // ingredients: List<int>.from(json['ingredients']),
       // tags: List<String>.from(json['tags']),
     );
@@ -66,11 +69,13 @@ class Recipe extends ChangeNotifier {
     String? description,
     String? content,
     Image? image,
+    String? steps
   }) {
     this.title = title ?? this.title;
     this.description = description ?? this.description;
     this.content = content ?? this.content;
     this.image = image ?? this.image;
+    this.steps = steps ?? this.steps;
     notifyListeners();
   }
 
@@ -79,9 +84,36 @@ class Recipe extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeIngredient(Ingredient ingredient) {
+    ingredients?.remove(ingredient);
+    notifyListeners();
+  }
+
   void addTag(Tag tag) {
     tags?.add(tag);
     notifyListeners();
+  }
+
+  void removeTag(Tag tag) {
+    tags?.remove(tag);
+    notifyListeners();
+  }
+
+  void updateLikeCount() {
+    likeCount++;
+    notifyListeners();
+  }
+
+  void updateSaveCount() {
+    saveCount++;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> getAuthor() {
+    return {
+      'authorId': authorId,
+      'image': image,
+    };
   }
 
   Future<List<Recipe>> getRecipes() async {

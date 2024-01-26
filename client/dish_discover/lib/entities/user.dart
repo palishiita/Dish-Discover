@@ -80,11 +80,13 @@ class User extends ChangeNotifier {
 
   void likeRecipe(Recipe recipe) {
     likedRecipes?.add(recipe);
+    recipe.updateLikeCount();
     notifyListeners();
   }
 
   void saveRecipe(Recipe recipe) {
     savedRecipes?.add(recipe);
+    recipe.updateSaveCount();
     notifyListeners();
   }
 
@@ -149,6 +151,7 @@ class User extends ChangeNotifier {
         content: content);
     addedComments?.add(comment);
     notifyListeners();
+    recipe.notifyListeners();
     return comment;
   }
 
@@ -163,7 +166,7 @@ class User extends ChangeNotifier {
     return [];
   }
 
-  static Future<void> addUser(User user) async {
+  Future<void> addUser(User user) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/api/users'),
       headers: {'Content-Type': 'application/json'},
@@ -178,7 +181,7 @@ class User extends ChangeNotifier {
     }
   }
 
-  static Future<List<User>> getUsers() async {
+  Future<List<User>> getUsers() async {
     final response =
         await http.get(Uri.parse('http://localhost:8000/api/users'));
 
