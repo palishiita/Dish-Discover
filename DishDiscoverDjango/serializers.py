@@ -53,5 +53,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+        
 class LikeCountSerializer(serializers.Serializer):
     number = serializers.IntegerField()

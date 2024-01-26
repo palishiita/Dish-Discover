@@ -8,7 +8,7 @@ from rest_framework import status
 from .serializers import *
 from rest_framework import viewsets
 from rest_framework.decorators import action
-
+from django.views.decorators.http import require_http_methods
 
 
 # class RegistrationView(APIView):
@@ -88,7 +88,7 @@ class LikedRecipeViewSet(viewsets.ModelViewSet):
     serializer_class = LikedRecipeSerializer
 
     def get_queryset(self):       
-        return LikedRecipe.objects.filter(user=self.request.user)
+        return LikedRecipe.objects.filter(user=self.request.user.id)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -102,7 +102,7 @@ class SavedRecipeViewSet(viewsets.ModelViewSet):
 
     
     def get_queryset(self):       
-            return SavedRecipe.objects.filter(user=self.request.user)
+            return SavedRecipe.objects.filter(user=self.request.user.id)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -131,14 +131,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer = CommentSerializer(user_comments, many = True)
         return Response(serializer.data)
 
-class LikeViewSet(viewsets.ModelViewSet):
-    queryset = LikedRecipe.objects.all()
+class GetLikesOnUserRecipes(viewsets.GenericViewSet):
+    @action(detail=True, methods=['GET'])
 
-    
-    @action(detail=True, methods=['get'])
     def getUserSumLikes(self, request):
-        user = request.user
-        likes = LikedRecipe.objects.filter(recipe__author = user).count()
-        serializer = LikeCountSerializer()
+        # user = request.user
+        likes = LikedRecipe.objects.filter(recipe__author = self.request.user.id).count()
+        serializer = LikeCountSerializer({'number': likes})
         return Response(serializer.data)
 

@@ -33,5 +33,5 @@ urlpatterns = [
     path('comments/byuser/', CommentViewSet.as_view({'get': 'by_user'}), name='comment_by_user'),
 
     #LIKES RECIEVED BY USER
-    path('likes/', LikeViewSet.as_view({'get':'list'}), name='get_likes'),
+    path('likes/', GetLikesOnUserRecipes.as_view({'get':'getUserSumLikes'}), name='get_likes'),
 ]
