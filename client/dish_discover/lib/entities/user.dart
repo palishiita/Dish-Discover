@@ -156,7 +156,7 @@ class User extends ChangeNotifier {
   }
 
   void editComment(Comment comment, String content) {
-    if (id == comment.authorId) {
+    if (username == comment.authorId) {
       comment.content = content;
       notifyListeners();
     }
@@ -186,7 +186,7 @@ class User extends ChangeNotifier {
         await http.get(Uri.parse('http://localhost:8000/api/user/users'));
 
     if (response.statusCode == 200) {
-      final List data = json.decode(response.body)['users'];
+      final List data = json.decode(response.body)['user'];
       return data.map((item) => User.fromJson(item)).toList();
     } else {
       throw Exception(
@@ -198,7 +198,7 @@ class User extends ChangeNotifier {
     final response = await http.get(Uri.parse('http://localhost:8000/api/user/users/$username'));
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body)['users'];
+      final Map<String, dynamic> data = json.decode(response.body)['user'];
       return User.fromJson(data);
     } else {
       throw Exception('Failed to load recipe, status code: ${response.reasonPhrase}');
