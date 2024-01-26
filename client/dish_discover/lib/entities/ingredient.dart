@@ -2,12 +2,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Ingredient {
+  int? id;
   String? name;
   int? quantity;
   int? caloricDensity;
   String? unit;
 
   Ingredient({
+    this.id,
     this.name,
     this.quantity,
     this.caloricDensity,
@@ -16,18 +18,16 @@ class Ingredient {
 
   factory Ingredient.fromJson(Map<String, dynamic> json) {
     return Ingredient(
-      name: json['name'],
-      quantity: json['quantity'],
-      caloricDensity: json['caloricDensity'],
+      id: json['id'],
+      quantity: json['amount'],
       unit: json['unit'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'quantity': quantity,
-      'caloricDensity': caloricDensity,
+      'id': id,
+      'amount': quantity,
       'unit': unit,
     };
   }

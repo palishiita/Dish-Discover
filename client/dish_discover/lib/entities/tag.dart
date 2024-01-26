@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -14,6 +16,7 @@ enum TagCategory {
 
   final String name;
 }
+
 
 class Tag {
   String? name;
@@ -40,7 +43,7 @@ class Tag {
 
   Future<void> addTag(Tag tag) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/tags'),
+      Uri.parse('http://localhost:8000/api/recipes/tags'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(tag.toJson()),
     );
@@ -53,8 +56,7 @@ class Tag {
   }
 
   Future<List<Tag>> getTags() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/tags'));
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/tags'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['tags'];

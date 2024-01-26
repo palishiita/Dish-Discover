@@ -45,15 +45,15 @@ class User extends ChangeNotifier {
     return User(
       id: json['id'],
       username: json['username'],
-      password: json['password'],
+      isModerator: json['has_mod_rights'],
       email: json['email'],
-      isPremium: json['is_premium'],
-      image: json['image'] != null ? Image.network(json['image']) : null,
+      password: json['password'],
+      image: json['picture'] != null ? Image.network(json['picture']) : null,
       description: json['description'],
+      isPremium: json['is_premium'],
       unbanDate: json['unban_date'] != null
           ? DateTime.parse(json['unban_date'])
           : null,
-      isModerator: json['is_moderator'],
     );
   }
 
@@ -61,13 +61,13 @@ class User extends ChangeNotifier {
     return {
       'id': id,
       'username': username,
-      'password': password,
+      'has_mod_rights': isModerator,
       'email': email,
-      'is_premium': isPremium,
-      'image': image?.toString(),
+      'password': password,
+      'picture': image?.toString(),
       'description': description,
+      'is_premium': isPremium,
       'unban_date': unbanDate?.toIso8601String(),
-      'is_moderator': isModerator,
     };
   }
 
@@ -168,7 +168,7 @@ class User extends ChangeNotifier {
 
   Future<void> addUser(User user) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/users'),
+      Uri.parse('http://localhost:8000/api/recipes/users'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(user.toJson()),
     );
@@ -181,9 +181,9 @@ class User extends ChangeNotifier {
     }
   }
 
-  Future<List<User>> getUsers() async {
+  Future<List<User>> getAllUsers() async {
     final response =
-        await http.get(Uri.parse('http://localhost:8000/api/users'));
+        await http.get(Uri.parse('http://localhost:8000/api/user/users'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['users'];
@@ -193,4 +193,16 @@ class User extends ChangeNotifier {
           'Failed to load users, status code: ${response.statusCode}');
     }
   }
+
+  Future<User> getUser(String username) async {
+    final response = await http.get(Uri.parse('http://localhost:8000/api/user/users/$username'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body)['users'];
+      return User.fromJson(data);
+    } else {
+      throw Exception('Failed to load recipe, status code: ${response.reasonPhrase}');
+    }
+  }
+
 }

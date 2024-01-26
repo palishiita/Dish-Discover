@@ -39,13 +39,12 @@ class Recipe extends ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       'recipe_id': id,
-      'author': authorId,
       'recipe_name': title,
       'content': content,
-      'description': description,
-      'steps': steps,
       'picture': image?.toString(),
+      'description': description,
       'is_boosted': isBoosted,
+      'author': authorId,
     };
   }
 
@@ -58,7 +57,6 @@ class Recipe extends ChangeNotifier {
       description: json['description'],
       isBoosted: json['is_boosted'],
       authorId: json['author'],
-      steps: json['steps'],
       // ingredients: List<int>.from(json['ingredients']),
       // tags: List<String>.from(json['tags']),
     );
@@ -117,7 +115,7 @@ class Recipe extends ChangeNotifier {
 
   Future<List<Recipe>> getRecipes() async {
     final response =
-        await http.get(Uri.parse('http://localhost:8000/api/recipes/'));
+        await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipes'];
@@ -128,10 +126,32 @@ class Recipe extends ChangeNotifier {
     }
   }
 
+  Future<Recipe> getRecipe(int recipeId) async {
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/$recipeId'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body)['recipe'];
+      return Recipe.fromJson(data);
+    } else {
+      throw Exception('Failed to load recipe, status code: ${response.reasonPhrase}');
+    }
+  }
+
+  Future<List<Ingredient>> getIngredientsForRecipe(int recipeId) async {
+    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/$recipeId/ingredients'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['ingredients'];
+      return data.map((item) => Ingredient.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load ingredients, status code: ${response.reasonPhrase}');
+    }
+  }
+
   Future<void> saveRecipe(Recipe recipe) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8000/api/recipes/'),
+        Uri.parse('http://localhost:8000/api/recipes/recipes/${recipe.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
