@@ -76,7 +76,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe_name = models.CharField(max_length=50)
     content = models.CharField(max_length=10000)
-    picture = models.BinaryField(null=True, blank=True)
+    picture = models.TextField(null=True, blank=True)
     description = models.CharField(max_length=150)
     is_boosted = models.BooleanField()
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
