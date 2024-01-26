@@ -1,3 +1,5 @@
 
 *.pyc
 *.pyc
+*.pyc
+DishDiscoverDjango/__pycache__
