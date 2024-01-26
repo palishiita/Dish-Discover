@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Ticket extends ChangeNotifier {
   int? reportId;
@@ -64,18 +65,21 @@ class Ticket extends ChangeNotifier {
     if (response.statusCode == 201) {
       print('Ticket added successfully');
     } else {
-      throw Exception('Failed to add ticket, status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to add ticket, status code: ${response.statusCode}');
     }
   }
 
   Future<List<Ticket>> getTickets() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/api/tickets'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/tickets'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['tickets'];
       return data.map((item) => Ticket.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load tickets, status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to load tickets, status code: ${response.statusCode}');
     }
   }
 }

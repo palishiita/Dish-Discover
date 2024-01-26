@@ -64,13 +64,12 @@ class Recipe extends ChangeNotifier {
     );
   }
 
-  void editRecipe({
-    String? title,
-    String? description,
-    String? content,
-    Image? image,
-    String? steps
-  }) {
+  void editRecipe(
+      {String? title,
+      String? description,
+      String? content,
+      Image? image,
+      String? steps}) {
     this.title = title ?? this.title;
     this.description = description ?? this.description;
     this.content = content ?? this.content;
