@@ -44,6 +44,7 @@ dependencies:
   flutter_riverpod: ^2.4.9
   easy_web_view: ^1.6.0
   http: ^0.13.6
+  flutter_markdown: ^0.6.9+1
 
 dev_dependencies:
   flutter_test:

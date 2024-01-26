@@ -162,7 +162,8 @@ class Recipe extends ChangeNotifier {
       if (response.statusCode == 201) {
         print('Recipe saved successfully');
       } else {
-        throw Exception('Failed to save recipe, status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to save recipe, status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error saving recipe: $e');

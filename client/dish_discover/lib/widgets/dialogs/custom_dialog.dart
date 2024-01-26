@@ -48,8 +48,9 @@ class CustomDialog extends StatelessWidget {
             aspectRatio: 1.0,
             child: AlertDialog(
                 titleTextStyle: Theme.of(context).textTheme.labelLarge,
-                title: Text(title),
+                title: Center(child: Text(title)),
                 content: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [Text(subtitle), message ?? Container(), child]),
                 actions: [
                   Center(

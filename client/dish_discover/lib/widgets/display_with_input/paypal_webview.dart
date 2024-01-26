@@ -21,7 +21,7 @@ class _PayPalWebViewState extends State<PayPalWebView> {
       isMarkdown: false,
       convertToWidgets: false,
       fallbackBuilder: (context) =>
-          const Center(child: Text('Could not load page')),
+          const Expanded(child: Center(child: Text('Could not load page'))),
     );
   }
 }

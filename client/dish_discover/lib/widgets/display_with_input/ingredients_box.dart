@@ -6,7 +6,9 @@ import '../../entities/recipe.dart';
 
 class IngredientsBox extends ConsumerStatefulWidget {
   final ChangeNotifierProvider<Recipe> recipeProvider;
-  const IngredientsBox({super.key, required this.recipeProvider});
+  final bool forEditing;
+  const IngredientsBox(
+      {super.key, required this.recipeProvider, this.forEditing = false});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _IngredientsBoxState();

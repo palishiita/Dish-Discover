@@ -9,13 +9,18 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          toolbarHeight: appBarHeight,
-          scrolledUnderElevation: 0.0,
-          title: Text('Buy ${buyingPremium ? 'Premium' : 'recipe boost'}'),
-          centerTitle: true,
-          leading: const BackButton()),
-      body: const PayPalWebView(),
-    );
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            title: Text('Buy ${buyingPremium ? 'Premium' : 'recipe boost'}'),
+            centerTitle: true,
+            leading: const BackButton()),
+        body: const PayPalWebView(),
+        bottomNavigationBar: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text('Reminder: DishDiscover does not offer refunds!')
+            ])));
   }
 }

@@ -2,13 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 enum TagCategory {
-  cuisine,
-  difficulty,
-  diet,
-  expense,
-  ingredient,
-  time,
+  cuisine(name: 'Cuisine'),
+  difficulty(name: 'Difficulty'),
+  diet(name: 'Diet'),
+  expense(name: 'Expense'),
+  ingredient(name: 'Ingredient'),
+  time(name: 'Time required');
+
+  const TagCategory({required this.name});
+
+  final String name;
 }
 
 
@@ -17,11 +23,7 @@ class Tag {
   bool? isPredefined;
   TagCategory? category;
 
-  Tag(
-      this.isPredefined,
-      this.name,
-      this.category
-      );
+  Tag(this.isPredefined, this.name, this.category);
 
   factory Tag.fromJson(Map<String, dynamic> json) {
     return Tag(
@@ -60,7 +62,8 @@ class Tag {
       final List data = json.decode(response.body)['tags'];
       return data.map((item) => Tag.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load tags, status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to load tags, status code: ${response.statusCode}');
     }
   }
 }
@@ -71,8 +74,8 @@ class PreferredTag {
   double? weight;
 
   PreferredTag(
-      this.userId,
-      this.tagName,
-      this.weight,
-      );
+    this.userId,
+    this.tagName,
+    this.weight,
+  );
 }

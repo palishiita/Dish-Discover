@@ -14,9 +14,16 @@ enum PopupMenuAction {
 
 class PopupMenu extends StatelessWidget {
   final PopupMenuAction action1;
+  final void Function()? onPressed1;
   final PopupMenuAction action2;
+  final void Function()? onPressed2;
 
-  const PopupMenu({super.key, required this.action1, required this.action2});
+  const PopupMenu(
+      {super.key,
+      required this.action1,
+      required this.onPressed1,
+      required this.action2,
+      required this.onPressed2});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +34,12 @@ class PopupMenu extends StatelessWidget {
             <PopupMenuEntry<PopupMenuAction>>[
               PopupMenuItem<PopupMenuAction>(
                 value: action1,
+                onTap: onPressed1,
                 child: Text(action1.name),
               ),
               PopupMenuItem<PopupMenuAction>(
                 value: action2,
+                onTap: onPressed2,
                 child: Text(action2.name),
               )
             ]);
