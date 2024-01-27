@@ -1,5 +1,5 @@
 import json
-from DishDiscoverDjango.models import Recipe, Ingredient, DishDiscoverUser, LikedRecipe, SavedRecipe
+from recipes.models import Recipe, Ingredient, DishDiscoverUser, LikedRecipe, SavedRecipe
 
 ### Inputting Recipe and Ingredients to Database ###                
 

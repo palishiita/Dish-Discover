@@ -1,7 +1,7 @@
 # myapp/tests.py
 from django.test import Client
 from django.urls import reverse
-from DishDiscoverDjango.models import *
+from recipes.models import *
 import json
 import pytest 
 from rest_framework.test import APIClient

@@ -1,4 +1,4 @@
-from DishDiscoverDjango.models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
+from recipes.models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
 
 
 tagCategories = [

@@ -1,6 +1,6 @@
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
-from DishDiscoverDjango.models import *
+from recipes.models import *
 import json
 import pytest 
 
