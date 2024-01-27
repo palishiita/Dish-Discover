@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
-import '../../../entities/recipe.dart';
 import '../../display/recipe_list.dart';
 import '../../display/tab_title.dart';
 
-class RecommendedTab extends StatefulWidget {
+class RecommendedTab extends StatelessWidget {
   const RecommendedTab({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _RecommendedTabState();
-}
-
-class _RecommendedTabState extends State<RecommendedTab> {
-  List<Recipe> recipes = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

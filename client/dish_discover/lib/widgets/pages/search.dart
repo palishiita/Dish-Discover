@@ -4,11 +4,27 @@ import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/recipe.dart';
+import '../../entities/tag.dart';
 import '../display/recipe_list.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   final String searchPhrase;
-  const SearchPage({super.key, required this.searchPhrase});
+  final List<Tag>? filter;
+
+  const SearchPage({super.key, required this.searchPhrase, this.filter});
+
+  @override
+  State<StatefulWidget> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  late List<Tag> currentFilter;
+
+  @override
+  void initState() {
+    super.initState();
+    currentFilter = widget.filter ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +46,17 @@ class SearchPage extends StatelessWidget {
         ),
         body: Column(children: [
           CustomSearchBar(
-              initialSearchPhrase: searchPhrase, goToSearchPage: false),
+              initialSearchPhrase: widget.searchPhrase, goToSearchPage: false),
           RecipeList(
               getRecipes: () => Future<List<Recipe>>(() {
                     // TODO search recipes by phrase
                     return [];
                   }))
         ]),
-        endDrawer: const FilterSideMenu());
+        endDrawer: FilterSideMenu(
+            filter: currentFilter,
+            onSaved: (newFilter) => setState(() {
+                  currentFilter = newFilter;
+                })));
   }
 }

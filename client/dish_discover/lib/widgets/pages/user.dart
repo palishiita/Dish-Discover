@@ -1,3 +1,4 @@
+import 'package:dish_discover/widgets/pages/edit_recipe.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,7 @@ class UserPage extends ConsumerWidget {
         appBar: AppBar(
             toolbarHeight: appBarHeight,
             scrolledUnderElevation: 0.0,
-            title: TabTitle(title: user.username ?? 'null'),
+            title: TabTitle(title: user.username),
             centerTitle: true,
             leading: const BackButton(),
             actions: [
@@ -83,8 +84,32 @@ class UserPage extends ConsumerWidget {
         body: Column(children: [
           UserHeader(userProvider: userProvider),
           RecipeList(
-              getRecipes: () =>
-                  Future<List<Recipe>>(() => (user.addedRecipes ?? <Recipe>[])))
-        ]));
+              getRecipes: () => Future<List<Recipe>>(() => (user.addedRecipes)))
+        ]),
+        floatingActionButton: FloatingActionButton(
+            mini: true,
+            child: const Icon(Icons.add),
+            onPressed: () {
+              TextEditingController titleController = TextEditingController();
+
+              CustomDialog.callDialog(
+                  context,
+                  'Create recipe',
+                  '',
+                  null,
+                  CustomTextField(
+                      controller: titleController, hintText: 'Title'),
+                  'Create', () {
+                Recipe newRecipe = Recipe(
+                    id: 0,
+                    title: titleController.text,
+                    author: AppState.currentUser!.username);
+                AppState.currentUser!.addRecipe(newRecipe);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EditRecipePage(
+                        recipeProvider: ChangeNotifierProvider<Recipe>(
+                            (ref) => newRecipe))));
+              });
+            }));
   }
 }

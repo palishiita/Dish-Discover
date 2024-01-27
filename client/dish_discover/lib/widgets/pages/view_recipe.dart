@@ -9,7 +9,6 @@ import '../../entities/recipe.dart';
 import '../dialogs/custom_dialog.dart';
 import '../display/recipe_cover.dart';
 import '../display_with_input/comments_box.dart';
-import '../display_with_input/ingredients_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
 import '../display_with_input/tags_box.dart';
@@ -93,7 +92,7 @@ class ViewRecipePage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
               RecipeHeader(recipeProvider: recipeProvider),
-              IngredientsBox(recipeProvider: recipeProvider),
+              //IngredientsBox(recipeProvider: recipeProvider),
               StepsBox(recipeProvider: recipeProvider),
               TagsBox(recipeProvider: recipeProvider),
               CommentsBox(recipeProvider: recipeProvider)

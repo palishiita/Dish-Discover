@@ -6,6 +6,7 @@ import 'package:dish_discover/widgets/display_with_input/tag_chip.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/inputs/popup_menu.dart';
 import 'package:dish_discover/widgets/pages/view_recipe.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,20 +25,33 @@ class RecipeCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
-    bool likedRecipe = AppState.currentUser!.likedRecipes.contains(recipe);
-    bool savedRecipe = AppState.currentUser!.savedRecipes.contains(recipe);
+    bool likedRecipe = AppState.currentUser!.username == recipe.author
+        ? true
+        : AppState.currentUser!.likedRecipes.contains(recipe);
+    bool savedRecipe = AppState.currentUser!.username == recipe.author
+        ? true
+        : AppState.currentUser!.savedRecipes.contains(recipe);
     List<Tag> tags = recipe.tags;
 
     return FutureBuilder(
         future: User.getUser(recipe.author).timeout(const Duration(minutes: 1)),
         builder: (context, author) {
-          ChangeNotifierProvider<User> authorProvider =
-              ChangeNotifierProvider((ref) => author.data!);
+          ChangeNotifierProvider<User>? authorProvider = author.data == null
+              ? null
+              : ChangeNotifierProvider((ref) => author.data!);
+
+          if (kDebugMode && authorProvider == null) {
+            authorProvider = ChangeNotifierProvider((ref) =>
+                User(username: recipe.author, password: '', email: ''));
+          }
 
           return Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
               child: GestureDetector(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          ViewRecipePage(recipeProvider: recipeProvider))),
                   child: AspectRatio(
                       aspectRatio: 1.2,
                       child: Card(
@@ -49,10 +63,13 @@ class RecipeCard extends ConsumerWidget {
                                 userProvider: authorProvider),
                             title: Text(recipe.title),
                             subtitle: GestureDetector(
-                                onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => UserPage(
-                                            userProvider: authorProvider))),
+                                onTap: authorProvider == null
+                                    ? () {}
+                                    : () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => UserPage(
+                                                userProvider:
+                                                    authorProvider!))),
                                 child: Text(author.data?.username ?? 'null')),
                             trailing: PopupMenu(
                                 action1: PopupMenuAction.share,
@@ -64,45 +81,40 @@ class RecipeCard extends ConsumerWidget {
                                 action2: AppState.currentUser!.isModerator
                                     ? PopupMenuAction.ban
                                     : PopupMenuAction.report,
-                                onPressed2: () => AppState
-                                        .currentUser!.isModerator
-                                    ? {
-                                        CustomDialog.callDialog(
-                                            context,
-                                            'Ban recipe',
-                                            '',
-                                            null,
-                                            Column(children: [
-                                              CustomTextField(
-                                                  controller:
-                                                      TextEditingController(),
-                                                  hintText: 'Password',
-                                                  obscure: true),
-                                              CustomTextField(
-                                                  controller:
-                                                      TextEditingController(),
-                                                  hintText: 'Repeat password',
-                                                  obscure: true)
-                                            ]),
-                                            'Ban',
-                                            () {})
-                                      }
-                                    : {
-                                        CustomDialog.callDialog(
-                                            context,
-                                            'Report recipe',
-                                            '',
-                                            null,
-                                            Column(children: [
-                                              CustomTextField(
-                                                  controller:
-                                                      TextEditingController(),
-                                                  hintText: 'Reason',
-                                                  obscure: true)
-                                            ]),
-                                            'Report',
-                                            () {})
-                                      })),
+                                onPressed2: () =>
+                                    AppState.currentUser!.isModerator
+                                        ? {
+                                            CustomDialog.callDialog(
+                                                context,
+                                                'Ban recipe',
+                                                '',
+                                                null,
+                                                Column(children: [
+                                                  CustomTextField(
+                                                      controller:
+                                                          TextEditingController(),
+                                                      hintText: 'Password',
+                                                      obscure: true)
+                                                ]),
+                                                'Ban',
+                                                () {})
+                                          }
+                                        : {
+                                            CustomDialog.callDialog(
+                                                context,
+                                                'Report recipe',
+                                                '',
+                                                null,
+                                                Column(children: [
+                                                  CustomTextField(
+                                                      controller:
+                                                          TextEditingController(),
+                                                      hintText: 'Reason',
+                                                      obscure: true)
+                                                ]),
+                                                'Report',
+                                                () {})
+                                          })),
                         const Divider(height: 1.0),
                         RecipeCover(cover: recipe.image),
                         const Divider(height: 1.0),
@@ -112,12 +124,22 @@ class RecipeCard extends ConsumerWidget {
                               LikeSaveIndicator(
                                   likeButtonEnabled: likedRecipe,
                                   likeCount: recipe.likeCount,
-                                  onLikePressed: () => AppState.currentUser!
-                                      .switchLikeRecipe(recipe, !likedRecipe),
+                                  onLikePressed:
+                                      AppState.currentUser!.username ==
+                                              recipe.author
+                                          ? null
+                                          : () => AppState.currentUser!
+                                              .switchLikeRecipe(
+                                                  recipe, !likedRecipe),
                                   saveButtonEnabled: savedRecipe,
                                   saveCount: recipe.saveCount,
-                                  onSavePressed: () => AppState.currentUser!
-                                      .switchSaveRecipe(recipe, !savedRecipe)),
+                                  onSavePressed: AppState
+                                              .currentUser!.username ==
+                                          recipe.author
+                                      ? null
+                                      : () => AppState.currentUser!
+                                          .switchSaveRecipe(
+                                              recipe, !savedRecipe)),
                               Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: CustomPopup(
@@ -129,19 +151,12 @@ class RecipeCard extends ConsumerWidget {
                                                     const EdgeInsets.all(5),
                                                 child: TagChip(
                                                     tag: tags[index],
-                                                    onPressed: () {
-                                                      ref
-                                                          .read(recipeProvider)
-                                                          .removeTag(
-                                                              tags[index]);
-                                                    })))),
+                                                    icon: null,
+                                                    onPressed: null)))),
                                     child: const Icon(Icons.sell_outlined),
                                   ))
                             ])
-                      ]))),
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          ViewRecipePage(recipeProvider: recipeProvider)))));
+                      ])))));
         });
   }
 }

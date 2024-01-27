@@ -21,7 +21,7 @@ class UserAvatar extends StatelessWidget {
 
     return GestureDetector(
         onTap: userProvider == null
-            ? null
+            ? () {}
             : () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UserPage(userProvider: userProvider!))),
         child: Padding(

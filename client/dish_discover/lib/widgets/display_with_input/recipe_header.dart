@@ -15,8 +15,12 @@ class RecipeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
-    bool likedRecipe = AppState.currentUser!.likedRecipes.contains(recipe);
-    bool savedRecipe = AppState.currentUser!.savedRecipes.contains(recipe);
+    bool likedRecipe = AppState.currentUser!.username == recipe.author
+        ? true
+        : AppState.currentUser!.likedRecipes.contains(recipe);
+    bool savedRecipe = AppState.currentUser!.username == recipe.author
+        ? true
+        : AppState.currentUser!.savedRecipes.contains(recipe);
 
     return ConstrainedBox(
         constraints: const BoxConstraints.tightFor(height: 170),
@@ -27,14 +31,16 @@ class RecipeHeader extends ConsumerWidget {
           LikeSaveIndicator(
               likeButtonEnabled: likedRecipe,
               likeCount: recipe.likeCount,
-              onLikePressed: () {
-                AppState.currentUser!.switchLikeRecipe(recipe, !likedRecipe);
-              },
+              onLikePressed: AppState.currentUser!.username == recipe.author
+                  ? null
+                  : () => AppState.currentUser!
+                      .switchLikeRecipe(recipe, !likedRecipe),
               saveButtonEnabled: savedRecipe,
               saveCount: recipe.saveCount, // recipe.saves
-              onSavePressed: () {
-                AppState.currentUser!.switchSaveRecipe(recipe, !savedRecipe);
-              },
+              onSavePressed: AppState.currentUser!.username == recipe.author
+                  ? null
+                  : () => AppState.currentUser!
+                      .switchSaveRecipe(recipe, !savedRecipe),
               center: true),
           const Divider()
         ]));

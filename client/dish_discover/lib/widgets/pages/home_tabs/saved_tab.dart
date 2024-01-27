@@ -8,20 +8,8 @@ import '../../../entities/tag.dart';
 import '../../display/recipe_list.dart';
 import '../../display/tab_title.dart';
 
-class SavedTab extends StatefulWidget {
+class SavedTab extends StatelessWidget {
   const SavedTab({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _SavedTabState();
-}
-
-class _SavedTabState extends State<SavedTab> {
-  late List<Recipe> recipes;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +17,7 @@ class _SavedTabState extends State<SavedTab> {
       const TabTitle(title: 'Saved'),
       RecipeList(
           getRecipes: () => Future<List<Recipe>>(() {
-                recipes = AppState.currentUser!.savedRecipes;
+                List<Recipe> recipes = AppState.currentUser!.savedRecipes;
                 if (kDebugMode && recipes.isEmpty) {
                   recipes = [
                     Recipe(

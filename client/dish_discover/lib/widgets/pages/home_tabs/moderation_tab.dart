@@ -7,14 +7,8 @@ import '../../display/tab_title.dart';
 import '../../display_with_input/moderation_ticket.dart';
 import '../../display_with_input/tag_management_box.dart';
 
-class ModerationTab extends StatefulWidget {
+class ModerationTab extends StatelessWidget {
   const ModerationTab({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _ModerationTabState();
-}
-
-class _ModerationTabState extends State<ModerationTab> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [

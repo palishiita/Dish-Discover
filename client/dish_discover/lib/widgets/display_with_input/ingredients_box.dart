@@ -32,7 +32,9 @@ class _IngredientsBoxState extends ConsumerState<IngredientsBox> {
         child: Card(
             child: Column(children: [
           const TabTitle(title: "Ingredients"),
-          Center(child: Text((recipe.ingredients ?? []).toString()))
+          ListView(
+              children: List.generate(recipe.ingredients.length,
+                  (index) => Text(recipe.ingredients[index].name)))
         ])));
   }
 }

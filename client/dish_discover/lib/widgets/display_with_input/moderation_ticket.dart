@@ -70,6 +70,7 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                                     }
                                   : () {
                                       // TODO accept ticket
+                                      ticket.accepted = true;
                                     })
                         ],
                       ))),

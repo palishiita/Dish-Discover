@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../entities/recipe.dart';
-import '../display_with_input/ingredients_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
 import '../display_with_input/tags_box.dart';
@@ -61,8 +60,8 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
                 children: [
               RecipeHeader(
                   recipeProvider: widget.recipeProvider, forEditing: true),
-              IngredientsBox(
-                  recipeProvider: widget.recipeProvider, forEditing: true),
+              //IngredientsBox(
+              //    recipeProvider: widget.recipeProvider, forEditing: true),
               StepsBox(recipeProvider: widget.recipeProvider, forEditing: true),
               TagsBox(recipeProvider: widget.recipeProvider, forEditing: true)
             ])));
