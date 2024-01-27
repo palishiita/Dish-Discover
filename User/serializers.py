@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from DishDiscoverDjango.models import *
+from recipes.models import *
 from rest_framework.decorators import api_view
 
 class UserSerializer(serializers.ModelSerializer):

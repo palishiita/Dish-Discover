@@ -5,7 +5,7 @@ import nltk
 from gensim.models import Word2Vec
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from DishDiscoverDjango.models import DishDiscoverUser, Recipe, LikedRecipe, SavedRecipe
+from recipes.models import DishDiscoverUser, Recipe, LikedRecipe, SavedRecipe
 
 # Download NLTK resources
 nltk.download('punkt')
