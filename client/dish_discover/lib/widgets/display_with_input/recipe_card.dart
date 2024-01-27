@@ -2,134 +2,146 @@ import 'package:dish_discover/widgets/dialogs/custom_dialog.dart';
 import 'package:dish_discover/widgets/display/recipe_cover.dart';
 import 'package:dish_discover/widgets/display/user_avatar.dart';
 import 'package:dish_discover/widgets/display_with_input/like_save_indicator.dart';
+import 'package:dish_discover/widgets/display_with_input/tag_chip.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/inputs/popup_menu.dart';
 import 'package:dish_discover/widgets/pages/view_recipe.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_share/flutter_share.dart';
 
 import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
+import '../../entities/tag.dart';
 import '../../entities/user.dart';
 import '../pages/user.dart';
 
-class RecipeCard extends ConsumerStatefulWidget {
+class RecipeCard extends ConsumerWidget {
   final ChangeNotifierProvider<Recipe> recipeProvider;
   const RecipeCard({super.key, required this.recipeProvider});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _RecipeCardState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    Recipe recipe = ref.watch(recipeProvider);
+    bool likedRecipe = AppState.currentUser!.likedRecipes.contains(recipe);
+    bool savedRecipe = AppState.currentUser!.savedRecipes.contains(recipe);
+    List<Tag> tags = recipe.tags;
 
-class _RecipeCardState extends ConsumerState<RecipeCard> {
-  @override
-  Widget build(BuildContext context) {
-    Recipe recipe = ref.watch(widget.recipeProvider);
-    User author = User(username: 'unknown', isModerator: false);
-    //recipe.author ?? User(username: 'unknown', isModerator: false); TODO get author as User
-    bool likedRecipe =
-        AppState.currentUser!.likedRecipes?.contains(recipe) ?? false;
-    bool savedRecipe =
-        AppState.currentUser!.savedRecipes?.contains(recipe) ?? false;
+    return FutureBuilder(
+        future: User.getUser(recipe.author).timeout(const Duration(minutes: 1)),
+        builder: (context, author) {
+          ChangeNotifierProvider<User> authorProvider =
+              ChangeNotifierProvider((ref) => author.data!);
 
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
-        child: GestureDetector(
-            child: AspectRatio(
-                aspectRatio: 1.2,
-                child: Card(
-                    child: Column(children: [
-                  ListTile(
-                      leading: UserAvatar(
-                          image: author.image,
-                          diameter: 30,
-                          userProvider:
-                              ChangeNotifierProvider<User>((ref) => author)),
-                      title: Text(recipe.title ?? 'null'),
-                      subtitle: GestureDetector(
-                          onTap: author == null
-                              ? null
-                              : () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => UserPage(
-                                          userProvider:
-                                              ChangeNotifierProvider<User>(
-                                                  (ref) => author)))),
-                          child: Text(author.username ?? 'null')),
-                      trailing: PopupMenu(
-                          action1: PopupMenuAction.share,
-                          onPressed1: () async => await FlutterShare.share(
-                              title: 'Share recipe',
-                              text: recipe.title,
-                              linkUrl: '[link]'), // TODO link
-                          action2: AppState.currentUser!.isModerator
-                              ? PopupMenuAction.ban
-                              : PopupMenuAction.report,
-                          onPressed2: () => AppState.currentUser!.isModerator
-                              ? {
-                                  CustomDialog.callDialog(
-                                      context,
-                                      'Ban recipe',
-                                      '',
-                                      null,
-                                      Column(children: [
-                                        CustomTextField(
-                                            controller: TextEditingController(),
-                                            hintText: 'Password',
-                                            obscure: true),
-                                        CustomTextField(
-                                            controller: TextEditingController(),
-                                            hintText: 'Repeat password',
-                                            obscure: true)
-                                      ]),
-                                      'Ban',
-                                      () {})
-                                }
-                              : {
-                                  CustomDialog.callDialog(
-                                      context,
-                                      'Report recipe',
-                                      '',
-                                      null,
-                                      Column(children: [
-                                        CustomTextField(
-                                            controller: TextEditingController(),
-                                            hintText: 'Reason',
-                                            obscure: true)
-                                      ]),
-                                      'Report',
-                                      () {})
-                                })),
-                  const Divider(height: 1.0),
-                  RecipeCover(cover: recipe.image),
-                  const Divider(height: 1.0),
-                  Row(children: [
-                    LikeSaveIndicator(
-                        likeButtonSelected: likedRecipe,
-                        likeCount: 0, //recipe.likes,
-                        onLiked: () {
-                          setState(() {
-                            AppState.currentUser!.likeRecipe(recipe);
-                            // TODO update recipe
-                          });
-                        },
-                        saveButtonEnabled: savedRecipe,
-                        saveCount: 0, //recipe.saves
-                        onSaved: () {
-                          setState(() {
-                            AppState.currentUser!.saveRecipe(recipe);
-                          });
-                        }),
-                    IconButton(
-                        icon: const Icon(Icons.sell_outlined),
-                        onPressed: () {
-                          // TODO show tag box
-                        })
-                  ])
-                ]))),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    ViewRecipePage(recipeProvider: widget.recipeProvider)))));
+          return Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+              child: GestureDetector(
+                  child: AspectRatio(
+                      aspectRatio: 1.2,
+                      child: Card(
+                          child: Column(children: [
+                        ListTile(
+                            leading: UserAvatar(
+                                image: author.data?.image,
+                                diameter: 30,
+                                userProvider: authorProvider),
+                            title: Text(recipe.title),
+                            subtitle: GestureDetector(
+                                onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => UserPage(
+                                            userProvider: authorProvider))),
+                                child: Text(author.data?.username ?? 'null')),
+                            trailing: PopupMenu(
+                                action1: PopupMenuAction.share,
+                                onPressed1: () async =>
+                                    await FlutterShare.share(
+                                        title: 'Share recipe',
+                                        text: recipe.title,
+                                        linkUrl: '[link]'), // TODO link
+                                action2: AppState.currentUser!.isModerator
+                                    ? PopupMenuAction.ban
+                                    : PopupMenuAction.report,
+                                onPressed2: () => AppState
+                                        .currentUser!.isModerator
+                                    ? {
+                                        CustomDialog.callDialog(
+                                            context,
+                                            'Ban recipe',
+                                            '',
+                                            null,
+                                            Column(children: [
+                                              CustomTextField(
+                                                  controller:
+                                                      TextEditingController(),
+                                                  hintText: 'Password',
+                                                  obscure: true),
+                                              CustomTextField(
+                                                  controller:
+                                                      TextEditingController(),
+                                                  hintText: 'Repeat password',
+                                                  obscure: true)
+                                            ]),
+                                            'Ban',
+                                            () {})
+                                      }
+                                    : {
+                                        CustomDialog.callDialog(
+                                            context,
+                                            'Report recipe',
+                                            '',
+                                            null,
+                                            Column(children: [
+                                              CustomTextField(
+                                                  controller:
+                                                      TextEditingController(),
+                                                  hintText: 'Reason',
+                                                  obscure: true)
+                                            ]),
+                                            'Report',
+                                            () {})
+                                      })),
+                        const Divider(height: 1.0),
+                        RecipeCover(cover: recipe.image),
+                        const Divider(height: 1.0),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LikeSaveIndicator(
+                                  likeButtonEnabled: likedRecipe,
+                                  likeCount: recipe.likeCount,
+                                  onLikePressed: () => AppState.currentUser!
+                                      .switchLikeRecipe(recipe, !likedRecipe),
+                                  saveButtonEnabled: savedRecipe,
+                                  saveCount: recipe.saveCount,
+                                  onSavePressed: () => AppState.currentUser!
+                                      .switchSaveRecipe(recipe, !savedRecipe)),
+                              Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: CustomPopup(
+                                    content: Wrap(
+                                        children: List.generate(
+                                            tags.length,
+                                            (index) => Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                child: TagChip(
+                                                    tag: tags[index],
+                                                    onPressed: () {
+                                                      ref
+                                                          .read(recipeProvider)
+                                                          .removeTag(
+                                                              tags[index]);
+                                                    })))),
+                                    child: const Icon(Icons.sell_outlined),
+                                  ))
+                            ])
+                      ]))),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          ViewRecipePage(recipeProvider: recipeProvider)))));
+        });
   }
 }

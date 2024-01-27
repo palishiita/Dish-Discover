@@ -31,13 +31,12 @@ class StepsBox extends ConsumerWidget {
                   child: forEditing
                       ? CustomTextField(
                           controller: TextEditingController(
-                              text: recipe.steps ??
-                                  ''), // TODO pass edited text back
+                              text: recipe.steps), // TODO pass edited text back
                           hintText: 'Markdown text',
                           maxLength: 3000)
                       : Markdown(
                           physics: const NeverScrollableScrollPhysics(),
-                          data: recipe.steps ?? 'empty',
+                          data: recipe.steps,
                           selectable: true,
                           shrinkWrap: true)))
         ])));

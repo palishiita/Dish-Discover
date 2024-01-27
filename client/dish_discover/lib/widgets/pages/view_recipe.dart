@@ -35,14 +35,14 @@ class ViewRecipePage extends ConsumerWidget {
                       title: 'Share recipe',
                       text: recipe.title,
                       linkUrl: '[link]'), // TODO link
-                  action2: recipe.authorId
+                  action2: recipe.author
                               ?.compareTo(AppState.currentUser!.username!) ==
                           0
                       ? PopupMenuAction.edit
                       : AppState.currentUser!.isModerator
                           ? PopupMenuAction.ban
                           : PopupMenuAction.report,
-                  onPressed2: () => recipe.authorId
+                  onPressed2: () => recipe.author
                               ?.compareTo(AppState.currentUser!.username!) ==
                           0
                       ? {

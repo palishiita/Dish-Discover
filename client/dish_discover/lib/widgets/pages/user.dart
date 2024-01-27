@@ -82,7 +82,9 @@ class UserPage extends ConsumerWidget {
             ]),
         body: Column(children: [
           UserHeader(userProvider: userProvider),
-          RecipeList(recipes: user.addedRecipes ?? <Recipe>[])
+          RecipeList(
+              getRecipes: () =>
+                  Future<List<Recipe>>(() => (user.addedRecipes ?? <Recipe>[])))
         ]));
   }
 }

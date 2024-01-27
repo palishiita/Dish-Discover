@@ -42,15 +42,16 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: AspectRatio(
-            aspectRatio: 1.0,
+    return AspectRatio(
+        aspectRatio: 1.0,
+        child: Padding(
+            padding: const EdgeInsets.all(5.0),
             child: AlertDialog(
                 titleTextStyle: Theme.of(context).textTheme.labelLarge,
                 title: Center(child: Text(title)),
                 content: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [Text(subtitle), message ?? Container(), child]),
                 actions: [
                   Center(

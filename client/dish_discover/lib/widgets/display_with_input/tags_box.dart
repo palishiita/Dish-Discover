@@ -16,15 +16,30 @@ class TagsBox extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
-    List<Tag> tags = recipe.tags ?? [];
+    List<Tag> tags = recipe.tags;
 
     if (kDebugMode && tags.isEmpty) {
       tags = [
-        Tag(false, 'short', TagCategory.ingredient),
-        Tag(false, 'medium name', TagCategory.ingredient),
-        Tag(false, 'loooooooong name', TagCategory.ingredient),
-        Tag(false, 'very looooooooooong name', TagCategory.ingredient),
-        Tag(false, 'veryyyyyyyyyyyyyyyyyy long name', TagCategory.ingredient)
+        Tag(
+            isPredefined: false,
+            name: 'short',
+            category: TagCategory.ingredient),
+        Tag(
+            isPredefined: false,
+            name: 'medium name',
+            category: TagCategory.ingredient),
+        Tag(
+            isPredefined: false,
+            name: 'loooooooong name',
+            category: TagCategory.ingredient),
+        Tag(
+            isPredefined: false,
+            name: 'very looooooooooong name',
+            category: TagCategory.ingredient),
+        Tag(
+            isPredefined: false,
+            name: 'veryyyyyyyyyyyyyyyyyy long name',
+            category: TagCategory.ingredient)
       ];
     }
 

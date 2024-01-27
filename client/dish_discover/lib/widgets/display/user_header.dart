@@ -21,12 +21,12 @@ class UserHeader extends ConsumerWidget {
           UserAvatar(image: user.image),
           Center(child: Text(user.description ?? '[Description]')),
           LikeSaveIndicator(
-              likeButtonSelected: true,
+              likeButtonEnabled: true,
               likeCount: likeCount,
-              onLiked: () {},
+              onLikePressed: null,
               saveButtonEnabled: true,
               saveCount: saveCount,
-              onSaved: () {},
+              onSavePressed: null,
               center: true),
           const Divider()
         ]));

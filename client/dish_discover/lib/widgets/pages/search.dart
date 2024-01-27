@@ -1,10 +1,10 @@
+import 'package:dish_discover/widgets/dialogs/filter_side_menu.dart';
 import 'package:dish_discover/widgets/inputs/custom_search_bar.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/recipe.dart';
 import '../display/recipe_list.dart';
-import '../display/tab_title.dart';
 
 class SearchPage extends StatelessWidget {
   final String searchPhrase;
@@ -12,8 +12,6 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Recipe> recipes =
-        []; // TODO AppState.currentUser!.searchRecipe(searchPhrase);
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
@@ -33,14 +31,12 @@ class SearchPage extends StatelessWidget {
         body: Column(children: [
           CustomSearchBar(
               initialSearchPhrase: searchPhrase, goToSearchPage: false),
-          RecipeList(recipes: recipes)
+          RecipeList(
+              getRecipes: () => Future<List<Recipe>>(() {
+                    // TODO search recipes by phrase
+                    return [];
+                  }))
         ]),
-        endDrawer: const Drawer(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.horizontal(left: Radius.circular(30.0))),
-            child: Column(
-              children: [TabTitle(title: 'Filter'), Text('...')],
-            )));
+        endDrawer: const FilterSideMenu());
   }
 }

@@ -20,7 +20,8 @@ class PaymentPage extends StatelessWidget {
         bottomNavigationBar: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('Reminder: DishDiscover does not offer refunds!')
+              Text('Reminder: DishDiscover does not offer refunds!',
+                  style: TextStyle(fontSize: 13))
             ])));
   }
 }

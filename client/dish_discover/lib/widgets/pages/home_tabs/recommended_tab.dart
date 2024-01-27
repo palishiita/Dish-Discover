@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../entities/app_state.dart';
@@ -23,17 +22,9 @@ class _RecommendedTabState extends State<RecommendedTab> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Future<void>(() async => recipes = kDebugMode
-            ? [
-                Recipe(title: 'Test 1'),
-                Recipe(title: 'Test 2'),
-                Recipe(title: 'Test 3')
-              ]
-            : await AppState.currentUser!.getRecommendations()),
-        builder: (context, value) => Column(children: [
-              const TabTitle(title: 'Recommended'),
-              RecipeList(recipes: recipes)
-            ]));
+    return Column(children: [
+      const TabTitle(title: 'Recommended'),
+      RecipeList(getRecipes: AppState.currentUser!.getRecommendations)
+    ]);
   }
 }

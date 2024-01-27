@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_top/scroll_to_top.dart';
 
+import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
 import '../display_with_input/recipe_card.dart';
 import '../style/style.dart';
 import 'no_results_card.dart';
 
 class RecipeList extends StatefulWidget {
-  final List<Recipe> recipes;
-  const RecipeList({super.key, required this.recipes});
+  final Future<List<Recipe>> Function() getRecipes;
+  const RecipeList({super.key, required this.getRecipes});
 
   @override
   State<StatefulWidget> createState() => _RecipeListState();
@@ -27,18 +28,16 @@ class _RecipeListState extends State<RecipeList> {
 
   @override
   Widget build(BuildContext context) {
-    Duration timeout = const Duration(minutes: 1);
     return FutureBuilder(
-        future: Future<bool>(() => true) // TODO getRecipes
-            .timeout(timeout),
-        builder: (context, value) => value.connectionState !=
+        future: widget.getRecipes().timeout(AppState.timeout),
+        builder: (context, recipes) => recipes.connectionState !=
                 ConnectionState.done
-            ? Center(child: LoadingIndicator(timeout: timeout))
+            ? Center(child: LoadingIndicator(timeout: AppState.timeout))
             : Expanded(
-                child: value.hasError
+                child: recipes.hasError
                     ? const SingleChildScrollView(
                         child: NoResultsCard(timedOut: true))
-                    : widget.recipes.isEmpty // TODO use value to get recipes
+                    : recipes.data == null || recipes.data!.isEmpty
                         ? const SingleChildScrollView(
                             child: NoResultsCard(timedOut: false))
                         : ScrollToTop(
@@ -47,10 +46,10 @@ class _RecipeListState extends State<RecipeList> {
                             scrollController: scrollController,
                             child: ListView.builder(
                                 controller: scrollController,
-                                itemCount: widget.recipes.length,
+                                itemCount: recipes.data!.length,
                                 itemBuilder: (context, index) => RecipeCard(
                                     recipeProvider:
-                                        ChangeNotifierProvider<Recipe>((ref) =>
-                                            widget.recipes[index]))))));
+                                        ChangeNotifierProvider<Recipe>(
+                                            (ref) => recipes.data![index]))))));
   }
 }

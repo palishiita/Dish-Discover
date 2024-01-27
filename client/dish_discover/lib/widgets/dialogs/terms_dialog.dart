@@ -21,13 +21,20 @@ class TermsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const TabTitle(title: "Terms & Conditions"),
-      Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        child: const Text("Terms..."),
-      )
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const Center(child: TabTitle(title: "Terms & Conditions")),
+      Expanded(
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 25.0),
+              child: Card(
+                  color: backgroundColor(context),
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                      side: BorderSide(),
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: SingleChildScrollView(child: Text('Contents'))))))
     ]);
   }
 }

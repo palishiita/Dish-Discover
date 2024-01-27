@@ -15,26 +15,25 @@ class RecipeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
-    bool likedRecipe =
-        AppState.currentUser!.likedRecipes?.contains(recipe) ?? false;
-    bool savedRecipe =
-        AppState.currentUser!.savedRecipes?.contains(recipe) ?? false;
+    bool likedRecipe = AppState.currentUser!.likedRecipes.contains(recipe);
+    bool savedRecipe = AppState.currentUser!.savedRecipes.contains(recipe);
 
     return ConstrainedBox(
         constraints: const BoxConstraints.tightFor(height: 170),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          TabTitle(title: recipe.title ?? '[Title]'),
-          Center(child: Text(recipe.description ?? '[Description]')),
+          TabTitle(title: recipe.title),
+          Text(recipe.author),
+          Center(child: Text(recipe.description)),
           LikeSaveIndicator(
-              likeButtonSelected: likedRecipe,
-              likeCount: 0, // recipe.likes
-              onLiked: () {
-                AppState.currentUser!.likeRecipe(recipe);
+              likeButtonEnabled: likedRecipe,
+              likeCount: recipe.likeCount,
+              onLikePressed: () {
+                AppState.currentUser!.switchLikeRecipe(recipe, !likedRecipe);
               },
               saveButtonEnabled: savedRecipe,
-              saveCount: 0, // recipe.saves
-              onSaved: () {
-                AppState.currentUser!.likeRecipe(recipe);
+              saveCount: recipe.saveCount, // recipe.saves
+              onSavePressed: () {
+                AppState.currentUser!.switchSaveRecipe(recipe, !savedRecipe);
               },
               center: true),
           const Divider()

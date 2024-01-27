@@ -3,22 +3,37 @@ import 'package:flutter/material.dart';
 
 class LikeSaveIndicator extends StatelessWidget {
   final int likeCount;
-  final bool likeButtonSelected;
-  final void Function() onLiked;
+  final bool likeButtonEnabled;
+  final void Function()? onLikePressed;
   final int saveCount;
   final bool saveButtonEnabled;
-  final void Function() onSaved;
+  final void Function()? onSavePressed;
   final bool center;
 
   const LikeSaveIndicator(
       {super.key,
-      required this.likeButtonSelected,
+      required this.likeButtonEnabled,
       required this.likeCount,
-      required this.onLiked,
+      required this.onLikePressed,
       required this.saveButtonEnabled,
       required this.saveCount,
-      required this.onSaved,
+      required this.onSavePressed,
       this.center = false});
+
+  String intToShortString(int value) {
+    if (value < 0) {
+      value = 0;
+    }
+
+    int thousands = (value / 1000).floor();
+    int hundreds = (value / 100).floor() % 10;
+
+    return thousands == 0
+        ? value.toString()
+        : hundreds == 0
+            ? "${thousands}K"
+            : "$thousands.${hundreds}K";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +46,15 @@ class LikeSaveIndicator extends StatelessWidget {
               IconButton(
                   icon: Icon(Icons.favorite_border_outlined, color: likeColor),
                   selectedIcon: Icon(Icons.favorite, color: likeColor),
-                  isSelected: likeButtonSelected,
-                  onPressed: likeButtonSelected ? null : onLiked),
-              Text(likeCount.toString()),
+                  isSelected: likeButtonEnabled,
+                  onPressed: onLikePressed),
+              Text(intToShortString(likeCount)),
               IconButton(
                   icon: Icon(Icons.bookmark_border, color: saveColor),
                   selectedIcon: Icon(Icons.bookmark, color: saveColor),
                   isSelected: saveButtonEnabled,
-                  onPressed: saveButtonEnabled ? null : onSaved),
-              Text(saveCount.toString())
+                  onPressed: onSavePressed),
+              Text(intToShortString(saveCount))
             ]));
   }
 }

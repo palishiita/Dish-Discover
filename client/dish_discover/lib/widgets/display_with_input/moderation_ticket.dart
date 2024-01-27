@@ -34,11 +34,12 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
             child: Card(
                 child: Column(children: [
               ListTile(
+                  dense: false,
                   leading: UserAvatar(
                       image: null, // TODO get User avatar
                       diameter: 30,
-                      userProvider: ChangeNotifierProvider<User>((ref) =>
-                          User(username: ticket.issuerId, isModerator: false))),
+                      userProvider: ChangeNotifierProvider<User>((ref) => User(
+                          username: ticket.issuerId, email: '', password: ''))),
                   title: Text('Ticket #${ticket.reportId}'),
                   subtitle: GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -46,10 +47,11 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                               userProvider: ChangeNotifierProvider<User>(
                                   (ref) => User(
                                       username: ticket.issuerId,
-                                      isModerator: false))))),
-                      child: Text(ticket.issuerId ?? 'null')),
+                                      password: '',
+                                      email: ''))))),
+                      child: Text(ticket.issuerId)),
                   trailing: AspectRatio(
-                      aspectRatio: 1.9,
+                      aspectRatio: 2.0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -58,7 +60,6 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                               onPressed: () {
                                 // TODO release ticket back into queue
                               }),
-                          SizedBox(width: 8, height: 8),
                           IconButton(
                               icon: Icon(ticket.accepted
                                   ? Icons.delete
@@ -78,7 +79,7 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                       alignment: Alignment.topLeft,
                       child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text(ticket.reason ?? '[Reason]')))),
+                          child: Text(ticket.reason)))),
               const Divider(height: 1.0),
               Padding(
                   padding: const EdgeInsets.symmetric(
@@ -94,15 +95,18 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                                       userProvider:
                                           ChangeNotifierProvider<User>((ref) =>
                                               User(
-                                                  username: ticket.violatorId,
+                                                  username: ticket.violatorId ??
+                                                      '[username]',
+                                                  password: '',
+                                                  email: '',
                                                   isModerator: false)))
                                   : ViewRecipePage(
                                       recipeProvider:
                                           ChangeNotifierProvider<Recipe>(
                                               (ref) => Recipe(
-                                                  id: ticket.recipeId,
-                                                  title:
-                                                      'Bad recipe/comment')))));
+                                                  id: ticket.recipeId!,
+                                                  title: 'Bad recipe/comment',
+                                                  author: '')))));
                         })
                   ]))
             ]))));

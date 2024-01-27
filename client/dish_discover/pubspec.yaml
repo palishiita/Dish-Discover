@@ -44,6 +44,7 @@ dependencies:
   easy_web_view: ^1.6.0
   http: ^0.13.6
   flutter_markdown: ^0.6.9+1
+  flutter_popup: ^3.1.8
 
 dev_dependencies:
   flutter_test:

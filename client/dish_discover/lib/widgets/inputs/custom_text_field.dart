@@ -24,11 +24,12 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5.0),
         child: AspectRatio(
             aspectRatio: 5.5,
             child: TextField(
               controller: controller,
+              textAlignVertical: TextAlignVertical.center,
               focusNode: FocusNode(),
               obscureText: obscure,
               maxLength: maxLength,

@@ -1,5 +1,7 @@
+import 'package:dish_discover/entities/app_state.dart';
 import 'package:flutter/material.dart';
 
+import '../../entities/user.dart';
 import '../dialogs/terms_dialog.dart';
 import '../inputs/custom_text_field.dart';
 import '../style/style.dart';
@@ -35,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
             leading: const BackButton()),
         body: SingleChildScrollView(
             child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
                 child: Column(children: [
                   Image.asset('assets/images/logo.png', scale: 0.7),
                   CustomTextField(
@@ -55,21 +57,34 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: OutlinedButton(
                           child: Text('Register', style: textStyle),
                           onPressed: () {
+                            String username = usernameController.text;
+                            String email = emailController.text;
+                            String password = passwordController.text;
+
+                            // TODO register account and log in
+
+                            // TODO get user data
+                            AppState.currentUser = User(
+                                username: 'test_user',
+                                email: 'test@email.com',
+                                description: 'Some description',
+                                isModerator: true,
+                                password: '');
+
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 '/dashboard',
                                 (route) => (route.toString() == '/'));
                             Navigator.of(context).pushNamed('/tutorial');
-                          })),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: TextButton(
-                        child: const Text(
-                            "By registering you agree to our Terms & Conditions",
-                            style: TextStyle(
-                                fontSize: 11,
-                                decoration: TextDecoration.underline)),
-                        onPressed: () => TermsDialog.callDialog(context)),
-                  )
-                ]))));
+                          }))
+                ]))),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: TextButton(
+              child: const Text(
+                  "By registering you agree to our Terms & Conditions",
+                  style: TextStyle(
+                      fontSize: 11, decoration: TextDecoration.underline)),
+              onPressed: () => TermsDialog.callDialog(context)),
+        ));
   }
 }

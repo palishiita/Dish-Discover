@@ -1,49 +1,45 @@
 import 'dart:convert';
 
 import 'package:dish_discover/entities/comment.dart';
-import 'package:dish_discover/entities/ingredient.dart';
 import 'package:dish_discover/entities/recipe.dart';
 import 'package:dish_discover/entities/tag.dart';
 import 'package:dish_discover/entities/ticket.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class User extends ChangeNotifier {
-  int? id;
-  String? username;
-  String? password;
-  String? email;
-  bool? isPremium;
+  final String username;
+  String password;
+  String email;
+  bool isPremium;
   Image? image;
-  String? description;
+  String description;
   DateTime? unbanDate;
-  bool isModerator;
-  List<Recipe>? likedRecipes;
-  List<Recipe>? savedRecipes;
-  List<Recipe>? addedRecipes;
-  List<Comment>? addedComments;
-  List<Tag>? preferredTags;
+  final bool isModerator;
+  late List<Recipe> likedRecipes;
+  late List<Recipe> savedRecipes;
+  late List<Recipe> addedRecipes;
+  late List<Comment> addedComments;
+  late List<Tag> preferredTags;
 
-  User({
-    this.id,
-    this.username,
-    this.password,
-    this.email,
-    this.isPremium,
-    this.image,
-    this.description,
-    this.unbanDate,
-    required this.isModerator,
-    this.likedRecipes,
-    this.savedRecipes,
-    this.addedRecipes,
-    this.addedComments,
-    this.preferredTags,
-  });
+  User(
+      {required this.username,
+      required this.password,
+      required this.email,
+      this.isPremium = false,
+      this.image,
+      this.description = '',
+      this.unbanDate,
+      this.isModerator = false})
+      : likedRecipes = [],
+        savedRecipes = [],
+        addedRecipes = [],
+        addedComments = [],
+        preferredTags = [];
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
       username: json['username'],
       isModerator: json['has_mod_rights'],
       email: json['email'],
@@ -59,7 +55,6 @@ class User extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'username': username,
       'has_mod_rights': isModerator,
       'email': email,
@@ -78,50 +73,34 @@ class User extends ChangeNotifier {
     notifyListeners();
   }
 
-  void likeRecipe(Recipe recipe) {
-    likedRecipes?.add(recipe);
-    recipe.updateLikeCount();
+  void switchLikeRecipe(Recipe recipe, bool add) {
+    add
+        ? likedRecipes.add(recipe)
+        : likedRecipes.removeWhere((e) => e.id == recipe.id);
+    recipe.updateLikeCount(add);
     notifyListeners();
   }
 
-  void saveRecipe(Recipe recipe) {
-    savedRecipes?.add(recipe);
-    recipe.updateSaveCount();
+  void switchSaveRecipe(Recipe recipe, bool add) {
+    add
+        ? savedRecipes.add(recipe)
+        : savedRecipes.removeWhere((e) => e.id == recipe.id);
+    recipe.updateSaveCount(add);
     notifyListeners();
   }
 
-  Recipe addRecipe(
-      int? recipeId,
-      String? title,
-      String? content,
-      String? description,
-      String? steps,
-      Image? image,
-      bool? isBoosted,
-      List<Ingredient>? ingredients,
-      List<Tag> tags) {
-    Recipe recipe = Recipe(
-        id: recipeId,
-        authorId: username,
-        title: title,
-        content: content,
-        description: description,
-        steps: steps,
-        image: image,
-        isBoosted: isBoosted,
-        ingredients: ingredients,
-        tags: tags);
-    addedRecipes?.add(recipe);
+  Recipe addRecipe(Recipe recipe) {
+    addedRecipes.add(recipe);
     notifyListeners();
     return recipe;
   }
 
   void editProfile(
-      {String? username, String? password, Image? image, String? description}) {
-    this.username = username ?? this.username;
-    password = password ?? password;
+      {String? email, String? password, Image? image, String? description}) {
+    this.email = email ?? this.email;
+    this.password = password ?? this.password;
     this.image = image ?? this.image;
-    description = description ?? description;
+    this.description = description ?? this.description;
     notifyListeners();
   }
 
@@ -149,7 +128,7 @@ class User extends ChangeNotifier {
         recipeId: recipe.id,
         commentId: commentId,
         content: content);
-    addedComments?.add(comment);
+    addedComments.add(comment);
     notifyListeners();
     recipe.notifyListeners();
     return comment;
@@ -174,7 +153,9 @@ class User extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
-      print('User added successfully');
+      if (kDebugMode) {
+        print('User added successfully');
+      }
     } else {
       throw Exception(
           'Failed to add user, status code: ${response.statusCode}');
@@ -195,18 +176,22 @@ class User extends ChangeNotifier {
   }
 
   static Future<User> getUser(String username) async {
-    final response = await http.get(Uri.parse('http://localhost:8000/api/user/users/$username'));
+    final response = await http
+        .get(Uri.parse('http://localhost:8000/api/user/users/$username'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body)['user'];
       return User.fromJson(data);
     } else {
-      throw Exception('Failed to load recipe, status code: ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to load recipe, status code: ${response.reasonPhrase}');
     }
   }
 
-  static Future<List<Recipe>> getLikedRecipes() async { // recipes liked by current user
-    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/liked/'));
+  static Future<List<Recipe>> getLikedRecipes() async {
+    // recipes liked by current user
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/recipes/liked/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipe'];
@@ -217,8 +202,10 @@ class User extends ChangeNotifier {
     }
   }
 
-  static Future<List<Recipe>> getSavedRecipes() async { // recipes saved by current user
-    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/saved/'));
+  static Future<List<Recipe>> getSavedRecipes() async {
+    // recipes saved by current user
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/recipes/saved/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipe'];

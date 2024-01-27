@@ -1,17 +1,22 @@
 import "dart:convert";
 
 import "package:dish_discover/entities/user.dart";
-import "package:flutter/material.dart";
+import "package:flutter/foundation.dart";
 import "package:http/http.dart";
 
 class Comment extends ChangeNotifier {
-  int? commentId;
-  String? authorId;
-  int? recipeId;
-  String? content;
+  final int commentId;
+  final String authorId;
+  final int recipeId;
+  String content;
   User? user;
 
-  Comment({this.authorId, this.recipeId, this.commentId, this.content, this.user});
+  Comment(
+      {required this.authorId,
+      required this.recipeId,
+      required this.commentId,
+      this.content = '',
+      this.user});
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
@@ -39,7 +44,9 @@ class Comment extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
-      print('Comment added successfully');
+      if (kDebugMode) {
+        print('Comment added successfully');
+      }
     } else {
       throw Exception(
           'Failed to add comment, status code: ${response.statusCode}');

@@ -44,10 +44,11 @@ class DishDiscoverApp extends StatelessWidget {
               userProvider:
                   ChangeNotifierProvider<User>((ref) => AppState.currentUser!)),
           '/recipe': (context) => ViewRecipePage(
-              recipeProvider:
-                  ChangeNotifierProvider<Recipe>((ref) => Recipe())),
+              recipeProvider: ChangeNotifierProvider<Recipe>(
+                  (ref) => Recipe(id: 1, author: ''))),
           '/edit': (context) => EditRecipePage(
-              recipeProvider: ChangeNotifierProvider<Recipe>((ref) => Recipe()))
+              recipeProvider: ChangeNotifierProvider<Recipe>(
+                  (ref) => Recipe(id: 1, author: '')))
         });
   }
 }

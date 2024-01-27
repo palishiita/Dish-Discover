@@ -1,24 +1,26 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
 class Ingredient {
-  int? id;
-  String? name;
-  int? quantity;
+  final int id;
+  final String name;
+  int quantity;
   int? caloricDensity;
   String? unit;
 
-  Ingredient({
-    this.id,
-    this.name,
-    this.quantity,
-    this.caloricDensity,
-    this.unit
-  });
+  Ingredient(
+      {required this.id,
+      required this.name,
+      required this.quantity,
+      this.caloricDensity,
+      this.unit});
 
   factory Ingredient.fromJson(Map<String, dynamic> json) {
     return Ingredient(
       id: json['id'],
+      name: '', //json['name'],
       quantity: json['amount'],
       unit: json['unit'],
     );
@@ -27,6 +29,7 @@ class Ingredient {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      //'name': name,
       'amount': quantity,
       'unit': unit,
     };
@@ -40,20 +43,25 @@ class Ingredient {
     );
 
     if (response.statusCode == 201) {
-      print('Ingredient added successfully');
+      if (kDebugMode) {
+        print('Ingredient added successfully');
+      }
     } else {
-      throw Exception('Failed to add ingredient, status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to add ingredient, status code: ${response.statusCode}');
     }
   }
 
   static Future<List<Ingredient>> getIngredients() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/api/ingredients'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/ingredients'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['ingredients'];
       return data.map((item) => Ingredient.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load ingredients, status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to load ingredients, status code: ${response.statusCode}');
     }
   }
 }

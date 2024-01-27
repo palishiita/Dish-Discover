@@ -1,25 +1,27 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class Ticket extends ChangeNotifier {
-  int? reportId;
+  final int reportId;
   int? recipeId;
-  String? violatorId; // NOTE: Usernames (strings) are primary keys
-  String? issuerId;
+  String? violatorId;
+  final String issuerId;
   int? commentId;
-  String? reason;
+  final String reason;
   bool accepted;
 
   Ticket(
-      {this.reportId,
+      {required this.reportId,
       this.recipeId,
       this.violatorId,
-      this.issuerId,
+      required this.issuerId,
       this.commentId,
-      this.reason,
-      this.accepted = false});
+      required this.reason,
+      this.accepted = false}) {
+    assert(recipeId != null || violatorId != null || commentId != null);
+  }
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
@@ -63,7 +65,9 @@ class Ticket extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
-      print('Ticket added successfully');
+      if (kDebugMode) {
+        print('Ticket added successfully');
+      }
     } else {
       throw Exception(
           'Failed to add ticket, status code: ${response.statusCode}');

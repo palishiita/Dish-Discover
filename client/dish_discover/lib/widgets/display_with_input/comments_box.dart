@@ -21,7 +21,13 @@ class CommentTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Comment comment = ref.watch(commentProvider);
-    User author = User(username: comment.authorId, isModerator: false);
+    User author = User(
+        username: comment.authorId,
+        isModerator: false,
+        password: '',
+        email: '',
+        isPremium: false,
+        description: '');
 
     return Padding(
         padding: const EdgeInsets.all(8),
@@ -40,9 +46,9 @@ class CommentTile extends ConsumerWidget {
                           builder: (context) => UserPage(
                               userProvider: ChangeNotifierProvider<User>(
                                   (ref) => author)))),
-                      child: Text(author.username ?? 'null')),
+                      child: Text(author.username)),
                   trailing: author.username
-                              ?.compareTo(AppState.currentUser!.username!) ==
+                              .compareTo(AppState.currentUser!.username) ==
                           0
                       ? IconButton(
                           onPressed: () {
@@ -92,7 +98,7 @@ class CommentsBox extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Recipe recipe = ref.watch(recipeProvider);
-    List<Comment> comments = recipe.comments ?? [];
+    List<Comment> comments = recipe.comments;
     if (kDebugMode && comments.isEmpty) {
       comments = [
         Comment(

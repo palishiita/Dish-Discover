@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 enum TagCategory {
@@ -17,19 +16,18 @@ enum TagCategory {
   final String name;
 }
 
-
 class Tag {
-  String? name;
-  bool? isPredefined;
+  final String name;
+  bool isPredefined;
   TagCategory? category;
 
-  Tag(this.isPredefined, this.name, this.category);
+  Tag({required this.isPredefined, required this.name, this.category});
 
   factory Tag.fromJson(Map<String, dynamic> json) {
     return Tag(
-      json['isPredefined'],
-      json['name'],
-      TagCategory.values[json['category']],
+      isPredefined: json['isPredefined'],
+      name: json['name'],
+      category: TagCategory.values[json['category']],
     );
   }
 
@@ -49,14 +47,17 @@ class Tag {
     );
 
     if (response.statusCode == 201) {
-      print('Tag added successfully');
+      if (kDebugMode) {
+        print('Tag added successfully');
+      }
     } else {
       throw Exception('Failed to add tag, status code: ${response.statusCode}');
     }
   }
 
   static Future<List<Tag>> getTags() async {
-    final response = await http.get(Uri.parse('http://localhost:8000/api/recipes/tags'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/recipes/tags'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['tags'];
@@ -69,13 +70,10 @@ class Tag {
 }
 
 class PreferredTag {
-  int? userId;
-  String? tagName;
-  double? weight;
+  final int username;
+  final String tagName;
+  double weight;
 
   PreferredTag(
-    this.userId,
-    this.tagName,
-    this.weight,
-  );
+      {required this.username, required this.tagName, required this.weight});
 }

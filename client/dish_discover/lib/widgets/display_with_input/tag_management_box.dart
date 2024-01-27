@@ -20,12 +20,8 @@ class _TagManagementBoxState extends State<TagManagementBox> {
 
     if (kDebugMode && popularNotPredefined.isEmpty) {
       popularNotPredefined = [
-        Tag(false, 'name 1', TagCategory.cuisine),
-        Tag(false, 'name 1', TagCategory.time),
-        // Tag(false, 'name 1', TagCategory.difficulty),
-        // Tag(false, 'name 1', TagCategory.ingredient),
-        // Tag(false, 'name 1', TagCategory.diet),
-        // Tag(false, 'name 1', TagCategory.expense),
+        Tag(isPredefined: false, name: 'name 1', category: TagCategory.cuisine),
+        Tag(isPredefined: false, name: 'name 2', category: TagCategory.time)
       ];
     }
 

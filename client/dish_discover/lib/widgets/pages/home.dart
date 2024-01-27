@@ -12,7 +12,8 @@ import 'home_tabs/saved_tab.dart';
 class HomePage extends StatefulWidget {
   HomePage({super.key}) {
     if (kDebugMode && AppState.currentUser == null) {
-      AppState.currentUser = User(username: "dummy", isModerator: true);
+      AppState.currentUser =
+          User(username: "dummy", isModerator: true, password: '', email: '');
     }
     assert(AppState.currentUser != null);
   }
@@ -67,8 +68,8 @@ class _HomePageState extends State<HomePage>
                   padding: EdgeInsets.symmetric(horizontal: 4, vertical: 15),
                   child: Icon(Icons.circle, size: 13))),
           indicatorColor: baseColor.withAlpha(0),
-          labelColor: tabIndicatorColor,
-          unselectedLabelColor: Colors.blueGrey[200]!,
+          labelColor: buttonColor,
+          unselectedLabelColor: Colors.blueGrey[100]!,
         ));
   }
 }
