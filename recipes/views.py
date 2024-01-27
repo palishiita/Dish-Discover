@@ -131,12 +131,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer = CommentSerializer(user_comments, many = True)
         return Response(serializer.data)
 
-class GetLikesOnUserRecipes(viewsets.GenericViewSet):
+class LikesOnUsersRecipes(viewsets.GenericViewSet):
     @action(detail=True, methods=['GET'])
 
     def getUserSumLikes(self, request):
-        # user = request.user
-        likes = LikedRecipe.objects.filter(recipe__author = self.request.user.id).count()
+        user = request.user
+        likes = LikedRecipe.objects.filter(recipe__author = user).count()
         serializer = LikeCountSerializer({'number': likes})
         return Response(serializer.data)
 

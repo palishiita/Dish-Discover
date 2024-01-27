@@ -21,6 +21,8 @@ class DishDiscoverUser(User):
     is_premium = models.BooleanField()
     unban_date = models.DateField(null=True, blank=True)
     preferred_tags = models.ManyToManyField(Tag, through='PreferredTag', related_name='users_preferred_tags')
+    liked_recipes = models.ManyToManyField('Recipe', through='LikedRecipe', related_name='users_liked_recipes')
+    saved_recipes = models.ManyToManyField('Recipe', through='SavedRecipe', related_name='users_saved_recipes')
 
 
 # Preferred Tags Model
