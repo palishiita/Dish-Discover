@@ -17,8 +17,8 @@ urlpatterns = [
 
 
     # path('byuser', RecipeViewSet.as_view({'get':'created_by_user'}), name='get_created_by_user'),
-    path('saved/', SavedRecipeViewSet.as_view({'get':'list'}), name='get_savedrecipes'),
-    path('saved/<int:pk>', SavedRecipeViewSet.as_view({'delete':'destroy', 'post':'create'}), name = 'delete_saved_recipe'),
+    path('saved/', SavedRecipeViewSet.as_view({'get':'list', 'post':'create'}), name='get_savedrecipes'),
+    path('saved/<int:pk>', SavedRecipeViewSet.as_view({'delete':'destroy'}), name = 'delete_saved_recipe'),
     path('liked/', LikedRecipeViewSet.as_view({'get':'list'}), name='get_liked_recipes'),
     path('liked/<int:pk>/', LikedRecipeViewSet.as_view({'delete':'destroy'}), name='delete_liked_recipe'),
 

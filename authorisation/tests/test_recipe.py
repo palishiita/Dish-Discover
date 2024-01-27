@@ -275,15 +275,14 @@ def test_add_saved_recipe():
         description="Test description",
         is_boosted=False
     )
-    saved_recipe = SavedRecipe(user=user, recipe=recipe, is_recommendation=True)
+    # saved_recipe = SavedRecipe(user=user, recipe=recipe, is_recommendation=True)
     # saved_recipe = SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
     client = APIClient()
     client.force_authenticate(user)
     
-    url = reverse('delete_saved_recipe', kwargs={'pk': recipe.recipe_id})
-    data = {'user': user.user_id, 'recipe': recipe, 'is_recommendation': True}
+    url = '/api/recipes/saved/'
+    data = {'user': user.user_id, 'recipe': recipe.recipe_id, 'is_recommendation': True}
     response = client.post(url, data)
-    breakpoint()
     assert SavedRecipe.objects.filter(user=user, recipe=recipe).count() == 1
     assert SavedRecipe.objects.all().count() == 1
 # @pytest.mark.django_db
