@@ -19,7 +19,7 @@ def test_get_all_recipes():
     client = APIClient()
 
     # Build the URL for the view with the recipe ID
-    url = f'/api/recipes/'
+    url = f'/api/recipes/recipes/'
     user = create_user()
 
     recipe = Recipe.objects.create(
@@ -62,7 +62,7 @@ def test_get_recipe_view():
     client = Client()
 
     # Build the URL for the view with the recipe ID
-    url = f'/api/recipes/{recipe.recipe_id}/'
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/'
 
     response = client.get(url)
     data = json.loads(response.content)
@@ -119,7 +119,7 @@ def test_delete_liked_recipe():
     liked = LikedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
     client = APIClient(user)
     client.force_authenticate(user)
-    url = reverse('delete_liked_recipe', kwargs={'pk': liked.id})
+    url = f'/api/recipes/liked/{liked.id}/'
     response = client.delete(url)
 
 
@@ -156,7 +156,7 @@ def test_delete_liked_recipe_when_2_liked():
     
     client = APIClient(user)
     client.force_authenticate(user)
-    url = reverse('delete_liked_recipe', kwargs={'pk': liked_recipes[0].id})
+    url = f'/api/recipes/liked/{liked_recipes[0].id}/'
     response = client.delete(url)
 
 
@@ -216,7 +216,7 @@ def test_delete_saved_recipe():
     saved = SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
     client = APIClient(user)
     client.force_authenticate(user)
-    url = reverse('delete_saved_recipe', kwargs={'pk': saved.id})
+    url = f'/api/recipes/saved/{saved.id}/'
     response = client.delete(url)
 
 
@@ -255,7 +255,7 @@ def test_delete_saved_recipe_when_2_liked():
     
     client = APIClient(user)
     client.force_authenticate(user)
-    url = reverse('delete_saved_recipe', kwargs={'pk': saved_recipes[0].id})
+    url = f'/api/recipes/saved/{saved_recipes[0].id}/'
     response = client.delete(url)
 
 

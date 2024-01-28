@@ -74,22 +74,22 @@ def test_get_preferred_tags():
 
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/tags/preferred/'
+    url = f'/api/recipes/preferredtags/'
     response = client.get(url)
     data = response.json()
 
     assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
-
-    for item, tag in zip(data, preferred_tags):
+    # breakpoint()
+    for item, ptag in zip(data, preferred_tags):
         assert 'id' in item, response.json()
         assert 'tag' in item, response.json()
         assert 'user' in item, response.json()
         assert 'weight' in item, response.json()
-        assert item['id'] == tag.id, response.json()
-        assert item['tag'] == tag.tag.name, response.json()
-        assert item['user'] == tag.user.user_id, response.json()
-        assert item['weight'] == tag.weight, response.json()
+        assert item['id'] == ptag.id, response.json()
+        assert item['tag'] == ptag.tag.name, response.json()
+        assert item['user'] == ptag.user.user_id, response.json()
+        assert item['weight'] == ptag.weight, response.json()
 
 
 

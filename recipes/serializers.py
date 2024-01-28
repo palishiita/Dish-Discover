@@ -17,7 +17,7 @@ class TagSerializer(serializers.ModelSerializer):
 class PreferredTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreferredTag  # Fix the model reference
-        fields = '__all__'
+        fields = 'id, tag, user, weight'
         
 class RecipeTagSerializer(serializers.ModelSerializer):
     class Meta:

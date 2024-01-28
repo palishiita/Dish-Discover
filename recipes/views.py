@@ -77,12 +77,13 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
-    @action(detail=True, methods=['get'])
-    def preferred (self, request, pk=None):
-       user = request.user
-       preferred_tags = PreferredTag.objects.filter(user=user)
-       serializer = PreferredTagSerializer(preferred_tags, many = True)
-       return Response(serializer.data)
+class PreferredTag(viewsets.ModelViewSet):
+    serializer_class = PreferredTagSerializer
+
+    def get_queryset(self):
+        return PreferredTag.objects.filter(user=self.request.user)
+
+
 
 class LikedRecipeViewSet(viewsets.ModelViewSet):
     serializer_class = LikedRecipeSerializer
