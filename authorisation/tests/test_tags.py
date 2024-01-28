@@ -135,7 +135,6 @@ def test_get_popular_not_predefined_tags():
     response = client.get(url)
     data = json.loads(response.content)
 
-    breakpoint()
 
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
