@@ -58,7 +58,7 @@ def test_get_recipe_ingredients():
     tag = create_tags(tag_category)   
     ingredients = create_ingredients(tag)
 
-    recipeIngredients = create_recipe_ingredients(ingredients, recipe)
+    recipeIngredients = create_recipe_ingredients_list(ingredients, recipe)
 
 
     client = Client()

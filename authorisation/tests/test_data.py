@@ -23,13 +23,13 @@ def create_recipes(user):
         ) 
     ]
 
-def create_comments(user, recipe:Recipe):
+def create_comments(user, recipe):
     return [
         Comment.objects.create(comment_id = 10,user=user, recipe=recipe, content='This chocolate cake is amazing!'),
         Comment.objects.create(comment_id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
     ]
 
-def create_comments(user, recipes:list):
+def create_comments_list(user, recipes):
     return [
         Comment.objects.create(comment_id = 10+i,user=user, recipe=recipe, content='This chocolate cake is amazing!') for i, recipe in enumerate(recipes,start=1)
         #Comment.objects.create(comment_id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
@@ -65,12 +65,12 @@ def create_ingredients(tags):
         for i, tag in enumerate(tags, start=10)
     ]
 
-def create_recipe_ingredients(ingredients, recipe:Recipe):
+def create_recipe_ingredients(ingredients, recipe):
     return [
         RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredient, amount=200.0, unit='g') for ingredient in ingredients
     ]
 
-def create_recipe_ingredients(ingredients, recipes:list):
+def create_recipe_ingredients_list(ingredients, recipes):
     return [
         RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredient, amount=200.0, unit='g') for ingredient in ingredients for recipe in recipes
     ]

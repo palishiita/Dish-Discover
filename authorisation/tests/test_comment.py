@@ -14,7 +14,7 @@ from rest_framework.test import APIClient
 def test_get_all_comments():
     user = create_users()[0]
     recipe = create_recipes(user)
-    comments = create_comments(user, recipe)
+    comments = create_comments_list(user, recipe)
     client = Client()
     url = f'/api/recipes/comments/'
     response = client.get(url)
@@ -66,14 +66,14 @@ def test_get_comments_by_user():
 def test_get_comments_by_recipe():
     user = create_users()[0]
     recipes = create_recipes(user)
-    comments = create_comments(user, recipes)
+    comments = create_comments_list(user, recipes)
     client = APIClient()
     #client.force_authenticate(user)
     for recipe in recipes:
-        url = f'/api/recipes/comments/byrecipe/{recipe.recipe_id}'
+        url = f'/api/recipes/comments/byrecipe/{recipe.recipe_id}/'
+
         response = client.get(url)
 
-        #breakpoint()
         data = response.json()
 
         #response = client.get(url)
