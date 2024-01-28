@@ -9,10 +9,8 @@ tagCategories = [
 ]
 
 for element in tagCategories:
-    print(element)
     element.save()
 
-tagCategories=TagCategory.objects.all()
 
 tags = [
     Tag(name='Polish',tag_category=tagCategories[0],is_predefined = True),
@@ -25,10 +23,8 @@ tags = [
 ]
 
 for element in tags:
-    print(element)
     element.save()
 
-tags=Tag.objects.all()
 
 # Create Users
 users = [
@@ -37,10 +33,8 @@ users = [
 ]
 
 for element in users:
-    print(element)
     element.save()
 
-users = DishDiscoverUser.objects.all()
 
 # Create Preferred Tags
 prefferedTags = [
@@ -53,7 +47,6 @@ prefferedTags = [
 for element in prefferedTags:
     element.save()
 
-prefferedTags = PreferredTag.objects.all()
 
 # Create Ingredients
 ingredients = [
@@ -64,7 +57,6 @@ ingredients = [
 for element in ingredients:
     element.save()
 
-ingredients = Ingredient.objects.all()
 # Create Recipes
 recipes = [
     Recipe(author=users[0], recipe_name='Spaghetti Bolognese', content='Delicious spaghetti recipe...',
@@ -76,7 +68,6 @@ recipes = [
 for element in recipes:
     element.save()
 
-recipes = Recipe.objects.all()
 # Add Recipe Tags
 recipeTags = [
     RecipeTag(recipe=recipes[0], tag=tags[0], weight=0.8),
@@ -87,7 +78,6 @@ recipeTags = [
 for element in recipeTags:
     element.save()
 
-recipeTags = RecipeTag.objects.all()
 # Add Recipe Ingredients
 recipeIngredients = [
     RecipeIngredient(recipe=recipes[0], ingredient=ingredients[0], amount=200.0, unit='g'),
@@ -96,8 +86,6 @@ recipeIngredients = [
 
 for element in recipeIngredients:
     element.save()
-
-recipeIngredients = RecipeIngredient.objects.all()
 # Create Comments
 comments = [
     Comment(user=users[0], recipe=recipes[0], content='This chocolate cake is amazing!'),
@@ -107,7 +95,6 @@ comments = [
 for element in comments:
     element.save()
 
-comments = Comment.objects.all()
 # Create Saved Recipes and Liked Recipes
 savedRecipes = [
     SavedRecipe(user=users[0], recipe=recipes[1], is_recommendation=True),
@@ -117,7 +104,6 @@ savedRecipes = [
 for element in savedRecipes:
     element.save()
 
-savedRecipes = SavedRecipe.objects.all()
 
 likedRecipes = [
     LikedRecipe(user=users[0], recipe=recipes[1], is_recommendation=True),
@@ -127,7 +113,6 @@ likedRecipes = [
 for element in likedRecipes:
     element.save()
 
-likedRecipes = LikedRecipe.objects.all()
 # Create Report Tickets
 reportTickets = [
     ReportTicket(recipe=recipes[0], violator=users[0], issuer=users[1],
@@ -141,7 +126,6 @@ for element in reportTickets:
     element.save()
 
 
-reportTickets = ReportTicket.objects.all()
 print("Example data added successfully.")
 # TagCategory(category_name='Cousine3').save()
 # Tag(name='Polish2',tag_category=TagCategory.get(),is_predefined = True).save()

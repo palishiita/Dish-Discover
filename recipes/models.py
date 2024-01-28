@@ -14,7 +14,6 @@ class Tag(models.Model):
 
 # User Model
 class DishDiscoverUser(User):
-    user_id = models.IntegerField(primary_key=True)
     has_mod_rights = models.BooleanField()
     picture = models.BinaryField(null=True, blank=True)
     description = models.CharField(max_length=150, null=True, blank=True)
@@ -35,7 +34,6 @@ class PreferredTag(models.Model):
 
 # Comment Model
 class Comment(models.Model):
-    comment_id = models.IntegerField(primary_key=True)
     user = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     content = models.CharField(max_length=1000)
@@ -58,14 +56,12 @@ class LikedRecipe(models.Model):
 
 # Ingredient Model
 class Ingredient(models.Model):
-    ingredient_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     calorie_density = models.FloatField(null=True)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     
 # Report Tickets Model
 class ReportTicket(models.Model):
-    report_id = models.IntegerField(primary_key=True)
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     violator = models.ForeignKey(DishDiscoverUser, related_name='violator', on_delete=models.CASCADE)
     issuer = models.ForeignKey(DishDiscoverUser, related_name='issuer', on_delete=models.CASCADE)
@@ -74,7 +70,6 @@ class ReportTicket(models.Model):
     
 # Recipe Model
 class Recipe(models.Model):
-    recipe_id = models.IntegerField(primary_key=True)
     author = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)
     recipe_name = models.CharField(max_length=50)
     content = models.CharField(max_length=10000)

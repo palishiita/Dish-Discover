@@ -24,7 +24,7 @@ def test_get_all_ingredients():
     assert response['Content-Type'] == 'application/json'
     for item in data:
         assert 'calorie_density' in item, response.json()
-        assert 'ingredient_id' in item, response.json()
+        assert 'id' in item, response.json()
         assert 'tag' in item, response.json()
 
 
@@ -37,14 +37,14 @@ def test_get_ingredient():
     client = Client()
 
     for ingredient in ingredient:
-        url = f'/api/recipes/ingredients/{ingredient.ingredient_id}/'
+        url = f'/api/recipes/ingredients/{ingredient.id}/'
         response = client.get(url)
         data = response.json()
 
         assert response.status_code == 200, response.json()
         assert response['Content-Type'] == 'application/json'
         assert 'calorie_density' in data, response.json()
-        assert 'ingredient_id' in data, response.json()
+        assert 'id' in data, response.json()
         assert 'tag' in data, response.json()
 
 
@@ -63,7 +63,7 @@ def test_get_recipe_ingredients():
 
     client = Client()
     for recipe in recipe:
-        url = f'/api/recipes/recipes/{recipe.recipe_id}/ingredients/'
+        url = f'/api/recipes/recipes/{recipe.id}/ingredients/'
         response = client.get(url)
         data = response.json()
     

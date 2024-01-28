@@ -68,7 +68,7 @@ def test_get_preferred_tags():
         assert 'weight' in item, response.json()
         assert item['id'] == ptag.id, response.json()
         assert item['tag'] == ptag.tag.name, response.json()
-        assert item['user'] == ptag.user.user_id, response.json()
+        assert item['user'] == ptag.user.id, response.json()
         assert item['weight'] == ptag.weight, response.json()
 
 
@@ -86,7 +86,7 @@ def test_get_recipe_tags():
     recipeTags = create_recipe_tags_list(tags, recipes)
 
     for recipe in recipes:
-        url = f'/api/recipes/recipes/{recipe.recipe_id}/tags/'
+        url = f'/api/recipes/recipes/{recipe.id}/tags/'
         response = client.get(url)
         data = json.loads(response.content)
 
@@ -97,7 +97,7 @@ def test_get_recipe_tags():
             assert 'tag' in item, response.json()
             assert 'weight' in item, response.json()
 
-            assert item['recipe'] == tag.recipe.recipe_id,  response.json()
+            assert item['recipe'] == tag.recipe.id,  response.json()
 
 def add_preferred_tag():
     client =Client()    
@@ -107,7 +107,7 @@ def add_preferred_tag():
         
     for tag in tags:
         data = {
-            'user':user.user_id,
+            'user':user.id,
             'tag': tag.id,
             'weight' : 0.8
         }

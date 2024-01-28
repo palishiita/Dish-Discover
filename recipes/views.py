@@ -42,7 +42,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    lookup_field = 'recipe_id'
+    #lookup_field = 'recipe_id'
     # def get_queryset(self):
     #     # # Get the current user
     #     # if self.action == 'created_by_user':
@@ -103,7 +103,7 @@ class SavedRecipeViewSet(viewsets.ModelViewSet):
 
     
     def get_queryset(self):       
-            return SavedRecipe.objects.filter(user=self.request.user)
+            return SavedRecipe.objects.filter(user=self.request.user.id)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

@@ -8,13 +8,14 @@ from rest_framework.test import APIClient
 
 def create_users():
     return [
-        DishDiscoverUser.objects.create(user_id = 10, username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
+        DishDiscoverUser.objects.create(id = 10, username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False),
+        DishDiscoverUser.objects.create(id = 11, username='mickey2_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
         ]
 
 def create_recipes(user):
     return [
         Recipe.objects.create(
-            recipe_id=10,
+            id=10,
             author=user,
             recipe_name="Test Recipe",
             content="Test content",
@@ -25,14 +26,14 @@ def create_recipes(user):
 
 def create_comments(user, recipe):
     return [
-        Comment.objects.create(comment_id = 10,user=user, recipe=recipe, content='This chocolate cake is amazing!'),
-        Comment.objects.create(comment_id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
+        Comment.objects.create(id = 10,user=user, recipe=recipe, content='This chocolate cake is amazing!'),
+        Comment.objects.create(id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
     ]
 
 def create_comments_list(user, recipes):
     return [
-        Comment.objects.create(comment_id = 10+i,user=user, recipe=recipe, content='This chocolate cake is amazing!') for i, recipe in enumerate(recipes,start=1)
-        #Comment.objects.create(comment_id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
+        Comment.objects.create(id = 10+i,user=user, recipe=recipe, content='This chocolate cake is amazing!') for i, recipe in enumerate(recipes,start=1)
+        #Comment.objects.create(id = 11,user=user, recipe=recipe, content='I love spaghetti bolognese!')
     ]
 
 
@@ -61,7 +62,7 @@ def create_tags(tagcategories):
     
 def create_ingredients(tags):
     return [
-        Ingredient.objects.create(ingredient_id=i, name=f'Avocado{tag.name}', calorie_density=50.0, tag=tag)
+        Ingredient.objects.create(id=i, name=f'Avocado{tag.name}', calorie_density=50.0, tag=tag)
         for i, tag in enumerate(tags, start=10)
     ]
 
@@ -83,4 +84,14 @@ def create_preferred_tags(user, tags):
 def create_recipe_tags_list(tags, recipes):
     return [
         RecipeTag.objects.create(recipe=recipe, tag=tag, weight=0.8) for tag in tags for recipe in recipes
+    ]
+
+def create_liked_recipes(user, recipes):
+    return [
+        LikedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=False) for recipe in recipes
+    ]
+
+def create_saved_recipes(user, recipes):
+    return [
+        SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=False) for recipe in recipes
     ]

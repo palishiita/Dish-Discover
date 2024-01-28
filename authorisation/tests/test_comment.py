@@ -24,13 +24,13 @@ def test_get_all_comments():
     assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
     for item, com in zip(data, comments):
-        assert 'comment_id' in item, response.json()
+        assert 'id' in item, response.json()
         assert 'content' in item, response.json()
         assert 'recipe' in item, response.json()
         assert 'user' in item, response.json()
         assert item['content'] == com.content, json()
-        assert item['recipe'] == com.recipe.recipe_id, json()
-        assert item['user'] == com.user.user_id, json()
+        assert item['recipe'] == com.recipe.id, json()
+        assert item['user'] == com.user.id, json()
 
 
 
@@ -52,13 +52,13 @@ def test_get_comments_by_user():
     assert response.status_code == 200, response.json()
     assert response['Content-Type'] == 'application/json'
     for item, com in zip(data, comments):
-        assert 'comment_id' in item, response.json()
+        assert 'id' in item, response.json()
         assert 'content' in item, response.json()
         assert 'recipe' in item, response.json()
         assert 'user' in item, response.json()
         assert item['content'] == com.content, json()
-        assert item['recipe'] == com.recipe.recipe_id, json()
-        assert item['user'] == com.user.user_id, json()
+        assert item['recipe'] == com.recipe.id, json()
+        assert item['user'] == com.user.id, json()
 
 
 ## TEST BY RECIPE
@@ -70,7 +70,7 @@ def test_get_comments_by_recipe():
     client = APIClient()
     #client.force_authenticate(user)
     for recipe in recipes:
-        url = f'/api/recipes/comments/byrecipe/{recipe.recipe_id}/'
+        url = f'/api/recipes/comments/byrecipe/{recipe.id}/'
 
         response = client.get(url)
 
@@ -84,10 +84,10 @@ def test_get_comments_by_recipe():
         assert response.status_code == 200, response.json()
         assert response['Content-Type'] == 'application/json'
         for item, com in zip(data, comments):
-            assert 'comment_id' in item, response.json()
+            assert 'id' in item, response.json()
             assert 'content' in item, response.json()
             assert 'recipe' in item, response.json()
             assert 'user' in item, response.json()
             assert item['content'] == com.content, json()
-            assert item['recipe'] == com.recipe.recipe_id, json()
-            assert item['user'] == com.user.user_id, json()
+            assert item['recipe'] == com.recipe.id, json()
+            assert item['user'] == com.user.id, json()
