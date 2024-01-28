@@ -52,23 +52,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
     #     # return super().get_queryset()  # Return the default queryset if not 'created_by_user'
     
     @action(detail=True, methods=['get'])
-    def tags(self, request, pk=None):
-        recipe = self.get_object()
-        recipe_tags = RecipeTag.objects.filter(recipe=recipe)
+    def tags(self, request, pk=None, recipe_id=None):
+        recipe_tags = RecipeTag.objects.filter(recipe_id=recipe_id)
         serializer = RecipeTagSerializer(recipe_tags, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
-    def ingredients (self, request, pk=None):
+    def ingredients (self, request, pk=None, recipe_id=None):
         recipe = self.get_object()
-        recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        recipe_ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
         serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
-    def comments (self, request, pk=None):
+    def comments (self, request, pk=None, recipe_id=None):
         recipe = self.get_object()
-        recipe_comments = Comment.objects.filter(recipe=recipe)
+        recipe_comments = Comment.objects.filter(recipe_id=recipe_id)
         serializer = CommentSerializer(recipe_comments, many=True)
         return Response(serializer.data)
 

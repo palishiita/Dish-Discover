@@ -74,3 +74,13 @@ def create_recipe_ingredients_list(ingredients, recipes):
     return [
         RecipeIngredient.objects.create(recipe=recipe, ingredient= ingredient, amount=200.0, unit='g') for ingredient in ingredients for recipe in recipes
     ]
+
+def create_preferred_tags(user, tags):
+    return [
+        PreferredTag.objects.create(user=user, tag=tag, weight=0.8) for tag in tags
+    ]
+
+def create_recipe_tags_list(tags, recipes):
+    return [
+        RecipeTag.objects.create(recipe=recipe, tag=tag, weight=0.8) for tag in tags for recipe in recipes
+    ]
