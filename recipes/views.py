@@ -149,3 +149,13 @@ class LikesOnUsersRecipes(viewsets.GenericViewSet):
         serializer = LikeCountSerializer({'number': likes})
         return Response(serializer.data)
 
+class ReportTicketViewSet(viewsets.ModelViewSet):
+    queryset = ReportTicket.objects.all()
+    serializer_class = ReportTicketSerializer
+    # def get_queryset(self):
+    #     return ReportTicket.objects.filter(user=self.request.user)
+    # def perform_create(self,serializer):
+    #     serializer.save(
+    #     user=self.request.user,
+    #     recipe=self.kwargs.get('pk'),
+    #     )
