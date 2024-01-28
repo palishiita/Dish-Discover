@@ -13,7 +13,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ['username', 'password', 'password2', 'email', 'first_name', 'last_name']
 
 
-    def create(self, validated_data):
+    def save(self):
         user = DishDiscoverUser(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
