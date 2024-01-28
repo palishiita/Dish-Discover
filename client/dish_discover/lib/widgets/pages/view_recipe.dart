@@ -7,10 +7,9 @@ import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
 import '../display/loading_indicator.dart';
 import '../display/recipe_cover.dart';
-import '../display_with_input/comments_box.dart';
+import '../display_with_input/ingredients_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
-import '../display_with_input/tags_box.dart';
 
 class ViewRecipePage extends ConsumerStatefulWidget {
   static const routeName = "/recipe";
@@ -82,7 +81,7 @@ class _ViewRecipePageState extends ConsumerState<ViewRecipePage> {
                   action1: PopupMenuAction.share,
                   onPressed1: () => PopupMenuAction.shareAction(
                       context,
-                      "Share recipe",
+                      "Sharing recipe",
                       "Have a look at this recipe: ",
                       recipe.getUrl()),
                   action2:
@@ -105,15 +104,12 @@ class _ViewRecipePageState extends ConsumerState<ViewRecipePage> {
             ],
             flexibleSpace: AspectRatio(
                 aspectRatio: 4 / 3, child: RecipeCover(cover: recipe.image))),
-        body: SingleChildScrollView(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-              RecipeHeader(recipeProvider: recipeProvider!),
-              //IngredientsBox(recipeProvider: recipeProvider!),
-              StepsBox(recipeProvider: recipeProvider!),
-              TagsBox(recipeProvider: recipeProvider!),
-              CommentsBox(recipeProvider: recipeProvider!)
-            ])));
+        body: ListView(children: [
+          RecipeHeader(recipeProvider: recipeProvider!),
+          IngredientsBox(recipeProvider: recipeProvider!),
+          StepsBox(recipeProvider: recipeProvider!),
+          // TagsBox(recipeProvider: recipeProvider!),
+          // CommentsBox(recipeProvider: recipeProvider!)
+        ]));
   }
 }

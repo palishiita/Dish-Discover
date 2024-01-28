@@ -25,11 +25,17 @@ enum PopupMenuAction {
       BuildContext context, String title, String message, String url) async {
     if (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS) {
-      await FlutterShare.share(title: title, text: message, linkUrl: url);
+      bool? result =
+          await FlutterShare.share(title: title, text: message, linkUrl: url);
+
+      if (result != null && result) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('\u{2713}  Content shared!')));
+      }
     } else {
       await Clipboard.setData(ClipboardData(text: url));
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('URL copied to clipboard!')));
+          const SnackBar(content: Text('\u{2713}  URL copied to clipboard!')));
     }
   }
 

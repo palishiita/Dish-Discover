@@ -21,21 +21,53 @@ class SavedTab extends StatelessWidget {
                 if (kDebugMode && recipes.isEmpty) {
                   recipes = [
                     Recipe(
-                        author: 'dummy',
+                        author: 'test_dummy',
                         title: 'My test recipe',
                         description: 'Some description',
-                        steps: 'Contents',
+                        steps: AppState.markdownTestText,
                         id: 1,
                         image: Image.asset('assets/images/logo.png'))
                   ];
                   recipes[0].editRecipe(ingredients: [
-                    Ingredient(id: 0, name: 'tomato', quantity: 3)
+                    Ingredient(id: 0, name: 'tomato', quantity: 2),
+                    Ingredient(
+                        id: 0, name: 'basil', quantity: 2, unit: 'teaspoons'),
+                    Ingredient(
+                        id: 0, name: 'flatbread', quantity: 3, unit: 'pieces'),
+                    Ingredient(
+                        id: 0,
+                        name: 'olive oil',
+                        quantity: 1,
+                        unit: 'tablespoon'),
+                    Ingredient(id: 0, name: 'salt', quantity: 1, unit: 'pinch'),
+                    Ingredient(
+                        id: 0, name: 'garlic', quantity: 0.5, unit: 'teaspoons')
                   ], tags: [
+                    Tag(
+                        isPredefined: true,
+                        name: 'basil',
+                        category: TagCategory.ingredient),
+                    Tag(
+                        isPredefined: true,
+                        name: 'bread',
+                        category: TagCategory.ingredient),
+                    Tag(
+                        isPredefined: true,
+                        name: 'tomato',
+                        category: TagCategory.ingredient),
                     Tag(
                         isPredefined: true,
                         name: 'Italian',
                         category: TagCategory.cuisine),
-                    Tag(isPredefined: false, name: 'no-bake', category: null)
+                    Tag(isPredefined: false, name: 'no-bake', category: null),
+                    Tag(
+                        isPredefined: false,
+                        name: 'cheap',
+                        category: TagCategory.expense),
+                    Tag(
+                        isPredefined: true,
+                        name: 'fast',
+                        category: TagCategory.time)
                   ]);
                 }
                 return recipes;

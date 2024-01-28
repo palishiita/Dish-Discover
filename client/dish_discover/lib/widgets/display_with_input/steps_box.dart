@@ -1,5 +1,6 @@
 import 'package:dish_discover/widgets/display/tab_title.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
+import 'package:dish_discover/widgets/inputs/popup_menu.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -37,8 +38,12 @@ class StepsBox extends ConsumerWidget {
                       : Markdown(
                           physics: const NeverScrollableScrollPhysics(),
                           data: recipe.steps,
+                          onTapLink: (alias, url, _) =>
+                              PopupMenuAction.shareAction(context, alias,
+                                  'Check this out: ', url ?? 'null'),
                           selectable: true,
-                          shrinkWrap: true)))
+                          shrinkWrap: true,
+                          softLineBreak: true)))
         ])));
   }
 }

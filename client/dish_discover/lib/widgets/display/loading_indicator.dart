@@ -18,9 +18,10 @@ class LoadingIndicator extends StatelessWidget {
             title: TabTitle(title: title ?? ''),
             centerTitle: true,
             leading: showBackButton ? const BackButton() : null),
-        body: Center(
-            child: Text('Loading...',
-                style: Theme.of(context).textTheme.labelLarge)));
+        body: SingleChildScrollView(
+            child: Center(
+                child: Text('Loading...',
+                    style: Theme.of(context).textTheme.labelLarge))));
   }
 }
 
@@ -43,6 +44,7 @@ class LoadingErrorIndicator extends StatelessWidget {
             title: TabTitle(title: title ?? ''),
             centerTitle: true,
             leading: showBackButton ? const BackButton() : null),
-        body: Center(child: NoResultsCard(timedOut: timedOut)));
+        body: SingleChildScrollView(
+            child: Center(child: NoResultsCard(timedOut: timedOut))));
   }
 }

@@ -85,7 +85,7 @@ class _UserPageState extends ConsumerState<UserPage> {
         appBar: AppBar(
             toolbarHeight: appBarHeight,
             scrolledUnderElevation: 0.0,
-            title: TabTitle(title: widget.username),
+            title: TabTitle(title: user.username),
             centerTitle: true,
             leading: const BackButton(),
             actions: [
@@ -96,8 +96,11 @@ class _UserPageState extends ConsumerState<UserPage> {
                           Navigator.of(context).pushNamed("/settings"))
                   : PopupMenu(
                       action1: PopupMenuAction.share,
-                      onPressed1: () => PopupMenuAction.shareAction(context,
-                          "Share user", "Have a look at this: ", user.getUrl()),
+                      onPressed1: () => PopupMenuAction.shareAction(
+                          context,
+                          "Sharing user",
+                          "Have a look at this: ",
+                          user.getUrl()),
                       action2: AppState.currentUser!.isModerator
                           ? PopupMenuAction.ban
                           : PopupMenuAction.report,

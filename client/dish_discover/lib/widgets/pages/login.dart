@@ -85,7 +85,8 @@ class _LoginPageState extends State<LoginPage> {
                                   AppState.currentUser = User(
                                       username: username,
                                       password: password,
-                                      email: '');
+                                      email: '',
+                                      isModerator: true);
                                 }
 
                                 // TODO await login validation and return token

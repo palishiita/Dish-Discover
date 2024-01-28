@@ -53,7 +53,7 @@ class RecipeCard extends ConsumerWidget {
                           action1: PopupMenuAction.share,
                           onPressed1: () => PopupMenuAction.shareAction(
                               context,
-                              "Share recipe",
+                              "Sharing recipe",
                               "Have a look at this recipe: ",
                               recipe.getUrl()), // TODO sharing is bugged
                           action2: AppState.currentUser!.isModerator

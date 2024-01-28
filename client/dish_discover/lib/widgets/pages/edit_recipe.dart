@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../entities/recipe.dart';
 import '../display/loading_indicator.dart';
+import '../display_with_input/ingredients_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
 import '../display_with_input/tags_box.dart';
@@ -86,15 +87,12 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
                     PopupMenuAction.deleteAction(context, recipe.id))
           ],
         ),
-        body: SingleChildScrollView(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-              RecipeHeader(recipeProvider: recipeProvider!, forEditing: true),
-              //IngredientsBox(
-              //    recipeProvider: widget.recipeProvider!, forEditing: true),
-              StepsBox(recipeProvider: recipeProvider!, forEditing: true),
-              TagsBox(recipeProvider: recipeProvider!, forEditing: true)
-            ])));
+        body: ListView(children: [
+          RecipeHeader(recipeProvider: recipeProvider!, forEditing: true),
+          IngredientsBox(
+              recipeProvider: widget.recipeProvider!, forEditing: true),
+          StepsBox(recipeProvider: recipeProvider!, forEditing: true),
+          TagsBox(recipeProvider: recipeProvider!, forEditing: true)
+        ]));
   }
 }

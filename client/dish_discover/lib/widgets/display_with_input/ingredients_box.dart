@@ -28,15 +28,21 @@ class _IngredientsBoxState extends ConsumerState<IngredientsBox> {
     Recipe recipe = ref.watch(widget.recipeProvider);
 
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Card(
-            child: Column(children: [
-          const TabTitle(title: "Ingredients"),
-          ListView(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Center(child: TabTitle(title: "Ingredients"))),
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: List.generate(
                   recipe.ingredients.length,
-                  (index) => Text(recipe.ingredients[index].name,
-                      overflow: TextOverflow.fade)))
+                  (index) => Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text("\u2022  ${recipe.ingredients[index].name}",
+                          overflow: TextOverflow.fade))))
         ])));
   }
 }

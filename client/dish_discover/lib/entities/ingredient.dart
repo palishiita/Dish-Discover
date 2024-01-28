@@ -8,7 +8,7 @@ import 'app_state.dart';
 class Ingredient {
   final int id;
   final String name;
-  int quantity;
+  double quantity;
   int? caloricDensity;
   String? unit;
 
