@@ -134,3 +134,22 @@ def test_get_recipe_tags():
 
         assert item['recipe'] == tag.recipe.recipe_id,  response.json()
 
+def add_preferred_tag():
+    client =Client()    
+    tag_category = TagCategory.objects.create(category_name='Cousine')      
+    user = create_user()
+    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
+        
+    
+    data = {
+        'user':user.user_id,
+        'tag': tag.id,
+        'weight' : 0.8
+    }
+    
+    url = f'/api/recipes/tags/'
+    response = client.post(url, data)
+    data = json.loads(response.content)
+    client.post()
+
+    assert PreferredTag.objects.all().count() == 1
