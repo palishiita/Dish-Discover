@@ -7,11 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'app_state.dart';
 import 'ingredient.dart';
 
 class Recipe extends ChangeNotifier {
   final int id;
   final String author;
+  Image? authorAvatar;
   String title;
   String description;
   String steps;
@@ -26,6 +28,7 @@ class Recipe extends ChangeNotifier {
   Recipe(
       {required this.id,
       required this.author,
+      this.authorAvatar,
       this.title = '',
       this.description = '',
       this.steps = '',
@@ -117,9 +120,13 @@ class Recipe extends ChangeNotifier {
     };
   }
 
+  String getUrl() {
+    return "http://${AppState.clientDomain}/recipe/$id";
+  }
+
   static Future<List<Recipe>> getRecipes() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/recipes/recipes/'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/recipes/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipe'];
@@ -131,8 +138,8 @@ class Recipe extends ChangeNotifier {
   }
 
   static Future<Recipe> getRecipe(int recipeId) async {
-    final response = await http
-        .get(Uri.parse('http://localhost:8000/api/recipes/recipes/$recipeId'));
+    final response = await http.get(Uri.parse(
+        'http://${AppState.serverDomain}/api/recipes/recipes/$recipeId'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body)['recipe'];
@@ -144,8 +151,8 @@ class Recipe extends ChangeNotifier {
   }
 
   static Future<List<Ingredient>> getIngredientsForRecipe(int recipeId) async {
-    final response = await http.get(
-        Uri.parse('http://localhost:8000/api/recipes/$recipeId/ingredients'));
+    final response = await http.get(Uri.parse(
+        'http://${AppState.serverDomain}/api/recipes/$recipeId/ingredients'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['ingredients'];
@@ -159,7 +166,8 @@ class Recipe extends ChangeNotifier {
   static Future<void> saveRecipe(Recipe recipe) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8000/api/recipes/recipes/${recipe.id}'),
+        Uri.parse(
+            'http://${AppState.serverDomain}/api/recipes/recipes/${recipe.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -179,5 +187,24 @@ class Recipe extends ChangeNotifier {
         print('Error saving recipe: $e');
       }
     }
+  }
+
+  static List<Recipe> filterRecipes(List<Recipe> recipes, List<Tag> filter) {
+    List<Recipe> filtered = [];
+
+    for (Recipe recipe in recipes) {
+      bool add = false;
+      for (Tag tag in recipe.tags) {
+        if (filter.contains(tag)) {
+          add = true;
+        }
+      }
+
+      if (add) {
+        filtered.add(recipe);
+      }
+    }
+
+    return filtered;
   }
 }

@@ -1,25 +1,48 @@
+import 'package:dish_discover/widgets/display/no_results_card.dart';
+import 'package:dish_discover/widgets/display/tab_title.dart';
 import 'package:flutter/material.dart';
 
-class LoadingIndicator extends StatefulWidget {
-  final Duration timeout;
-  const LoadingIndicator({super.key, required this.timeout});
+import '../style/style.dart';
 
-  @override
-  State<StatefulWidget> createState() => _LoadingIndicatorState();
-}
-
-class _LoadingIndicatorState extends State<LoadingIndicator> {
-  late DateTime start;
-  @override
-  void initState() {
-    super.initState();
-    start = DateTime.now();
-  }
+class LoadingIndicator extends StatelessWidget {
+  final String? title;
+  final bool showBackButton;
+  const LoadingIndicator({super.key, this.title, this.showBackButton = true});
 
   @override
   Widget build(BuildContext context) {
-    Duration diff = DateTime.now().difference(start);
-    return CircularProgressIndicator(
-        value: (diff.inMicroseconds) / widget.timeout.inMicroseconds);
+    return Scaffold(
+        appBar: AppBar(
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            title: TabTitle(title: title ?? ''),
+            centerTitle: true,
+            leading: showBackButton ? const BackButton() : null),
+        body: Center(
+            child: Text('Loading...',
+                style: Theme.of(context).textTheme.labelLarge)));
+  }
+}
+
+class LoadingErrorIndicator extends StatelessWidget {
+  final String? title;
+  final bool showBackButton;
+  final bool timedOut;
+  const LoadingErrorIndicator(
+      {super.key,
+      this.title,
+      this.showBackButton = true,
+      this.timedOut = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            title: TabTitle(title: title ?? ''),
+            centerTitle: true,
+            leading: showBackButton ? const BackButton() : null),
+        body: Center(child: NoResultsCard(timedOut: timedOut)));
   }
 }

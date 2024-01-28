@@ -1,8 +1,9 @@
+import 'package:dish_discover/widgets/display/loading_indicator.dart';
 import 'package:dish_discover/widgets/pages/edit_recipe.dart';
 import 'package:dish_discover/widgets/style/style.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_share/flutter_share.dart';
 
 import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
@@ -14,20 +15,77 @@ import '../display/user_header.dart';
 import '../inputs/custom_text_field.dart';
 import '../inputs/popup_menu.dart';
 
-class UserPage extends ConsumerWidget {
-  final ChangeNotifierProvider<User> userProvider;
-  const UserPage({super.key, required this.userProvider});
+class UserPage extends ConsumerStatefulWidget {
+  static const routeName = "/user";
+  final String username;
+  final ChangeNotifierProvider<User>? userProvider;
+
+  const UserPage({super.key, required this.username, this.userProvider});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    User user = ref.watch(userProvider);
-    bool isCurrentUser = (user.username == AppState.currentUser!.username);
+  ConsumerState<ConsumerStatefulWidget> createState() => _UserPageState();
+}
+
+class _UserPageState extends ConsumerState<UserPage> {
+  ChangeNotifierProvider<User>? userProvider;
+  late bool isCurrentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = widget.userProvider;
+
+    isCurrentUser = (widget.username == AppState.currentUser!.username);
+    if (userProvider == null && isCurrentUser) {
+      userProvider =
+          ChangeNotifierProvider<User>((ref) => AppState.currentUser!);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return userProvider == null ? loading() : done();
+  }
+
+  Widget loading() {
+    return FutureBuilder(
+        future: Future<User>(() => User.getUser(widget.username)),
+        builder: (context, userData) {
+          if (userData.connectionState != ConnectionState.done) {
+            return LoadingIndicator(title: widget.username);
+          }
+
+          User user;
+          if (userData.data == null) {
+            if (kDebugMode) {
+              user = User(
+                  username: "${widget.username}_debug",
+                  description:
+                      'Testing testing testing testing testing testing testing',
+                  image: Image.asset("assets/images/launcher_icon.jpg"),
+                  email: '',
+                  password: '');
+            } else {
+              return LoadingErrorIndicator(title: widget.username);
+            }
+          } else {
+            user = userData.data!;
+          }
+
+          userProvider = ChangeNotifierProvider<User>((ref) => user);
+
+          return done();
+        });
+  }
+
+  Widget done() {
+    User user = ref.watch(userProvider!);
 
     return Scaffold(
         appBar: AppBar(
             toolbarHeight: appBarHeight,
             scrolledUnderElevation: 0.0,
-            title: TabTitle(title: user.username),
+            title: TabTitle(title: widget.username),
             centerTitle: true,
             leading: const BackButton(),
             actions: [
@@ -38,51 +96,19 @@ class UserPage extends ConsumerWidget {
                           Navigator.of(context).pushNamed("/settings"))
                   : PopupMenu(
                       action1: PopupMenuAction.share,
-                      onPressed1: () async => await FlutterShare.share(
-                          title: 'Share user',
-                          text: user.username,
-                          linkUrl: '[link]'), // TODO link
+                      onPressed1: () => PopupMenuAction.shareAction(context,
+                          "Share user", "Have a look at this: ", user.getUrl()),
                       action2: AppState.currentUser!.isModerator
                           ? PopupMenuAction.ban
                           : PopupMenuAction.report,
                       onPressed2: () => AppState.currentUser!.isModerator
-                          ? {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Ban recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Password',
-                                        obscure: true),
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Repeat password',
-                                        obscure: true)
-                                  ]),
-                                  'Ban',
-                                  () {})
-                            }
-                          : {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Report recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Reason',
-                                        obscure: true)
-                                  ]),
-                                  'Report',
-                                  () {})
-                            })
+                          ? PopupMenuAction.banAction(
+                              context, null, null, user.username)
+                          : PopupMenuAction.reportAction(
+                              context, null, null, user.username))
             ]),
         body: Column(children: [
-          UserHeader(userProvider: userProvider),
+          UserHeader(userProvider: userProvider!),
           RecipeList(
               getRecipes: () => Future<List<Recipe>>(() => (user.addedRecipes)))
         ]),
@@ -106,9 +132,8 @@ class UserPage extends ConsumerWidget {
                     author: AppState.currentUser!.username);
                 AppState.currentUser!.addRecipe(newRecipe);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => EditRecipePage(
-                        recipeProvider: ChangeNotifierProvider<Recipe>(
-                            (ref) => newRecipe))));
+                    builder: (context) =>
+                        EditRecipePage(recipeId: newRecipe.id)));
               });
             }));
   }

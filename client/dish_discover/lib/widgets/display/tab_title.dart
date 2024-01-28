@@ -9,7 +9,10 @@ class TabTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 17.0, horizontal: 25.0),
-        child: Text(title, style: Theme.of(context).textTheme.titleMedium));
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+        child: Text(title,
+            softWrap: true,
+            overflow: TextOverflow.fade,
+            style: Theme.of(context).textTheme.titleMedium));
   }
 }

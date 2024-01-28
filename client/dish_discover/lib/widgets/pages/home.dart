@@ -1,4 +1,5 @@
 import 'package:dish_discover/widgets/inputs/custom_search_bar.dart';
+import 'package:dish_discover/widgets/pages/user.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'home_tabs/recommended_tab.dart';
 import 'home_tabs/saved_tab.dart';
 
 class HomePage extends StatefulWidget {
+  static const routeName = "/home";
+
   HomePage({super.key}) {
     if (kDebugMode && AppState.currentUser == null) {
       AppState.currentUser =
@@ -46,7 +49,9 @@ class _HomePageState extends State<HomePage>
             centerTitle: true,
             actions: [
               IconButton(
-                  onPressed: () => Navigator.pushNamed(context, '/me'),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          UserPage(username: AppState.currentUser!.username))),
                   icon: const Icon(Icons.account_circle_rounded))
             ]),
         body: Column(children: [
@@ -61,6 +66,7 @@ class _HomePageState extends State<HomePage>
           ))
         ]),
         bottomNavigationBar: TabBar(
+          padding: const EdgeInsets.symmetric(horizontal: 120),
           controller: tabController,
           tabs: List.filled(
               AppState.currentUser!.isModerator ? 3 : 2,
@@ -69,7 +75,7 @@ class _HomePageState extends State<HomePage>
                   child: Icon(Icons.circle, size: 13))),
           indicatorColor: baseColor.withAlpha(0),
           labelColor: buttonColor,
-          unselectedLabelColor: Colors.blueGrey[100]!,
+          unselectedLabelColor: Colors.blueGrey.withAlpha(0x52),
         ));
   }
 }

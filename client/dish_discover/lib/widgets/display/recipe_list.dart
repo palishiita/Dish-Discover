@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_top/scroll_to_top.dart';
 
-import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
 import '../display_with_input/recipe_card.dart';
 import '../style/style.dart';
@@ -29,10 +28,10 @@ class _RecipeListState extends State<RecipeList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: widget.getRecipes().timeout(AppState.timeout),
+        future: widget.getRecipes(),
         builder: (context, recipes) => recipes.connectionState !=
                 ConnectionState.done
-            ? Center(child: LoadingIndicator(timeout: AppState.timeout))
+            ? const LoadingIndicator()
             : Expanded(
                 child: recipes.hasError
                     ? const SingleChildScrollView(

@@ -21,7 +21,7 @@ class SavedTab extends StatelessWidget {
                 if (kDebugMode && recipes.isEmpty) {
                   recipes = [
                     Recipe(
-                        author: AppState.currentUser!.username,
+                        author: 'dummy',
                         title: 'My test recipe',
                         description: 'Some description',
                         steps: 'Contents',

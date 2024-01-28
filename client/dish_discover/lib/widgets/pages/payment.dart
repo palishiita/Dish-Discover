@@ -21,7 +21,7 @@ class PaymentPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text('Reminder: DishDiscover does not offer refunds!',
-                  style: TextStyle(fontSize: 13))
+                  softWrap: true, style: TextStyle(fontSize: 13))
             ])));
   }
 }

@@ -33,8 +33,10 @@ class _IngredientsBoxState extends ConsumerState<IngredientsBox> {
             child: Column(children: [
           const TabTitle(title: "Ingredients"),
           ListView(
-              children: List.generate(recipe.ingredients.length,
-                  (index) => Text(recipe.ingredients[index].name)))
+              children: List.generate(
+                  recipe.ingredients.length,
+                  (index) => Text(recipe.ingredients[index].name,
+                      overflow: TextOverflow.fade)))
         ])));
   }
 }

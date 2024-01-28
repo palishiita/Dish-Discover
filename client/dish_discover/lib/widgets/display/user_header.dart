@@ -18,8 +18,10 @@ class UserHeader extends ConsumerWidget {
     return ConstrainedBox(
         constraints: const BoxConstraints.tightFor(height: 170),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          UserAvatar(image: user.image),
-          Center(child: Text(user.description ?? '[Description]')),
+          UserAvatar(username: user.username, image: user.image),
+          Center(
+              child: Text(user.description,
+                  softWrap: true, overflow: TextOverflow.fade)),
           LikeSaveIndicator(
               likeButtonEnabled: true,
               likeCount: likeCount,

@@ -11,10 +11,6 @@ import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'entities/app_state.dart';
-import 'entities/recipe.dart';
-import 'entities/user.dart';
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: DishDiscoverApp()));
@@ -31,24 +27,23 @@ class DishDiscoverApp extends StatelessWidget {
         title: 'DishDiscover',
         theme: appThemeLight,
         routes: {
-          '/': (context) => const LoginPage(),
-          '/register': (context) => const RegisterPage(),
-          '/tutorial': (context) => const TutorialPage(),
-          '/dashboard': (context) => HomePage(),
-          '/settings': (context) => const SettingsPage(),
-          '/search': (context) => SearchPage(
+          LoginPage.routeName: (context) => const LoginPage(),
+          RegisterPage.routeName: (context) => const RegisterPage(),
+          TutorialPage.routeName: (context) => const TutorialPage(),
+          HomePage.routeName: (context) => HomePage(),
+          SettingsPage.routeName: (context) => const SettingsPage(),
+          SearchPage.routeName: (context) => SearchPage(
               searchPhrase:
-                  ModalRoute.of(context)?.settings.arguments as String),
-          //'/user': (context) => const UserPage(user),
-          '/me': (context) => UserPage(
-              userProvider:
-                  ChangeNotifierProvider<User>((ref) => AppState.currentUser!)),
-          '/recipe': (context) => ViewRecipePage(
-              recipeProvider: ChangeNotifierProvider<Recipe>(
-                  (ref) => Recipe(id: 1, author: ''))),
-          '/edit': (context) => EditRecipePage(
-              recipeProvider: ChangeNotifierProvider<Recipe>(
-                  (ref) => Recipe(id: 1, author: '')))
+                  (ModalRoute.of(context)?.settings.arguments ?? '') as String),
+          UserPage.routeName: (context) => UserPage(
+              username:
+                  (ModalRoute.of(context)?.settings.arguments ?? '') as String),
+          ViewRecipePage.routeName: (context) => ViewRecipePage(
+              recipeId:
+                  (ModalRoute.of(context)?.settings.arguments ?? -1) as int),
+          EditRecipePage.routeName: (context) => EditRecipePage(
+              recipeId:
+                  (ModalRoute.of(context)?.settings.arguments ?? -1) as int)
         });
   }
 }

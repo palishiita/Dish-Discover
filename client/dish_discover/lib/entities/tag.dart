@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'app_state.dart';
+
 enum TagCategory {
   cuisine(name: 'Cuisine'),
   difficulty(name: 'Difficulty'),
@@ -41,7 +43,7 @@ class Tag {
 
   static Future<void> addTag(Tag tag) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/recipes/tags'),
+      Uri.parse('http://${AppState.serverDomain}/api/recipes/tags'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(tag.toJson()),
     );
@@ -56,8 +58,8 @@ class Tag {
   }
 
   static Future<List<Tag>> getTags() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/recipes/tags'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/tags'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['tags'];

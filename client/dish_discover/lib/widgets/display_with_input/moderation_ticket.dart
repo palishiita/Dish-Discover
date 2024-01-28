@@ -2,9 +2,7 @@ import 'package:dish_discover/widgets/pages/view_recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../entities/recipe.dart';
 import '../../entities/ticket.dart';
-import '../../entities/user.dart';
 import '../display/user_avatar.dart';
 import '../pages/user.dart';
 
@@ -21,11 +19,6 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
   @override
   Widget build(BuildContext context) {
     Ticket ticket = ref.watch(widget.ticketProvider);
-    String contentType = ticket.violatorId != null
-        ? 'User'
-        : ticket.commentId != null
-            ? 'Comment'
-            : 'Recipe';
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
@@ -36,20 +29,17 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
               ListTile(
                   dense: false,
                   leading: UserAvatar(
+                      username: ticket.issuerId,
                       image: null, // TODO get User avatar
-                      diameter: 30,
-                      userProvider: ChangeNotifierProvider<User>((ref) => User(
-                          username: ticket.issuerId, email: '', password: ''))),
-                  title: Text('Ticket #${ticket.reportId}'),
+                      diameter: 30),
+                  title: Text('Ticket #${ticket.reportId}',
+                      softWrap: true, overflow: TextOverflow.fade),
                   subtitle: GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UserPage(
-                              userProvider: ChangeNotifierProvider<User>(
-                                  (ref) => User(
-                                      username: ticket.issuerId,
-                                      password: '',
-                                      email: ''))))),
-                      child: Text(ticket.issuerId)),
+                          builder: (context) =>
+                              UserPage(username: ticket.issuerId))),
+                      child: Text(ticket.issuerId,
+                          softWrap: true, overflow: TextOverflow.fade)),
                   trailing: AspectRatio(
                       aspectRatio: 2.0,
                       child: Row(
@@ -80,34 +70,26 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                       alignment: Alignment.topLeft,
                       child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text(ticket.reason)))),
+                          child: Text(ticket.reason,
+                              softWrap: true, overflow: TextOverflow.fade)))),
               const Divider(height: 1.0),
               Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 5.0, horizontal: 10.0),
                   child: Row(children: [
-                    Expanded(child: Text("${ticket.issuerId}:$contentType")),
+                    Expanded(
+                        child: Text(
+                            "${ticket.issuerId}:${ticket.violatorId != null ? 'User' : ticket.commentId != null ? 'Comment' : 'Recipe'}",
+                            softWrap: true,
+                            overflow: TextOverflow.fade)),
                     IconButton(
                         icon: const Icon(Icons.arrow_right_alt_rounded),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => contentType == 'User'
-                                  ? UserPage(
-                                      userProvider:
-                                          ChangeNotifierProvider<User>((ref) =>
-                                              User(
-                                                  username: ticket.violatorId ??
-                                                      '[username]',
-                                                  password: '',
-                                                  email: '',
-                                                  isModerator: false)))
+                              builder: (context) => ticket.violatorId != null
+                                  ? UserPage(username: ticket.violatorId!)
                                   : ViewRecipePage(
-                                      recipeProvider:
-                                          ChangeNotifierProvider<Recipe>(
-                                              (ref) => Recipe(
-                                                  id: ticket.recipeId!,
-                                                  title: 'Bad recipe/comment',
-                                                  author: '')))));
+                                      recipeId: ticket.recipeId!)));
                         })
                   ]))
             ]))));

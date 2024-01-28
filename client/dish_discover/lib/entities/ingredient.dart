@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'app_state.dart';
+
 class Ingredient {
   final int id;
   final String name;
@@ -37,7 +39,7 @@ class Ingredient {
 
   static Future<void> addIngredient(Ingredient ingredient) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/ingredients'),
+      Uri.parse('http://${AppState.serverDomain}/api/ingredients'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(ingredient.toJson()),
     );
@@ -53,8 +55,8 @@ class Ingredient {
   }
 
   static Future<List<Ingredient>> getIngredients() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/ingredients'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/ingredients'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['ingredients'];

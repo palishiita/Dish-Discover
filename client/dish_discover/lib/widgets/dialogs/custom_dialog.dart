@@ -48,11 +48,15 @@ class CustomDialog extends StatelessWidget {
             padding: const EdgeInsets.all(5.0),
             child: AlertDialog(
                 titleTextStyle: Theme.of(context).textTheme.labelLarge,
-                title: Center(child: Text(title)),
+                title: Center(child: Text(title, softWrap: true)),
                 content: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [Text(subtitle), message ?? Container(), child]),
+                    children: [
+                      Text(subtitle, softWrap: true),
+                      message ?? Container(),
+                      child
+                    ]),
                 actions: [
                   Center(
                       child: OutlinedButton(
