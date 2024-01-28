@@ -2,6 +2,7 @@ import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 class TutorialPage extends StatelessWidget {
+  static const routeName = "/tutorial";
   const TutorialPage({super.key});
 
   @override
@@ -26,6 +27,14 @@ class TutorialPage extends StatelessWidget {
                 shape: const RoundedRectangleBorder(
                     side: BorderSide(),
                     borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                child: const Center(child: Text('Contents')))));
+                child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20.0)),
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: Image.asset("assets/images/tutorial_1.png")
+                                .image)),
+                    child: Container()))));
   }
 }

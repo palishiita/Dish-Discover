@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'app_state.dart';
 
 class Ticket extends ChangeNotifier {
   final int reportId;
   int? recipeId;
   String? violatorId;
   final String issuerId;
+  Image? issuerAvatar;
   int? commentId;
   final String reason;
   bool accepted;
@@ -17,6 +21,7 @@ class Ticket extends ChangeNotifier {
       this.recipeId,
       this.violatorId,
       required this.issuerId,
+      this.issuerAvatar,
       this.commentId,
       required this.reason,
       this.accepted = false}) {
@@ -59,7 +64,7 @@ class Ticket extends ChangeNotifier {
 
   static Future<void> addTicket(Ticket ticket) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/tickets'),
+      Uri.parse('http://${AppState.serverDomain}/api/tickets'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(ticket.toJson()),
     );
@@ -75,8 +80,8 @@ class Ticket extends ChangeNotifier {
   }
 
   static Future<List<Ticket>> getTickets() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/tickets'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/tickets'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['tickets'];

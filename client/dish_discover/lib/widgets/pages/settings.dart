@@ -8,6 +8,7 @@ import '../../entities/app_state.dart';
 import '../dialogs/custom_dialog.dart';
 
 class SettingsPage extends StatelessWidget {
+  static const routeName = "/settings";
   const SettingsPage({super.key});
 
   @override

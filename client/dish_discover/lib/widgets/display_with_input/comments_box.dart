@@ -22,7 +22,7 @@ class CommentTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     Comment comment = ref.watch(commentProvider);
     User author = User(
-        username: comment.authorId,
+        username: comment.author,
         isModerator: false,
         password: '',
         email: '',
@@ -37,16 +37,15 @@ class CommentTile extends ConsumerWidget {
                 child: Column(children: [
               ListTile(
                   leading: UserAvatar(
+                      username: comment.author,
                       image: author.image,
-                      diameter: 30,
-                      userProvider:
-                          ChangeNotifierProvider<User>((ref) => author)),
+                      diameter: 30),
                   title: GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UserPage(
-                              userProvider: ChangeNotifierProvider<User>(
-                                  (ref) => author)))),
-                      child: Text(author.username)),
+                          builder: (context) =>
+                              UserPage(username: comment.author))),
+                      child: Text(author.username,
+                          softWrap: true, overflow: TextOverflow.fade)),
                   trailing: author.username
                               .compareTo(AppState.currentUser!.username) ==
                           0
@@ -82,10 +81,12 @@ class CommentTile extends ConsumerWidget {
                           },
                           icon: const Icon(Icons.flag))),
               const Divider(height: 1.0),
-              const Align(
+              Align(
                   alignment: Alignment.topLeft,
-                  child:
-                      Padding(padding: EdgeInsets.all(15.0), child: Text('')))
+                  child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(comment.content,
+                          softWrap: true, overflow: TextOverflow.fade)))
             ]))));
   }
 }
@@ -102,7 +103,7 @@ class CommentsBox extends ConsumerWidget {
     if (kDebugMode && comments.isEmpty) {
       comments = [
         Comment(
-            authorId: 'Test_user',
+            author: 'Test_user',
             recipeId: 0,
             commentId: 0,
             content: '[Testing]')

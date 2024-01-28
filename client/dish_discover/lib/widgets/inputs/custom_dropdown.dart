@@ -24,8 +24,9 @@ class CustomDropdown<T> extends StatelessWidget {
         style: Theme.of(context).textTheme.labelMedium,
         alignment: Alignment.center,
         items: labeledOptions
-            .map((entry) =>
-                DropdownMenuItem(value: entry.$1, child: Text(entry.$2)))
+            .map((entry) => DropdownMenuItem(
+                value: entry.$1,
+                child: Text(entry.$2, overflow: TextOverflow.fade)))
             .toList(),
         onChanged: onChanged);
   }

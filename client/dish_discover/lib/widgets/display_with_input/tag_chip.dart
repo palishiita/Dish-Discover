@@ -28,11 +28,11 @@ class TagChip extends StatelessWidget {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                        Text('#${tag.name}'),
+                        Text('#${tag.name}', overflow: TextOverflow.fade),
                         Text(" 0" // TODO get tags count
                             )
                       ])
-                : Text('#${tag.name}'),
+                : Text('#${tag.name}', overflow: TextOverflow.fade),
             onSelected: (value) => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SearchPage(
                       searchPhrase: "",
@@ -46,11 +46,11 @@ class TagChip extends StatelessWidget {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                        Text('#${tag.name}'),
+                        Text('#${tag.name}', overflow: TextOverflow.fade),
                         Text(" 0" // TODO get tags count
                             )
                       ])
-                : Text('#${tag.name}'),
+                : Text('#${tag.name}', overflow: TextOverflow.fade),
             deleteIcon: Icon(icon),
             onDeleted: onPressed);
   }

@@ -1,4 +1,5 @@
 import 'package:dish_discover/widgets/display/tab_title.dart';
+import 'package:dish_discover/widgets/pages/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,8 +27,20 @@ class RecipeHeader extends ConsumerWidget {
         constraints: const BoxConstraints.tightFor(height: 170),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           TabTitle(title: recipe.title),
-          Text(recipe.author),
-          Center(child: Text(recipe.description)),
+          GestureDetector(
+              child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(recipe.author,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(color: Colors.black54))),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UserPage(username: recipe.author)))),
+          Center(
+              child: Text(recipe.description,
+                  softWrap: true, overflow: TextOverflow.fade)),
           LikeSaveIndicator(
               likeButtonEnabled: likedRecipe,
               likeCount: recipe.likeCount,

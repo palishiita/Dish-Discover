@@ -7,6 +7,8 @@ import '../../entities/user.dart';
 import '../dialogs/custom_dialog.dart';
 
 class LoginPage extends StatefulWidget {
+  static const routeName = "/";
+
   const LoginPage({super.key});
 
   @override
@@ -28,55 +30,68 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar:
+            AppBar(toolbarHeight: appBarHeight, scrolledUnderElevation: 0.0),
         body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
+            child: AppState.currentUser != null
+                ? Center(
                     child: Column(children: [
-                  Image.asset('assets/images/logo.png', scale: 0.7),
-                  Text(errorMessage ?? ""),
-                  CustomTextField(
-                      controller: usernameController, hintText: 'Username'),
-                  CustomTextField(
-                      controller: passwordController,
-                      hintText: 'Password',
-                      obscure: true),
-                  Align(
-                      widthFactor: 200,
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                          child: Text('Recover password',
-                              style: textStyle.merge(const TextStyle(
-                                  decoration: TextDecoration.underline))),
-                          onPressed: () => CustomDialog.callDialog(
-                              context,
-                              "Recover password",
-                              "",
-                              null,
-                              CustomTextField(
-                                  controller: TextEditingController(),
-                                  hintText: "Email"),
-                              "Send email",
-                              () => {}))),
-                  Align(
-                      widthFactor: 200,
-                      alignment: Alignment.bottomRight,
-                      child: OutlinedButton(
-                          child: Text('Login', style: textStyle),
-                          onPressed: () async {
-                            String username = usernameController.text;
-                            String password = passwordController.text;
+                    const Text('Already logged in.', softWrap: true),
+                    OutlinedButton(
+                        child: Text('Return to Home Page', style: textStyle),
+                        onPressed: () => Navigator.of(context)
+                            .pushNamedAndRemoveUntil(
+                                '/home', (route) => route.isFirst))
+                  ]))
+                : Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Center(
+                        child: Column(children: [
+                      Image.asset('assets/images/logo.png', scale: 0.7),
+                      Text(errorMessage ?? "", softWrap: true),
+                      CustomTextField(
+                          controller: usernameController, hintText: 'Username'),
+                      CustomTextField(
+                          controller: passwordController,
+                          hintText: 'Password',
+                          obscure: true),
+                      Align(
+                          widthFactor: 200,
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                              child: Text('Recover password',
+                                  style: textStyle.merge(const TextStyle(
+                                      decoration: TextDecoration.underline))),
+                              onPressed: () => CustomDialog.callDialog(
+                                  context,
+                                  "Recover password",
+                                  "",
+                                  null,
+                                  CustomTextField(
+                                      controller: TextEditingController(),
+                                      hintText: "Email"),
+                                  "Send email",
+                                  () => {}))),
+                      Align(
+                          widthFactor: 200,
+                          alignment: Alignment.bottomRight,
+                          child: OutlinedButton(
+                              child: Text('Login', style: textStyle),
+                              onPressed: () async {
+                                String username = usernameController.text;
+                                String password = passwordController.text;
 
-                            // TODO await login validation and return token
+                                // TODO await login validation and return token
 
-                            // TODO get current user's full data
-                            AppState.currentUser = await User.getUser(username);
+                                // TODO get current user's full data
+                                AppState.currentUser =
+                                    await User.getUser(username);
 
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/dashboard',
-                                (route) => (route.toString() == '/'));
-                          }))
-                ])))),
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/home',
+                                    (route) => (route.toString() == '/'));
+                              }))
+                    ])))),
         bottomNavigationBar: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Column(

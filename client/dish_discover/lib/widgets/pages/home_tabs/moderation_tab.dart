@@ -16,6 +16,7 @@ class ModerationTab extends StatelessWidget {
       Expanded(
           child: ListView(children: [
         ModerationTicket(
+            // TODO get ticket
             ticketProvider: ChangeNotifierProvider<Ticket>((ref) => Ticket(
                 reportId: 123,
                 violatorId: AppState.currentUser!.username,

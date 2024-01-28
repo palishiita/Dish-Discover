@@ -2,17 +2,22 @@ import "dart:convert";
 
 import "package:dish_discover/entities/user.dart";
 import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 import "package:http/http.dart";
+
+import "app_state.dart";
 
 class Comment extends ChangeNotifier {
   final int commentId;
-  final String authorId;
+  final String author;
+  Image? authorAvatar;
   final int recipeId;
   String content;
   User? user;
 
   Comment(
-      {required this.authorId,
+      {required this.author,
+      this.authorAvatar,
       required this.recipeId,
       required this.commentId,
       this.content = '',
@@ -21,7 +26,7 @@ class Comment extends ChangeNotifier {
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       commentId: json['commentId'],
-      authorId: json['authorId'],
+      author: json['authorId'],
       recipeId: json['recipeId'],
       content: json['content'],
     );
@@ -30,7 +35,7 @@ class Comment extends ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       'commentId': commentId,
-      'authorId': authorId,
+      'authorId': author,
       'recipeId': recipeId,
       'content': content,
     };
@@ -38,7 +43,7 @@ class Comment extends ChangeNotifier {
 
   static Future<void> addComment(Comment comment) async {
     final Response response = await post(
-      Uri.parse('http://localhost:8000/api/comments'),
+      Uri.parse('http://${AppState.serverDomain}/api/comments'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(comment.toJson()),
     );
@@ -54,8 +59,8 @@ class Comment extends ChangeNotifier {
   }
 
   static Future<List<Comment>> getComments(int recipeId) async {
-    final Response response = await get(
-        Uri.parse('http://localhost:8000/api/recipes/$recipeId/comments'));
+    final Response response = await get(Uri.parse(
+        'http://${AppState.serverDomain}/api/recipes/$recipeId/comments'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['comments'];

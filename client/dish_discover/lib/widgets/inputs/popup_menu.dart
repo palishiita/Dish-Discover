@@ -35,12 +35,12 @@ class PopupMenu extends StatelessWidget {
               PopupMenuItem<PopupMenuAction>(
                 value: action1,
                 onTap: onPressed1,
-                child: Text(action1.name),
+                child: Text(action1.name, overflow: TextOverflow.fade),
               ),
               PopupMenuItem<PopupMenuAction>(
                 value: action2,
                 onTap: onPressed2,
-                child: Text(action2.name),
+                child: Text(action2.name, overflow: TextOverflow.fade),
               )
             ]);
   }

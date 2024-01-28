@@ -8,6 +8,7 @@ import '../../entities/tag.dart';
 import '../display/recipe_list.dart';
 
 class SearchPage extends StatefulWidget {
+  static const routeName = "/search";
   final String searchPhrase;
   final List<Tag>? filter;
 

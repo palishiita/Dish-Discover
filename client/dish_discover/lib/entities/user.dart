@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'app_state.dart';
+
 class User extends ChangeNotifier {
   final String username;
   String password;
@@ -124,7 +126,7 @@ class User extends ChangeNotifier {
 
   Comment addComment(int commentId, Recipe recipe, String content) {
     Comment comment = Comment(
-        authorId: username,
+        author: username,
         recipeId: recipe.id,
         commentId: commentId,
         content: content);
@@ -135,7 +137,7 @@ class User extends ChangeNotifier {
   }
 
   void editComment(Comment comment, String content) {
-    if (username == comment.authorId) {
+    if (username == comment.author) {
       comment.content = content;
       notifyListeners();
     }
@@ -147,7 +149,7 @@ class User extends ChangeNotifier {
 
   static Future<void> addUser(User user) async {
     final response = await http.post(
-      Uri.parse('http://localhost:8000/api/recipes/users'),
+      Uri.parse('http://${AppState.serverDomain}/api/recipes/users'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(user.toJson()),
     );
@@ -163,8 +165,8 @@ class User extends ChangeNotifier {
   }
 
   static Future<List<User>> getAllUsers() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/user/users'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/user/users'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['user'];
@@ -176,8 +178,8 @@ class User extends ChangeNotifier {
   }
 
   static Future<User> getUser(String username) async {
-    final response = await http
-        .get(Uri.parse('http://localhost:8000/api/user/users/$username'));
+    final response = await http.get(
+        Uri.parse('http://${AppState.serverDomain}/api/user/users/$username'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body)['user'];
@@ -190,8 +192,8 @@ class User extends ChangeNotifier {
 
   static Future<List<Recipe>> getLikedRecipes() async {
     // recipes liked by current user
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/recipes/liked/'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/liked/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipe'];
@@ -204,8 +206,8 @@ class User extends ChangeNotifier {
 
   static Future<List<Recipe>> getSavedRecipes() async {
     // recipes saved by current user
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/recipes/saved/'));
+    final response = await http
+        .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/saved/'));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body)['recipe'];
