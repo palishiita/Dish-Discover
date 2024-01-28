@@ -68,7 +68,8 @@ class User extends ChangeNotifier {
     };
   }
 
-  Future<void> registerUser(String username, String password, String email) async {
+  static Future<String?> registerUser(
+      String username, String password, String email) async {
     final http.Response response = await http.post(
       Uri.parse('http://${AppState.serverDomain}/api/auth/register'),
       headers: <String, String>{
@@ -85,31 +86,38 @@ class User extends ChangeNotifier {
       if (kDebugMode) {
         print("User registered successfully");
       }
+      return null;
     } else {
-      throw Exception(
-          'Failed to register user, status code: ${response.statusCode}');
+      if (kDebugMode) {
+        print('Failed to register user, status code: ${response.statusCode}');
+      }
+
+      return response.reasonPhrase ?? 'No reason given.';
     }
   }
 
-  Future<void> loginUser(String username, String password) async {
+  static Future<String?> loginUser(String username, String password) async {
     final http.Response response = await http.post(
       Uri.parse('http://${AppState.serverDomain}/api/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({
-        'username': username,
-        'password': password
-      }),
+      body: jsonEncode({'username': username, 'password': password}),
     );
 
     if (response.statusCode == 200) {
       if (kDebugMode) {
         print("User logged in successfully");
       }
+
+      AppState.loginToken = jsonDecode(response.body)["token"];
+      return null;
     } else {
-      throw Exception(
-          'Failed to login user, status code: ${response.statusCode}');
+      if (kDebugMode) {
+        print('Failed to login user, status code: ${response.statusCode}');
+      }
+
+      return response.reasonPhrase ?? 'No reason given.';
     }
   }
 

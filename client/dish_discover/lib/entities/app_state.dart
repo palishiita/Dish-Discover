@@ -7,6 +7,7 @@ abstract class AppState {
       kDebugMode ? "localhost:8000" : "localhost:8000";
   static const String clientDomain =
       kDebugMode ? "localhost:????" : "localhost:????";
+  static String? loginToken;
   static User? currentUser;
   static Ticket? currentTicket;
 
