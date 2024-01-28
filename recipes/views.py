@@ -83,7 +83,8 @@ class PreferredTag(viewsets.ModelViewSet):
     def get_queryset(self):
         return PreferredTag.objects.filter(user=self.request.user)
 
-
+# class RecipeTagViewSet(viewsets.ModelView):
+#     serializer_class = RecipeTagSerializer
 
 class LikedRecipeViewSet(viewsets.ModelViewSet):
     serializer_class = LikedRecipeSerializer
@@ -131,6 +132,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         user_comments = Comment.objects.filter(user=user)
         serializer = CommentSerializer(user_comments, many = True)
         return Response(serializer.data)
+
+class CommentByUserViewSet(viewsets.ModelViewSet):   
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):       
+        return Comment.objects.filter(user=self.request.user)
+    
+
 
 class LikesOnUsersRecipes(viewsets.GenericViewSet):
     @action(detail=True, methods=['GET'])
