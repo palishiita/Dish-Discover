@@ -1,9 +1,22 @@
 import json
-from recipes.models import Recipe, Ingredient, DishDiscoverUser, LikedRecipe, SavedRecipe
+from recipes.models import *
 
 ### Inputting Recipe and Ingredients to Database ###                
 
 # Read the JSON file
+
+
+
+users = [
+     DishDiscoverUser.objects.get_or_create(username='Janet_doe', has_mod_rights=True, email='janet@example.com', password='123', is_premium=False)[0],
+     DishDiscoverUser.objects.get_or_create(username='Jacob_doe', has_mod_rights=False, email='Jacob@example.com', password='456', is_premium=True)[0]
+]
+
+for element in users:
+    element.save()
+
+category = TagCategory.objects.get_or_create(category_name='Ingredient')[0]
+
 with open('scraped_recipes.json', 'r') as json_file:
     scraped_recipes = json.load(json_file)
 
@@ -15,36 +28,27 @@ for recipe_data in scraped_recipes:
     ingredients = recipe_data.get('ingredients', [])
 
     # Create Recipe instance
-    recipe_instance = Recipe.objects.create(
+    recipe_instance = Recipe.objects.get_or_create(
+        author=users[0],
         recipe_name=title,
         content=instructions,
         picture=recipe_data.get('image_path', ''),
         is_boosted=False,  
-    )
+    )[0]
 
     # Link Ingredients to the Recipe instance
     for ingredient_name in ingredients:
         # Assuming Ingredient model has a 'name' field
-        ingredient, created = Ingredient.objects.get_or_create(name=ingredient_name)
-        recipe_instance.ingredients.add(ingredient)
+        ingredient = Ingredient.objects.get_or_create(name=ingredient_name, tag=Tag.objects.get_or_create(name=ingredient_name, is_predefined=False, tag_category=category)[0])[0]
+        recipe_instance.ingredients.add(ingredient, through_defaults={'amount': 1, 'unit': 'g'})
 
 print("Recipe instances created successfully.")
 
 
 ### Users in database ###
-users = [
-     DishDiscoverUser(username='Janet_doe', has_mod_rights=True, email='janet@example.com', password='123', is_premium=False),
-     DishDiscoverUser(username='Jacob_doe', has_mod_rights=False, email='Jacob@example.com', password='456', is_premium=True)
-]
 
-for element in users:
-    print(element)
-    element.save()
 
-users = DishDiscoverUser.objects.all()
 
-# Get the DishDiscoverUser instance for janet_doe
-janet_doe = DishDiscoverUser.objects.get(username='janet_doe')
 
 ### Liked Recipe for each user ###
 
@@ -55,9 +59,9 @@ liked_recipes = Recipe.objects.filter(recipe_name__in=liked_recipes_titles)
 
 # Add Liked Recipes for janet_doe
 for recipe in liked_recipes:
-    LikedRecipe.objects.create(user=janet_doe, recipe=recipe, is_recommendation=False)
+    LikedRecipe.objects.create(user=users[1], recipe=recipe, is_recommendation=False)
 
-print(f"{janet_doe.username} liked the following recipes:")
+print(f"{users[1].username} liked the following recipes:")
 for recipe in liked_recipes:
     print(recipe.recipe_name)
 
@@ -71,8 +75,8 @@ saved_recipes = Recipe.objects.filter(recipe_name__in=saved_recipes_titles)
 
 # Add Saved Recipes for janet_doe
 for recipe in saved_recipes:
-    SavedRecipe.objects.create(user=janet_doe, recipe=recipe, is_recommendation=True)
+    SavedRecipe.objects.create(user=users[1], recipe=recipe, is_recommendation=True)
 
-print(f"{janet_doe.username} saved the following recipes:")
+print(f"{users[1].username} saved the following recipes:")
 for recipe in saved_recipes:
     print(recipe.recipe_name)
