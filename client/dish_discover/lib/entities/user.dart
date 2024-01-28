@@ -68,6 +68,51 @@ class User extends ChangeNotifier {
     };
   }
 
+  Future<void> registerUser(String username, String password, String email) async {
+    final http.Response response = await http.post(
+      Uri.parse('http://${AppState.serverDomain}/api/auth/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+        'email': email,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print("User registered successfully");
+      }
+    } else {
+      throw Exception(
+          'Failed to register user, status code: ${response.statusCode}');
+    }
+  }
+
+  Future<void> loginUser(String username, String password) async {
+    final http.Response response = await http.post(
+      Uri.parse('http://${AppState.serverDomain}/api/auth/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'username': username,
+        'password': password
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print("User logged in successfully");
+      }
+    } else {
+      throw Exception(
+          'Failed to login user, status code: ${response.statusCode}');
+    }
+  }
+
   void banUser(User user, DateTime date) {
     if (isModerator == true) {
       user.unbanDate = date;
