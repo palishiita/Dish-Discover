@@ -99,6 +99,7 @@ def test_get_recipe_tags():
 
             assert item['recipe'] == tag.recipe.id,  response.json()
 
+@pytest.mark.django_db
 def add_preferred_tag():
     client =Client()    
     tag_category = create_tagcategories()     
@@ -118,3 +119,30 @@ def add_preferred_tag():
         client.post()
 
         assert PreferredTag.objects.all().count() == 1
+
+@pytest.mark.django_db
+def test_get_popular_not_predefined_tags():
+    client =Client()    
+    tag_category = create_tagcategories()     
+    user = create_users()[0]
+    not_predef_tags = create_notpredef_tags(tag_category)
+    recipes = create_recipes(user)
+    recipeTags = create_recipe_tags_list(not_predef_tags[:2], recipes[:2])
+    create_recipe_tags_list(not_predef_tags[2:-1], recipes[2:-1])
+    create_recipe_tags_list([not_predef_tags[-1]], recipes)
+    
+    url = f'/api/recipes/tags/popularnotpredef/{len(not_predef_tags)}/'
+    response = client.get(url)
+    data = json.loads(response.content)
+
+    breakpoint()
+
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/json'
+    assert not_predef_tags[-1].name == data[0]['name']
+    for item, tag in zip(data, not_predef_tags):
+        assert 'id' in item, response.json()
+        assert 'name' in item, response.json()
+        assert 'tag_category' in item, response.json()
+        assert 'is_predefined' in item, response.json()
+        #make sure that the tags are sorted by the number of recipes they are used in

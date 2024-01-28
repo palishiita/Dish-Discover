@@ -59,6 +59,11 @@ def create_tags(tagcategories):
     return [
         Tag.objects.create(name=f'Polish{tag_category.category_name}',tag_category=tag_category,is_predefined = True) for tag_category in tagcategories
     ]
+
+def create_notpredef_tags(tagcategories):
+    return [
+        Tag.objects.create(name=f'Polish{tag_category.category_name}',tag_category=tag_category,is_predefined = False) for tag_category in tagcategories
+    ]
     
 def create_ingredients(tags):
     return [

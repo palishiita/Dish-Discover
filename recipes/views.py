@@ -9,7 +9,7 @@ from .serializers import *
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.views.decorators.http import require_http_methods
-
+from django.db.models import Count
 
 # class RegistrationView(APIView):
 #     def post(self, request):
@@ -75,6 +75,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    @action(detail=False, methods=['GET'], url_name='popularnotpredef', url_path='popularnotpredef/(?P<amount>\d+)')
+    def getPopularNotPredefinedTags(self, request, amount=10):
+        tags = Tag.objects.filter(is_predefined=False).annotate(recipe_count=Count('recipe')).order_by('-recipe_count')[:int(amount)]
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
 
 class PreferredTagViewSet(viewsets.ModelViewSet):
     serializer_class = PreferredTagSerializer
