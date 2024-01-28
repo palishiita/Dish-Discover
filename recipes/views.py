@@ -125,14 +125,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    @action(detail=False, methods=['GET'], url_name='byuser')
+    @action(detail=False, methods=['GET'], url_name='byuser', url_path='byuser')
     def by_user(self, request, pk=None):
         user = request.user
         user_comments = Comment.objects.filter(user=user)
         serializer = CommentSerializer(user_comments, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['GET'], url_path='byrecipe/(?P<recipe_id>\d+)')
+    @action(detail=False, methods=['GET'], url_name='byrecipe', url_path='byrecipe/(?P<recipe_id>\d+)')
     def by_recipe(self, request, recipe_id=None):
         recipe_comments = Comment.objects.filter(recipe_id=recipe_id)
         serializer = CommentSerializer(recipe_comments, many=True)
