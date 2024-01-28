@@ -77,7 +77,7 @@ def test_get_recipe_ingredients():
 
 
     client = Client()
-    url = f'/api/recipes/{recipe.recipe_id}/ingredients/'
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/ingredients/'
     response = client.get(url)
     data = response.json()
     

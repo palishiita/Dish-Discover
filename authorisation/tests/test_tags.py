@@ -121,7 +121,7 @@ def test_get_recipe_tags():
         RecipeTag.objects.create(recipe=recipe, tag=tags[2], weight=0.9),
     ]
 
-    url = f'/api/recipes/{recipe.recipe_id}/tags/'
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/tags/'
     response = client.get(url)
     data = json.loads(response.content)
 

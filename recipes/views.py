@@ -77,7 +77,7 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
-class PreferredTag(viewsets.ModelViewSet):
+class PreferredTagViewSet(viewsets.ModelViewSet):
     serializer_class = PreferredTagSerializer
 
     def get_queryset(self):
@@ -126,33 +126,20 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    @action(detail=True, methods=['GET'])
+    @action(detail=False, methods=['GET'], url_name='byuser')
     def by_user(self, request, pk=None):
         user = request.user
         user_comments = Comment.objects.filter(user=user)
-        serializer = CommentSerializer(user_comments, many = True)
+        serializer = CommentSerializer(user_comments, many=True)
         return Response(serializer.data)
 
-class CommentByUserViewSet(viewsets.ModelViewSet):   
-    serializer_class = CommentSerializer
-
-    def get_queryset(self):       
-        return Comment.objects.filter(user=self.request.user)
+    @action(detail=False, methods=['GET'], url_path='byrecipe/(?P<recipe_id>\d+)')
+    def by_recipe(self, request, recipe_id=None):
+        recipe_comments = Comment.objects.filter(recipe_id=recipe_id)
+        serializer = CommentSerializer(recipe_comments, many=True)
+        return Response(serializer.data)
     
 
-class CommentByRecipeViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
-
-    def get_queryset(self):
-        # Assuming 'recipe_id' is a query parameter in the request
-        recipe_id = self.request.query_params.get('recipe_id')
-
-        # You may want to handle the case when 'recipe_id' is not provided
-        if not recipe_id:
-            return Comment.objects.none()
-
-        # Filter comments based on the provided recipe_id
-        return Comment.objects.filter(recipe__id=recipe_id)
 class LikesOnUsersRecipes(viewsets.GenericViewSet):
     @action(detail=True, methods=['GET'])
 

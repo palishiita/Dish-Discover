@@ -9,16 +9,13 @@ router.register(r'ingredients', IngredientViewSet, basename='ingredients')
 router.register(r'recipes', RecipeViewSet, basename='recipes')
 router.register(r'tagcategories', TagCategoryViewSet, basename='tagcategories')
 router.register(r'tags', TagViewSet, basename='tags')
-router.register(r'preferredtags', TagViewSet, basename='preferredtags')
-
-router.register(r'comments/byuser', CommentByUserViewSet, basename='commentsbyuser')
+router.register(r'preferredtags', PreferredTagViewSet, basename='preferredtags')
 router.register(r'saved', SavedRecipeViewSet, basename='saved')
 router.register(r'liked', LikedRecipeViewSet, basename='liked')
 router.register(r'tagcategories', TagCategoryViewSet, basename='tagcategories')
 router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'comments', CommentViewSet, basename='comments')
 router.register(r'likes', LikesOnUsersRecipes, basename='likes')
-router.register(r'comments/byrecipe', CommentByRecipeViewSet, basename='commentsbyrecipe')
 
 urlpatterns = router.urls
 

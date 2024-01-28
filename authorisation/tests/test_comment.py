@@ -71,7 +71,7 @@ def test_get_comments_by_user():
     url = '/api/recipes/comments/byuser/'
     response = client.get(url)
     data = response.json()
-
+    breakpoint()
     response = client.get(url)
     print(response.status_code)
     print(response.content)
@@ -106,11 +106,13 @@ def test_get_comments_by_recipe():
     ]
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/comments/byrecipe/'
+    url = f'/api/recipes/comments/byrecipe/{recipe.recipe_id}'
     response = client.get(url)
     data = response.json()
 
-    response = client.get(url, {'recipe_id':recipe.recipe_id})
+    #response = client.get(url)
+    #response = client.get(url, {'recipe_id':recipe.recipe_id})
+    breakpoint()
     print(response.status_code)
     print(response.content)
 
