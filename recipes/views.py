@@ -43,7 +43,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     lookup_field = 'recipe_id'
-
     # def get_queryset(self):
     #     # # Get the current user
     #     # if self.action == 'created_by_user':

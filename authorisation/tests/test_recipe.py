@@ -76,6 +76,28 @@ def test_get_recipe_view():
     assert data['author'] == recipe.author.user_id
     assert data['recipe_name'] == recipe.recipe_name
 
+@pytest.mark.django_db
+def test_add_recipe():
+    client = APIClient()
+    # Build the URL for the view with the recipe ID
+    url = f'/api/recipes/recipes/'
+    user = create_user()
+
+    data={
+        'recipe_id':10,
+        'author':user.user_id,
+        'recipe_name':"Test Recipe",
+        'content':"Test content",
+        'description':"Test description",
+        'is_boosted':False
+        }
+
+    client.force_authenticate(user)
+    response = client.post(url, data)
+    data = response.json()
+
+    assert Recipe.objects.all().count() == 1
+
 
 # LIKED RECIPES
 @pytest.mark.django_db
@@ -205,6 +227,64 @@ def test_delete_liked_recipe_when_2_liked():
     #     assert 'recipe' in item, response.json()
     #     assert 'user' in item, response.json()
 
+# LIKED RECIPES
+@pytest.mark.django_db
+def test_update_recipes():
+    user = DishDiscoverUser.objects.create(user_id =10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+
+    data = {
+        'recipe_id': recipe.recipe_id,
+        'author':user.user_id,
+        'recipe_name':'Test Recipe 2',
+        'content':'Test content 2',
+        'description':recipe.description,
+        'is_boosted': False
+    }
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = f'/api/recipes/recipes/{recipe.recipe_id}/'
+    response = client.put(url, data)
+    data = response.json()
+
+    assert response.status_code == 200, response.json()
+    assert response['Content-Type'] == 'application/json'
+    assert 'author' in data
+    assert 'recipe_name' in data
+    assert 'content' in data
+    assert data['recipe_name'] == 'Test Recipe 2'
+    assert data['content'] == 'Test content 2'
+
+
+@pytest.mark.django_db
+def test_add_lked_recipe():
+    user = DishDiscoverUser.objects.create(user_id=10, username='mickey_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+
+    recipe = Recipe.objects.create(
+        recipe_id=10,
+        author=user,
+        recipe_name="Test Recipe",
+        content="Test content",
+        description="Test description",
+        is_boosted=False
+    )
+    # saved_recipe = SavedRecipe(user=user, recipe=recipe, is_recommendation=True)
+    # saved_recipe = SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=True)
+    client = APIClient()
+    client.force_authenticate(user)
+    
+    url = '/api/recipes/liked/'
+    data = {'user': user.user_id, 'recipe': recipe.recipe_id, 'is_recommendation': True}
+    response = client.post(url, data)
+    assert LikedRecipe.objects.filter(user=user, recipe=recipe).count() == 1
+    assert LikedRecipe.objects.all().count() == 1
 # SAVED RECIPES
     
 @pytest.mark.django_db
