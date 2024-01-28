@@ -106,11 +106,11 @@ def test_get_comments_by_recipe():
     ]
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/{recipe.recipe_id}/comments/'
+    url = f'/api/recipes/comments/byrecipe/'
     response = client.get(url)
     data = response.json()
 
-    response = client.get(url)
+    response = client.get(url, {'recipe_id':recipe.recipe_id})
     print(response.status_code)
     print(response.content)
 

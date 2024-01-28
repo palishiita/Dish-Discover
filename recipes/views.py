@@ -140,7 +140,19 @@ class CommentByUserViewSet(viewsets.ModelViewSet):
         return Comment.objects.filter(user=self.request.user)
     
 
+class CommentByRecipeViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
 
+    def get_queryset(self):
+        # Assuming 'recipe_id' is a query parameter in the request
+        recipe_id = self.request.query_params.get('recipe_id')
+
+        # You may want to handle the case when 'recipe_id' is not provided
+        if not recipe_id:
+            return Comment.objects.none()
+
+        # Filter comments based on the provided recipe_id
+        return Comment.objects.filter(recipe__id=recipe_id)
 class LikesOnUsersRecipes(viewsets.GenericViewSet):
     @action(detail=True, methods=['GET'])
 
