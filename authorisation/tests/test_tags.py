@@ -127,22 +127,45 @@ def test_get_popular_not_predefined_tags():
     user = create_users()[0]
     not_predef_tags = create_notpredef_tags(tag_category)
     recipes = create_recipes(user)
-    recipeTags = create_recipe_tags_list(not_predef_tags[:2], recipes[:2])
-    create_recipe_tags_list(not_predef_tags[2:-1], recipes[2:-1])
+    create_recipe_tags_list(not_predef_tags[:2], recipes[:2])
+    create_recipe_tags_list(not_predef_tags[2:-2], recipes[3:-2])
     create_recipe_tags_list([not_predef_tags[-1]], recipes)
     
     url = f'/api/recipes/tags/popularnotpredef/{len(not_predef_tags)}/'
     response = client.get(url)
     data = json.loads(response.content)
-
-    breakpoint()
+    print(not_predef_tags)
+    print(data)
 
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
     assert not_predef_tags[-1].name == data[0]['name']
     for item, tag in zip(data, not_predef_tags):
-        assert 'id' in item, response.json()
         assert 'name' in item, response.json()
         assert 'tag_category' in item, response.json()
         assert 'is_predefined' in item, response.json()
+        assert item['is_predefined'] == False, response.json()
         #make sure that the tags are sorted by the number of recipes they are used in
+
+
+    # @action(detail=True, methods=['GET', ''], url_name='makepredefined', url_path='makepredefined')
+    # def make_predefined(self, request, pk=None):
+    #     tag = self.get_object()
+    #     tag.is_predefined = True
+    #     tag.save()
+    #     serializer = TagSerializer(tag)
+    #     return Response(serializer.data)
+        
+@pytest.mark.django_db
+def test_make_predefined():
+    client =Client()    
+    tag_category = create_tagcategories()     
+    user = create_users()[0]
+    not_predef_tags = create_notpredef_tags(tag_category)
+
+    url = f'/api/recipes/tags/{not_predef_tags[0].pk}/makepredefined/'
+    response = client.post(url)
+    assert response.status_code == 200
+    not_predef_tags[0].refresh_from_db()
+    assert not_predef_tags[0].is_predefined == True
+ 

@@ -67,7 +67,8 @@ class ReportTicket(models.Model):
     issuer = models.ForeignKey(DishDiscoverUser, related_name='issuer', on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
     reason = models.CharField(max_length=150)
-    
+    responder = models.ForeignKey(DishDiscoverUser, related_name='responder', on_delete=models.CASCADE, null=True, blank=True)
+
 # Recipe Model
 class Recipe(models.Model):
     author = models.ForeignKey(DishDiscoverUser, on_delete=models.CASCADE)

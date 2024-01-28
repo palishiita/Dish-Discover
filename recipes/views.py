@@ -81,6 +81,14 @@ class TagViewSet(viewsets.ModelViewSet):
         serializer = TagSerializer(tags, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['GET', 'POST'], url_name='makepredefined', url_path='makepredefined')
+    def make_predefined(self, request, pk=None):
+        tag = self.get_object()
+        tag.is_predefined = True
+        tag.save()
+        serializer = TagSerializer(tag)
+        return Response(serializer.data)
+
 class PreferredTagViewSet(viewsets.ModelViewSet):
     serializer_class = PreferredTagSerializer
 
@@ -156,6 +164,51 @@ class LikesOnUsersRecipes(viewsets.GenericViewSet):
 class ReportTicketViewSet(viewsets.ModelViewSet):
     queryset = ReportTicket.objects.all()
     serializer_class = ReportTicketSerializer
+    
+    @action(detail=False, methods=['GET', 'POST'], url_name='issueOnComment', url_path='issueOnComment')
+    def issue(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.create(
+                issuer=user, 
+                comment_id=request.data['comment_id'], 
+                reason=request.data['reason'], 
+                violator=Comment.objects.get(id=request.data['comment_id']).user,
+                recipe = Comment.objects.get(id=request.data['comment_id']).recipe,
+            )
+        user_report.save()
+
+    @action(detail=False, methods=['GET', 'POST'], url_name='issueOnRecipe', url_path='issueOnRecipe')  
+    def issueOnRecipe(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.create(
+                issuer=user, 
+                recipe_id=request.data['recipe_id'], 
+                reason=request.data['reason'], 
+                violator=Recipe.objects.get(id=request.data['recipe_id']).author,
+                recipe = Recipe.objects.get(id=request.data['recipe_id']),
+            )
+        user_report.save()  
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='respond', url_path='respond')
+    def respond(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.responder = user
+        user_report.save()
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='ban', url_path='ban')
+    def ban(self, request, pk=None):
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.violator.unban_date = request.data['ban_date']
+        user_report.delete()
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='cancel', url_path='cancel')
+    def cancel(self, request, pk=None):
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.delete()
+
+
+    
     # def get_queryset(self):
     #     return ReportTicket.objects.filter(user=self.request.user)
     # def perform_create(self,serializer):
