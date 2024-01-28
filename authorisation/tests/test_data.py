@@ -95,3 +95,9 @@ def create_saved_recipes(user, recipes):
     return [
         SavedRecipe.objects.create(user=user, recipe=recipe, is_recommendation=False) for recipe in recipes
     ]
+
+
+def create_report_tickets(user, recipes):
+    return [
+        ReportTicket.objects.create(id = 10, recipe=recipe, violator=user, issuer=user, comment=None, reason='This recipe is inappropriate') for recipe in recipes
+    ]

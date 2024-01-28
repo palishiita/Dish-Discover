@@ -16,6 +16,8 @@ router.register(r'tagcategories', TagCategoryViewSet, basename='tagcategories')
 router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'comments', CommentViewSet, basename='comments')
 router.register(r'likes', LikesOnUsersRecipes, basename='likes')
+router.register(r'reporttickets', ReportTicketViewSet, basename='reporttickets')
+
 
 urlpatterns = router.urls
 
