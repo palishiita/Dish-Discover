@@ -118,7 +118,7 @@ class User extends ChangeNotifier {
         recipeId: recipe?.id,
         violatorId: violator.username,
         issuerId: issuer.username,
-        commentId: comment?.commentId,
+        commentId: comment?.id,
         reason: reason);
     notifyListeners();
     return ticket;
@@ -126,10 +126,7 @@ class User extends ChangeNotifier {
 
   Comment addComment(int commentId, Recipe recipe, String content) {
     Comment comment = Comment(
-        author: username,
-        recipeId: recipe.id,
-        commentId: commentId,
-        content: content);
+        author: username, recipeId: recipe.id, id: commentId, content: content);
     addedComments.add(comment);
     notifyListeners();
     recipe.notifyListeners();
@@ -145,6 +142,14 @@ class User extends ChangeNotifier {
 
   Future<List<Recipe>> getRecommendations() async {
     return [];
+  }
+
+  String getUrl() {
+    return "http://${AppState.clientDomain}/user/$username";
+  }
+
+  static Future<String> login(String username, String password) async {
+    return ''; // TODO authorize and get token - String? not String? IDK
   }
 
   static Future<void> addUser(User user) async {

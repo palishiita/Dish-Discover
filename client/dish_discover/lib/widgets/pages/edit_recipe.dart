@@ -1,7 +1,4 @@
-import 'package:dish_discover/widgets/dialogs/custom_dialog.dart';
-import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/inputs/popup_menu.dart';
-import 'package:dish_discover/widgets/pages/payment.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -83,24 +80,10 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
                 action1: PopupMenuAction.boost,
                 onPressed1: recipe.isBoosted
                     ? null
-                    : () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            const PaymentPage(buyingPremium: false))),
+                    : () => PopupMenuAction.boostAction(context),
                 action2: PopupMenuAction.delete,
-                onPressed2: () => CustomDialog.callDialog(
-                      context,
-                      'Delete recipe',
-                      'Deletion is irreversible!',
-                      null,
-                      CustomTextField(
-                          controller: TextEditingController(),
-                          hintText: 'Password',
-                          obscure: true),
-                      'Delete',
-                      () {
-                        // TODO delete recipe
-                      },
-                    ))
+                onPressed2: () =>
+                    PopupMenuAction.deleteAction(context, recipe.id))
           ],
         ),
         body: SingleChildScrollView(

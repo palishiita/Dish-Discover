@@ -8,7 +8,7 @@ import "package:http/http.dart";
 import "app_state.dart";
 
 class Comment extends ChangeNotifier {
-  final int commentId;
+  final int id;
   final String author;
   Image? authorAvatar;
   final int recipeId;
@@ -19,13 +19,13 @@ class Comment extends ChangeNotifier {
       {required this.author,
       this.authorAvatar,
       required this.recipeId,
-      required this.commentId,
+      required this.id,
       this.content = '',
       this.user});
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      commentId: json['commentId'],
+      id: json['commentId'],
       author: json['authorId'],
       recipeId: json['recipeId'],
       content: json['content'],
@@ -34,7 +34,7 @@ class Comment extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     return {
-      'commentId': commentId,
+      'commentId': id,
       'authorId': author,
       'recipeId': recipeId,
       'content': content,

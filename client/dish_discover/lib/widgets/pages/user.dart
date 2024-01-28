@@ -4,7 +4,6 @@ import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_share/flutter_share.dart';
 
 import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
@@ -97,48 +96,16 @@ class _UserPageState extends ConsumerState<UserPage> {
                           Navigator.of(context).pushNamed("/settings"))
                   : PopupMenu(
                       action1: PopupMenuAction.share,
-                      onPressed1: () async => await FlutterShare.share(
-                          title: 'Share user',
-                          text: user.username,
-                          linkUrl: '[link]'), // TODO link
+                      onPressed1: () => PopupMenuAction.shareAction(context,
+                          "Share user", "Have a look at this: ", user.getUrl()),
                       action2: AppState.currentUser!.isModerator
                           ? PopupMenuAction.ban
                           : PopupMenuAction.report,
                       onPressed2: () => AppState.currentUser!.isModerator
-                          ? {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Ban recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Password',
-                                        obscure: true),
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Repeat password',
-                                        obscure: true)
-                                  ]),
-                                  'Ban',
-                                  () {})
-                            }
-                          : {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Report recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Reason',
-                                        obscure: true)
-                                  ]),
-                                  'Report',
-                                  () {})
-                            })
+                          ? PopupMenuAction.banAction(
+                              context, null, null, user.username)
+                          : PopupMenuAction.reportAction(
+                              context, null, null, user.username))
             ]),
         body: Column(children: [
           UserHeader(userProvider: userProvider!),

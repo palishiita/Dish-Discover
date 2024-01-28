@@ -1,20 +1,16 @@
 import 'package:dish_discover/widgets/inputs/popup_menu.dart';
-import 'package:dish_discover/widgets/pages/edit_recipe.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_share/flutter_share.dart';
 
 import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
-import '../dialogs/custom_dialog.dart';
 import '../display/loading_indicator.dart';
 import '../display/recipe_cover.dart';
 import '../display_with_input/comments_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
 import '../display_with_input/tags_box.dart';
-import '../inputs/custom_text_field.dart';
 
 class ViewRecipePage extends ConsumerStatefulWidget {
   static const routeName = "/recipe";
@@ -84,10 +80,11 @@ class _ViewRecipePageState extends ConsumerState<ViewRecipePage> {
             actions: [
               PopupMenu(
                   action1: PopupMenuAction.share,
-                  onPressed1: () async => await FlutterShare.share(
-                      title: 'Share recipe',
-                      text: recipe.title,
-                      linkUrl: '[link]'), // TODO link
+                  onPressed1: () => PopupMenuAction.shareAction(
+                      context,
+                      "Share recipe",
+                      "Have a look at this recipe: ",
+                      recipe.getUrl()),
                   action2:
                       recipe.author.compareTo(AppState.currentUser!.username) ==
                               0
@@ -95,49 +92,16 @@ class _ViewRecipePageState extends ConsumerState<ViewRecipePage> {
                           : AppState.currentUser!.isModerator
                               ? PopupMenuAction.ban
                               : PopupMenuAction.report,
-                  onPressed2: () => recipe.author
-                              .compareTo(AppState.currentUser!.username) ==
-                          0
-                      ? {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  EditRecipePage(recipeId: widget.recipeId)))
-                        }
-                      : AppState.currentUser!.isModerator
-                          ? {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Ban recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Password',
-                                        obscure: true),
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Repeat password',
-                                        obscure: true)
-                                  ]),
-                                  'Ban',
-                                  () {})
-                            }
-                          : {
-                              CustomDialog.callDialog(
-                                  context,
-                                  'Report recipe',
-                                  '',
-                                  null,
-                                  Column(children: [
-                                    CustomTextField(
-                                        controller: TextEditingController(),
-                                        hintText: 'Reason',
-                                        obscure: true)
-                                  ]),
-                                  'Report',
-                                  () {})
-                            }),
+                  onPressed2: () =>
+                      recipe.author.compareTo(AppState.currentUser!.username) ==
+                              0
+                          ? PopupMenuAction.editAction(
+                              context, recipe.id, recipeProvider!)
+                          : AppState.currentUser!.isModerator
+                              ? PopupMenuAction.banAction(
+                                  context, recipe.id, null, null)
+                              : PopupMenuAction.reportAction(
+                                  context, recipe.id, null, null)),
             ],
             flexibleSpace: AspectRatio(
                 aspectRatio: 4 / 3, child: RecipeCover(cover: recipe.image))),

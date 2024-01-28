@@ -1,5 +1,6 @@
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/style/style.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/app_state.dart';
@@ -80,12 +81,18 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: () async {
                                 String username = usernameController.text;
                                 String password = passwordController.text;
+                                if (kDebugMode) {
+                                  AppState.currentUser = User(
+                                      username: username,
+                                      password: password,
+                                      email: '');
+                                }
 
                                 // TODO await login validation and return token
 
                                 // TODO get current user's full data
-                                AppState.currentUser =
-                                    await User.getUser(username);
+                                // AppState.currentUser =
+                                //     await User.getUser(username);
 
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                     '/home',

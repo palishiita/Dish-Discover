@@ -120,6 +120,10 @@ class Recipe extends ChangeNotifier {
     };
   }
 
+  String getUrl() {
+    return "http://${AppState.clientDomain}/recipe/$id";
+  }
+
   static Future<List<Recipe>> getRecipes() async {
     final response = await http
         .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/recipes/'));

@@ -1,4 +1,5 @@
 import 'package:dish_discover/entities/app_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../entities/user.dart';
@@ -67,21 +68,35 @@ class _RegisterPageState extends State<RegisterPage> {
                           alignment: Alignment.bottomRight,
                           child: OutlinedButton(
                               child: Text('Register', style: textStyle),
-                              onPressed: () {
-                                String username = usernameController.text;
-                                String email = emailController.text;
-                                String password = passwordController.text;
-
+                              onPressed: () async {
+                                bool error = false;
                                 // TODO register account and log in
+                                if (passwordController.text.compareTo(
+                                        repeatPasswordController.text) !=
+                                    0) {
+                                  error = true;
+                                } else {
+                                  // await User.addUser(User(
+                                  //     username: usernameController.text,
+                                  //     email: emailController.text,
+                                  //     password: passwordController.text));
+                                  // TODO check for errors messages
+                                }
+
+                                if (error) {
+                                  // TODO show errors message
+                                }
 
                                 // TODO get user data
-                                AppState.currentUser = User(
-                                    username: 'test_user',
-                                    email: 'test@email.com',
-                                    description: 'Some description',
-                                    isModerator: true,
-                                    password: '');
-
+                                if (kDebugMode) {
+                                  AppState.currentUser = User(
+                                      username:
+                                          "${usernameController.text}_debug",
+                                      email: emailController.text,
+                                      description: 'Some description',
+                                      isModerator: true,
+                                      password: passwordController.text);
+                                }
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                     '/home',
                                     (route) => (route.toString() == '/'));

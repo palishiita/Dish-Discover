@@ -1,4 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_share/flutter_share.dart';
+
+import '../../entities/recipe.dart';
+import '../dialogs/custom_dialog.dart';
+import '../pages/edit_recipe.dart';
+import '../pages/payment.dart';
+import 'custom_text_field.dart';
 
 enum PopupMenuAction {
   share(name: 'Share'),
@@ -10,6 +20,83 @@ enum PopupMenuAction {
 
   const PopupMenuAction({required this.name});
   final String name;
+
+  static void shareAction(
+      BuildContext context, String title, String message, String url) async {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      await FlutterShare.share(title: title, text: message, linkUrl: url);
+    } else {
+      await Clipboard.setData(ClipboardData(text: url));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('URL copied to clipboard!')));
+    }
+  }
+
+  static void editAction(BuildContext context, int recipeId,
+      ChangeNotifierProvider<Recipe> recipeProvider) async {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => EditRecipePage(
+            recipeId: recipeId, recipeProvider: recipeProvider)));
+  }
+
+  static void reportAction(BuildContext context, int? recipeId, int? commentId,
+      String? violatorId) async {
+    assert(recipeId != null || commentId != null || violatorId != null);
+    CustomDialog.callDialog(
+        context,
+        'Report recipe',
+        '',
+        null,
+        Column(children: [
+          CustomTextField(
+              controller: TextEditingController(),
+              hintText: 'Reason',
+              obscure: true)
+        ]),
+        'Report',
+        () {});
+  }
+
+  static void banAction(BuildContext context, int? recipeId, int? commentId,
+      String? violatorId) async {
+    assert(recipeId != null || commentId != null || violatorId != null);
+    CustomDialog.callDialog(
+        context,
+        'Ban recipe',
+        '',
+        null,
+        Column(children: [
+          CustomTextField(
+              controller: TextEditingController(),
+              hintText: 'Password',
+              obscure: true)
+        ]),
+        'Ban',
+        () {});
+  }
+
+  static void deleteAction(BuildContext context, int recipeId) async {
+    CustomDialog.callDialog(
+      context,
+      'Delete recipe',
+      'Deletion is irreversible!',
+      null,
+      CustomTextField(
+          controller: TextEditingController(),
+          hintText: 'Password',
+          obscure: true),
+      'Delete',
+      () {
+        // TODO delete recipe
+      },
+    );
+  }
+
+  static void boostAction(BuildContext context) async {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const PaymentPage(buyingPremium: false)));
+  }
 }
 
 class PopupMenu extends StatelessWidget {

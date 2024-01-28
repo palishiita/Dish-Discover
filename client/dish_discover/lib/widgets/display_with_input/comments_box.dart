@@ -1,6 +1,7 @@
 import 'package:dish_discover/widgets/dialogs/custom_dialog.dart';
 import 'package:dish_discover/widgets/display/tab_title.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
+import 'package:dish_discover/widgets/inputs/popup_menu.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -66,19 +67,8 @@ class CommentTile extends ConsumerWidget {
                           },
                           icon: const Icon(Icons.delete))
                       : IconButton(
-                          onPressed: () {
-                            CustomDialog(
-                                title: 'Report content',
-                                subtitle: 'comment by ${author.username}',
-                                message: null,
-                                buttonLabel: 'Delete',
-                                onPressed: () {
-                                  // TODO report content
-                                },
-                                child: CustomTextField(
-                                    controller: TextEditingController(),
-                                    hintText: 'Reason'));
-                          },
+                          onPressed: () => PopupMenuAction.reportAction(
+                              context, comment.recipeId, comment.id, null),
                           icon: const Icon(Icons.flag))),
               const Divider(height: 1.0),
               Align(
@@ -102,11 +92,7 @@ class CommentsBox extends ConsumerWidget {
     List<Comment> comments = recipe.comments;
     if (kDebugMode && comments.isEmpty) {
       comments = [
-        Comment(
-            author: 'Test_user',
-            recipeId: 0,
-            commentId: 0,
-            content: '[Testing]')
+        Comment(author: 'Test_user', recipeId: 0, id: 0, content: '[Testing]')
       ];
     }
 
