@@ -17,6 +17,10 @@ class HomePage extends StatefulWidget {
     if (kDebugMode && AppState.currentUser == null) {
       AppState.currentUser =
           User(username: "dummy", isModerator: true, password: '', email: '');
+
+      // TODO get current user's full data
+      // AppState.currentUser =
+      //     await User.getUser(username);
     }
     assert(AppState.currentUser != null);
   }

@@ -68,59 +68,6 @@ class User extends ChangeNotifier {
     };
   }
 
-  static Future<String?> registerUser(
-      String username, String password, String email) async {
-    final http.Response response = await http.post(
-      Uri.parse('http://${AppState.serverDomain}/api/auth/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'username': username,
-        'password': password,
-        'email': email,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print("User registered successfully");
-      }
-      return null;
-    } else {
-      if (kDebugMode) {
-        print('Failed to register user, status code: ${response.statusCode}');
-      }
-
-      return response.reasonPhrase ?? 'No reason given.';
-    }
-  }
-
-  static Future<String?> loginUser(String username, String password) async {
-    final http.Response response = await http.post(
-      Uri.parse('http://${AppState.serverDomain}/api/auth/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'username': username, 'password': password}),
-    );
-
-    if (response.statusCode == 200) {
-      if (kDebugMode) {
-        print("User logged in successfully");
-      }
-
-      AppState.loginToken = jsonDecode(response.body)["token"];
-      return null;
-    } else {
-      if (kDebugMode) {
-        print('Failed to login user, status code: ${response.statusCode}');
-      }
-
-      return response.reasonPhrase ?? 'No reason given.';
-    }
-  }
-
   void banUser(User user, DateTime date) {
     if (isModerator == true) {
       user.unbanDate = date;
@@ -201,37 +148,115 @@ class User extends ChangeNotifier {
     return "http://${AppState.clientDomain}/user/$username";
   }
 
-  static Future<String> login(String username, String password) async {
-    return ''; // TODO authorize and get token - String? not String? IDK
+  static Future<String?> register(
+      String username, String password, String email) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('http://${AppState.serverDomain}/api/auth/register'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'username': username,
+          'password': password,
+          'email': email,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print("User registered successfully");
+        }
+        return null;
+      } else {
+        if (kDebugMode) {
+          print('Failed to register user, status code: ${response.statusCode}');
+        }
+
+        return response.reasonPhrase ?? 'No reason given.';
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to login user: ${e.toString()}');
+      }
+
+      return e.toString();
+    }
+  }
+
+  static Future<String?> login(String username, String password) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('http://${AppState.serverDomain}/api/auth/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'username': username, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print("User logged in successfully");
+        }
+
+        AppState.loginToken = jsonDecode(response.body)["token"];
+        return null;
+      } else {
+        if (kDebugMode) {
+          print('Failed to login user, status code: ${response.statusCode}');
+        }
+
+        return response.reasonPhrase ?? 'No reason given.';
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to login user: ${e.toString()}');
+      }
+
+      return e.toString();
+    }
   }
 
   static Future<void> addUser(User user) async {
-    final response = await http.post(
-      Uri.parse('http://${AppState.serverDomain}/api/recipes/users'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(user.toJson()),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('http://${AppState.serverDomain}/api/recipes/users'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(user.toJson()),
+      );
 
-    if (response.statusCode == 201) {
-      if (kDebugMode) {
-        print('User added successfully');
+      if (response.statusCode == 201) {
+        if (kDebugMode) {
+          print('User added successfully');
+        }
+      } else {
+        throw Exception(
+            'Failed to add user, status code: ${response.statusCode}');
       }
-    } else {
-      throw Exception(
-          'Failed to add user, status code: ${response.statusCode}');
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to login user: ${e.toString()}');
+      }
     }
   }
 
   static Future<List<User>> getAllUsers() async {
-    final response = await http
-        .get(Uri.parse('http://${AppState.serverDomain}/api/user/users'));
+    try {
+      final response = await http
+          .get(Uri.parse('http://${AppState.serverDomain}/api/user/users'));
 
-    if (response.statusCode == 200) {
-      final List data = json.decode(response.body)['user'];
-      return data.map((item) => User.fromJson(item)).toList();
-    } else {
-      throw Exception(
-          'Failed to load users, status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final List data = json.decode(response.body)['user'];
+        return data.map((item) => User.fromJson(item)).toList();
+      } else {
+        throw Exception(
+            'Failed to load users, status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to login user: ${e.toString()}');
+      }
+      return [];
     }
   }
 

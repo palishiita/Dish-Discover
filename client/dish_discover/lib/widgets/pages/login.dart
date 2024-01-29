@@ -1,3 +1,4 @@
+import 'package:dish_discover/widgets/display/validation_message.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
@@ -28,28 +29,76 @@ class _LoginPageState extends State<LoginPage> {
     passwordController = TextEditingController();
   }
 
+  void login() async {
+    setState(() {
+      errorMessage = null;
+    });
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Logging in...')));
+
+    String? error;
+
+    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+      error = "Both fields are required";
+    } else {
+      error =
+          await User.login(usernameController.text, passwordController.text);
+    }
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    if (error == null) {
+      if (kDebugMode) {
+        AppState.currentUser = User(
+            username: "${usernameController.text}_debug",
+            password: passwordController.text,
+            email: '',
+            isModerator: true);
+        AppState.loginToken = 'FAKE';
+      }
+
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home', (route) => (route.toString() == '/'));
+    } else {
+      setState(() {
+        errorMessage = "Error: ${error!.trim()}!";
+      });
+    }
+  }
+
+  void showRecoverPassword() {
+    CustomDialog.callDialog(
+        context,
+        "Recover password",
+        "",
+        null,
+        CustomTextField(controller: TextEditingController(), hintText: "Email"),
+        "Send email",
+        () => {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (AppState.currentUser != null) {
+      Future.microtask(
+          () => Navigator.of(context).pushReplacementNamed("/home"));
+    }
+
     return Scaffold(
         appBar:
             AppBar(toolbarHeight: appBarHeight, scrolledUnderElevation: 0.0),
         body: SingleChildScrollView(
-            child: AppState.currentUser != null
-                ? Center(
-                    child: Column(children: [
-                    const Text('Already logged in.', softWrap: true),
-                    OutlinedButton(
-                        child: Text('Return to Home Page', style: textStyle),
-                        onPressed: () => Navigator.of(context)
-                            .pushNamedAndRemoveUntil(
-                                '/home', (route) => route.isFirst))
-                  ]))
-                : Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Center(
-                        child: Column(children: [
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                       Image.asset('assets/images/logo.png', scale: 0.7),
-                      Text(errorMessage ?? "", softWrap: true),
+                      errorMessage == null
+                          ? Container()
+                          : ValidationMessage(message: errorMessage!),
                       CustomTextField(
                           controller: usernameController, hintText: 'Username'),
                       CustomTextField(
@@ -60,48 +109,19 @@ class _LoginPageState extends State<LoginPage> {
                           widthFactor: 200,
                           alignment: Alignment.centerLeft,
                           child: TextButton(
+                              onPressed: showRecoverPassword,
                               child: Text('Recover password',
                                   style: textStyle.merge(const TextStyle(
-                                      decoration: TextDecoration.underline))),
-                              onPressed: () => CustomDialog.callDialog(
-                                  context,
-                                  "Recover password",
-                                  "",
-                                  null,
-                                  CustomTextField(
-                                      controller: TextEditingController(),
-                                      hintText: "Email"),
-                                  "Send email",
-                                  () => {}))),
+                                      decoration: TextDecoration.underline))))),
                       Align(
                           widthFactor: 200,
                           alignment: Alignment.bottomRight,
                           child: OutlinedButton(
-                              child: Text('Login', style: textStyle),
-                              onPressed: () async {
-                                String username = usernameController.text;
-                                String password = passwordController.text;
-                                if (kDebugMode) {
-                                  AppState.currentUser = User(
-                                      username: username,
-                                      password: password,
-                                      email: '',
-                                      isModerator: true);
-                                }
-
-                                // TODO await login validation and return token
-
-                                // TODO get current user's full data
-                                // AppState.currentUser =
-                                //     await User.getUser(username);
-
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/home',
-                                    (route) => (route.toString() == '/'));
-                              }))
+                              onPressed: login,
+                              child: Text('Login', style: textStyle)))
                     ])))),
         bottomNavigationBar: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: const EdgeInsets.only(bottom: 20.0),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,

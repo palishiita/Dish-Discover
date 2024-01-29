@@ -22,7 +22,10 @@ class TermsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      const Center(child: TabTitle(title: "Terms & Conditions")),
+      const Center(
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 15.0),
+              child: TabTitle(title: "Terms & Conditions"))),
       Expanded(
           child: Padding(
               padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 25.0),
