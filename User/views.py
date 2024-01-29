@@ -37,4 +37,11 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.get_object()
         liked_recipes = LikedRecipe.objects.filet(user=user)
         serializer = RecipeSerializer(liked_recipes, many=True)
-        
+    
+    #return author's image with every recipe and comment
+    @action(detail=True, methods=['get'])
+    def getAll(self, request, pk=None):
+        user = self.get_object()
+        recipes = Recipe.objects.filter(author=user)
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)

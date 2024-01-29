@@ -61,8 +61,8 @@ class Ingredient(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     
 # Report Tickets Model
-class ReportTicket(models.Model):
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
+class ReportTicket(models.Model): #If recipe is null, then it's a user report, if comment is null, then it's a recipe report
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, null=True, blank=True)
     violator = models.ForeignKey(DishDiscoverUser, related_name='violator', on_delete=models.CASCADE)
     issuer = models.ForeignKey(DishDiscoverUser, related_name='issuer', on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True)
