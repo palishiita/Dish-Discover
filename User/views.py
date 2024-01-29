@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from recipes.serializers import RecipeSerializer
+from recipes.serializers import CommentSerializer, RecipeSerializer
 from .models import *
 # from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -39,9 +39,16 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = RecipeSerializer(liked_recipes, many=True)
     
     #return author's image with every recipe and comment
-    @action(detail=True, methods=['get'])
-    def getAll(self, request, pk=None):
+    @action(detail=True, methods=['get'], url_path='full', url_name='full')
+    def getFullUser(self, request, pk=None):
         user = self.get_object()
         recipes = Recipe.objects.filter(author=user)
-        serializer = RecipeSerializer(recipes, many=True)
+        comments = Comment.objects.filter(author=user)
+        combined_data = {
+            'user': user,
+            'recipes': recipes,
+            'comments': comments
+        }
+        serializer = combinedUserSerializer(combined_data)
         return Response(serializer.data)
+    

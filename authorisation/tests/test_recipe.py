@@ -286,3 +286,49 @@ def test_add_saved_recipe():
 
 #     # Logout to clear the authentication for subsequent tests
 #     client.logout()
+    
+
+    #     @action(detail=True, methods=['get'], url_path='full', url_name='full')
+    # def getFullUser(self, request, pk=None):
+    #     user = self.get_object()
+    #     recipes = Recipe.objects.filter(author=user)
+    #     comments = Comment.objects.filter(author=user)
+    #     combined_data = {
+    #         'user': user,
+    #         'recipes': recipes,
+    #         'comments': comments
+    #     }
+    #     serializer = combinedUserSerializer(combined_data)
+    #     return Response(serializer.data)
+@pytest.mark.django_db
+def test_get_full_user():
+    user = create_users()[0]
+    recipe = create_recipes(user)
+    comment = create_comments(user, recipe)[0]
+    client = APIClient(user)
+    client.force_authenticate(user)
+    url = f'/api/recipes/users/{user.id}/full/'
+    response = client.get(url)
+    data = response.json()
+
+    assert response.status_code == 200, response.json()
+    assert response['Content-Type'] == 'application/json'
+    assert 'user' in data, response.json()
+    assert 'recipes' in data, response.json()
+    assert 'comments' in data, response.json()
+    assert data['user']['id'] == user.id, response.json()
+    assert data['user']['username'] == user.username, response.json()
+    assert data['user']['email'] == user.email, response.json()
+    assert data['user']['password'] == user.password, response.json()
+    assert data['recipes'][0]['id'] == recipe[0].id, response.json()
+    assert data['recipes'][0]['author'] == recipe[0].author.id, response.json()
+    assert data['recipes'][0]['recipe_name'] == recipe[0].recipe_name, response.json()
+    assert data['recipes'][0]['content'] == recipe[0].content, response.json()
+    assert data['recipes'][0]['description'] == recipe[0].description, response.json()
+    assert data['recipes'][0]['is_boosted'] == recipe[0].is_boosted, response.json()
+    assert data['comments'][0]['id'] == comment.id, response.json()
+    assert data['comments'][0]['author'] == comment.author.id, response.json()
+    assert data['comments'][0]['recipe'] == comment.recipe.id, response.json()
+    assert data['comments'][0]['content'] == comment.content, response.json()
+    assert data['comments'][0]['date_posted'] == comment.date_posted.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), response.json()
+    assert data['comments'][0]['is_boosted'] == comment.is_boosted, response.json()
