@@ -172,7 +172,7 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
     #If comment_id is not null, then violator is the author of the comment,
     #if recipe_id is not null, then violator is the author of the recipe, 
     #if both are null, then violators account is being reported
-    @action(detail=False, methods=['GET'], url_name='issueOnUser', url_path='issueOnUser')
+    @action(detail=False, methods=['GET','POST'], url_name='issueOnUser', url_path='issueOnUser')
     def issueOnUser(self, request, pk=None):
         user = request.user
         user_report = ReportTicket.objects.create(
