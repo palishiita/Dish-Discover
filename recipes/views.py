@@ -10,6 +10,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count
+from .permissions import IsModeratorOrIssuer
 
 # class RegistrationView(APIView):
 #     def post(self, request):
@@ -165,6 +166,7 @@ class LikesOnUsersRecipes(viewsets.GenericViewSet):
 class ReportTicketViewSet(viewsets.ModelViewSet):
     queryset = ReportTicket.objects.all()
     serializer_class = ReportTicketSerializer
+    permission_classes = [IsModeratorOrIssuer]
     
     @action(detail=False, methods=['GET', 'POST'], url_name='issueOnComment', url_path='issueOnComment')
     def issue(self, request, pk=None):

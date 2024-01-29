@@ -10,7 +10,7 @@ def test_create_report_ticket():
     user = create_users()[0]
     recipe = create_recipes(user)[0]
     client = APIClient()
-    #client.force_authenticate(user)
+    client.force_authenticate(user)
     url = reverse('reporttickets-list')
     data = {'recipe': recipe.id, 'violator': user.id, 'issuer': user.id, 'reason': 'Test Reason'}
     response = client.post(url, data)
@@ -22,6 +22,7 @@ def test_read_report_ticket():
     user = create_users()[0]
     recipe = create_recipes(user)
     client = APIClient()
+    client.force_authenticate(user)
     report_ticket = create_report_tickets(user, recipe)[0]
     url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
     response = client.get(url)
