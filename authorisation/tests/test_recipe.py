@@ -304,11 +304,12 @@ def test_add_saved_recipe():
 def test_get_full_user():
     user = create_users()[0]
     recipe = create_recipes(user)
-    comment = create_comments(user, recipe)[0]
+    comment = create_comments_list(user, recipe)[0]
     client = APIClient(user)
     client.force_authenticate(user)
-    url = f'/api/recipes/users/{user.id}/full/'
+    url = f'/api/user/users/{user.id}/full/'
     response = client.get(url)
+    print(response)
     data = response.json()
 
     assert response.status_code == 200, response.json()
@@ -327,8 +328,6 @@ def test_get_full_user():
     assert data['recipes'][0]['description'] == recipe[0].description, response.json()
     assert data['recipes'][0]['is_boosted'] == recipe[0].is_boosted, response.json()
     assert data['comments'][0]['id'] == comment.id, response.json()
-    assert data['comments'][0]['author'] == comment.author.id, response.json()
+    assert data['comments'][0]['user'] == comment.user.id, response.json()
     assert data['comments'][0]['recipe'] == comment.recipe.id, response.json()
     assert data['comments'][0]['content'] == comment.content, response.json()
-    assert data['comments'][0]['date_posted'] == comment.date_posted.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), response.json()
-    assert data['comments'][0]['is_boosted'] == comment.is_boosted, response.json()

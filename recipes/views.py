@@ -179,7 +179,7 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
                 issuer=user, 
                 violator_id=request.data['violator_id'], 
                 reason=request.data['reason'], 
-                violator=User.objects.get(id=request.data['violator_id']),
+                #violator=User.objects.get(id=request.data['violator_id']),
             )
         user_report.save()
         return Response(status=status.HTTP_201_CREATED)
@@ -223,6 +223,7 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
         user_report = ReportTicket.objects.get(id=pk)
         user_report.violator.unban_date = request.data['ban_date']
         user_report.delete()
+        user_report.violator.save()
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['GET', 'POST'], url_name='cancel', url_path='cancel')

@@ -176,10 +176,13 @@ def test_respond_to_report_ticket_not_authenticated():
 
 @pytest.mark.django_db
 def test_ban_violator_from_report_ticket():
-    user = create_users()[0]
+    users = create_users()
+    user = users[0]
+    violator = users[1]
     recipe = create_recipes(user)
     client = APIClient()
-    report_ticket = create_report_tickets(user, recipe)[0]
+    client.force_authenticate(user)
+    report_ticket = create_report_tickets2(user, violator, recipe)[0]
     url = reverse('reporttickets-ban', kwargs={'pk': report_ticket.pk})
     ban_date = '2024-02-01'  # Change it to a valid date
     data = {'ban_date': ban_date}
@@ -227,11 +230,13 @@ def test_cancel_report_ticket_not_authenticated():
     
 @pytest.mark.django_db
 def test_issue_on_user():
-    user = create_users()[0]
+    users = create_users()
+    user1 = users[0]
+    user2 = users[1]
     client = APIClient()
-    client.force_authenticate(user)
+    client.force_authenticate(user1)
     url = reverse('reporttickets-issueOnUser')
-    data = {'violator_id': user.id, 'reason': 'Test Reason'}
+    data = {'violator_id': user2.id, 'reason': 'Test Reason'}
     response = client.post(url, data)
     assert response.status_code == 201
     assert ReportTicket.objects.count() == 1

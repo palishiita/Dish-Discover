@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     #excluded from router
-    #@action(detail=False, methods=['get'], url_path='username', url_name='username')
+    @action(detail=False, methods=['get'], url_path='username/(?P<username>\w*)', url_name='username')
     def get_user_by_username(self, request, username=None):
         print(username)
         user = get_object_or_404(DishDiscoverUser, username=username)
@@ -43,7 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def getFullUser(self, request, pk=None):
         user = self.get_object()
         recipes = Recipe.objects.filter(author=user)
-        comments = Comment.objects.filter(author=user)
+        comments = Comment.objects.filter(user=user)
         combined_data = {
             'user': user,
             'recipes': recipes,

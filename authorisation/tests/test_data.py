@@ -108,3 +108,8 @@ def create_report_tickets(user, recipes):
     return [
         ReportTicket.objects.create(id = 10, recipe=recipe, violator=user, issuer=user, comment=None, reason='This recipe is inappropriate') for recipe in recipes
     ]
+
+def create_report_tickets2(user, violator, recipes):
+    return [
+        ReportTicket.objects.create(id = 10, recipe=recipe, violator=violator, issuer=user, comment=None, reason='This recipe is inappropriate') for recipe in recipes
+    ]
