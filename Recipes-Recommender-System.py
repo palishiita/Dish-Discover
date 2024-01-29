@@ -1,4 +1,5 @@
 # Recipe recommendation system that recommends users recipes based on the liked and saved recipes
+# running code: python manage.py shell < Recipes-Recommender-System.py
 
 import os
 from django import setup
