@@ -6,3 +6,6 @@ class IsModeratorOrIssuer(permissions.BasePermission):
             if view.action in ['issue', 'issueOnRecipe'] or request.user.has_mod_rights:
                 return True
         return False
+
+from rest_framework import permissions
+

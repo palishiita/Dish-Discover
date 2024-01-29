@@ -19,21 +19,25 @@ def test_create_report_ticket():
 
 @pytest.mark.django_db
 def test_read_report_ticket():
+    print("Executing test_read_report_ticket")
     user = create_users()[0]
     recipe = create_recipes(user)
     client = APIClient()
-    client.force_authenticate(user)
+    client.force_authenticate(user)    
     report_ticket = create_report_tickets(user, recipe)[0]
     url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
     response = client.get(url)
-    assert response.status_code == 200
+    assert response.status_code == 200, response.json()
     assert response.data['id'] == report_ticket.id
 
 @pytest.mark.django_db
-def test_update_report_ticket():
-    user = create_users()[0]
+def test_update_report_ticket_authenticated():
+    users = create_users()
+    user = users[1]
+    mod = users[0]
     recipe = create_recipes(user)
     client = APIClient()
+    client.force_authenticate(mod)
     report_ticket = create_report_tickets(user, recipe)[0]
     url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
     data = { 'recipe': recipe[0].id, 'violator': user.id, 'issuer': user.id,'reason': 'Updated Reason'}
@@ -42,12 +46,32 @@ def test_update_report_ticket():
     report_ticket.refresh_from_db()
     assert report_ticket.reason == 'Updated Reason'
 
+@pytest.mark.django_db
+def test_update_report_ticket_not_authenticated():
+    users = create_users()
+    user = users[1]
+    mod = users[1]
+    recipe = create_recipes(user)
+    client = APIClient()
+    client.force_authenticate(mod)
+    report_ticket = create_report_tickets(user, recipe)[0]
+    url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
+    data = { 'recipe': recipe[0].id, 'violator': user.id, 'issuer': user.id,'reason': 'Updated Reason'}
+    response = client.put(url, data)
+    assert response.status_code == 403
+
+
+
 
 @pytest.mark.django_db
 def test_delete_report_ticket():
-    user = create_users()[0]
-    recipe = create_recipes(user)
-    client = APIClient()
+    users = create_users()    
+    mod = users[0]
+    user = users[1]
+    author= users[2]
+    recipe = create_recipes(author)
+    client = APIClient(mod)
+    client.force_authenticate(mod)
     report_tickets = create_report_tickets(user, recipe)
     report_ticket = report_tickets[0]
     url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
@@ -57,8 +81,24 @@ def test_delete_report_ticket():
 
 
 @pytest.mark.django_db
+def test_delete_report_ticket_not_authenticated():
+    users = create_users()    
+    user = users[1]
+    author= users[2]
+    recipe = create_recipes(author)
+    client = APIClient(user)
+    client.force_authenticate(user)
+    report_tickets = create_report_tickets(user, recipe)
+    report_ticket = report_tickets[0]
+    url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
+    response = client.delete(url)
+    assert response.status_code == 403
+    assert ReportTicket.objects.count() == len(report_tickets)
+
+
+@pytest.mark.django_db
 def test_create_report_ticket_issue_on_comment():
-    user = create_users()[0]
+    user = create_users()[1]
     recipe = create_recipes(user)[0]
     comment = create_comments(user, recipe)[0]
     client = APIClient()
@@ -71,7 +111,7 @@ def test_create_report_ticket_issue_on_comment():
 
 @pytest.mark.django_db
 def test_create_report_ticket_issue_on_recipe():
-    user = create_users()[0]
+    user = create_users()[1]
     recipe = create_recipes(user)[0]
     client = APIClient()
     url = reverse('reporttickets-issueOnRecipe')
@@ -83,14 +123,32 @@ def test_create_report_ticket_issue_on_recipe():
 
 @pytest.mark.django_db
 def test_read_report_ticket():
-    user = create_users()[0]
-    recipe = create_recipes(user)
-    client = APIClient()
+    users = create_users()    
+    mod = users[0]
+    user = users[1]
+    author= users[2]
+    recipe = create_recipes(author)
+    client = APIClient(mod)
+    client.force_authenticate(mod)
     report_ticket = create_report_tickets(user, recipe)[0]
     url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
     response = client.get(url)
     assert response.status_code == 200
     assert response.data['id'] == report_ticket.id
+
+@pytest.mark.django_db
+def test_read_report_ticket_not_authenticated():
+    users = create_users()    
+    user = users[1]
+    author= users[2]
+    recipe = create_recipes(author)
+    client = APIClient(user)
+    client.force_authenticate(user)
+    report_ticket = create_report_tickets(user, recipe)[0]
+    url = reverse('reporttickets-detail', kwargs={'pk': report_ticket.pk})
+    response = client.get(url)
+    assert response.status_code == 403
+
 
 @pytest.mark.django_db
 def test_respond_to_report_ticket():
@@ -104,6 +162,17 @@ def test_respond_to_report_ticket():
     assert response.status_code == 200
     report_ticket.refresh_from_db()
     assert report_ticket.responder == user
+
+@pytest.mark.django_db
+def test_respond_to_report_ticket_not_authenticated():
+    user = create_users()[1]
+    recipe = create_recipes(user)
+    client = APIClient()
+    report_ticket = create_report_tickets(user, recipe)[0]
+    url = reverse('reporttickets-respond', kwargs={'pk': report_ticket.pk})
+    client.force_authenticate(user)
+    response = client.post(url)
+    assert response.status_code == 403
 
 @pytest.mark.django_db
 def test_ban_violator_from_report_ticket():
@@ -124,6 +193,19 @@ def test_cancel_report_ticket():
     user = create_users()[0]
     recipe = create_recipes(user)
     client = APIClient()
+    client.force_authenticate(user)
+    report_ticket = create_report_tickets(user, recipe)[0]
+    url = reverse('reporttickets-cancel', kwargs={'pk': report_ticket.pk})
+    response = client.post(url)
+    assert response.status_code == 204
+    assert ReportTicket.objects.count() == 0
+
+@pytest.mark.django_db
+def test_cancel_report_ticket_not_authenticated():
+    user = create_users()[0]
+    recipe = create_recipes(user)
+    client = APIClient()
+    client.force_authenticate(user)
     report_ticket = create_report_tickets(user, recipe)[0]
     url = reverse('reporttickets-cancel', kwargs={'pk': report_ticket.pk})
     response = client.post(url)

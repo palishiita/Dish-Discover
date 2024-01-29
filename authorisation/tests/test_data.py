@@ -9,7 +9,9 @@ from rest_framework.test import APIClient
 def create_users():
     return [
         DishDiscoverUser.objects.create(id = 10, username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False),
-        DishDiscoverUser.objects.create(id = 11, username='mickey2_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+        DishDiscoverUser.objects.create(id = 11, username='mickey2_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False),
+        DishDiscoverUser.objects.create(id = 12, username='naughty_mouse', has_mod_rights=False, email='mickey@example.com', password='password123', is_premium=False)
+
         ]
 
 def create_recipes(user):
