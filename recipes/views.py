@@ -168,8 +168,24 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
     serializer_class = ReportTicketSerializer
     permission_classes = [IsModeratorOrIssuer]
     
+
+    #If comment_id is not null, then violator is the author of the comment,
+    #if recipe_id is not null, then violator is the author of the recipe, 
+    #if both are null, then violators account is being reported
+    @action(detail=False, methods=['GET'], url_name='issueOnUser', url_path='issueOnUser')
+    def issueOnUser(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.create(
+                issuer=user, 
+                violator_id=request.data['violator_id'], 
+                reason=request.data['reason'], 
+                violator=User.objects.get(id=request.data['violator_id']),
+            )
+        user_report.save()
+        return Response(status=status.HTTP_201_CREATED)
+    
     @action(detail=False, methods=['GET', 'POST'], url_name='issueOnComment', url_path='issueOnComment')
-    def issue(self, request, pk=None):
+    def issueOnComment(self, request, pk=None):
         user = request.user
         user_report = ReportTicket.objects.create(
                 issuer=user, 
