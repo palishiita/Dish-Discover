@@ -93,16 +93,19 @@ class _ViewRecipePageState extends ConsumerState<ViewRecipePage> {
                           : AppState.currentUser!.isModerator
                               ? PopupMenuAction.ban
                               : PopupMenuAction.report,
-                  onPressed2: () =>
-                      recipe.author.compareTo(AppState.currentUser!.username) ==
-                              0
-                          ? PopupMenuAction.editAction(
-                              context, recipe.id, recipeProvider!)
-                          : AppState.currentUser!.isModerator
-                              ? PopupMenuAction.banAction(
-                                  context, recipe.id, null, null)
-                              : PopupMenuAction.reportAction(
-                                  context, recipe.id, null, null)),
+                  onPressed2: () => recipe.author
+                              .compareTo(AppState.currentUser!.username) ==
+                          0
+                      ? PopupMenuAction.editAction(
+                          context, recipe.id, recipeProvider!)
+                      : AppState.currentUser!.isModerator
+                          ? PopupMenuAction.banAction(
+                              context, recipe.id, recipe.title, null, null, () {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            })
+                          : PopupMenuAction.reportAction(
+                              context, recipe.id, recipe.title, null, null)),
             ],
             flexibleSpace: AspectRatio(
                 aspectRatio: 4 / 3, child: RecipeCover(cover: recipe.image))),

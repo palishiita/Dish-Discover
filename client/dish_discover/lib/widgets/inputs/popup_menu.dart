@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_share/flutter_share.dart';
 
+import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
+import '../../entities/ticket.dart';
 import '../dialogs/custom_dialog.dart';
 import '../pages/edit_recipe.dart';
 import '../pages/payment.dart';
@@ -40,52 +42,79 @@ enum PopupMenuAction {
   }
 
   static void editAction(BuildContext context, int recipeId,
-      ChangeNotifierProvider<Recipe> recipeProvider) async {
+      ChangeNotifierProvider<Recipe> recipeProvider) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => EditRecipePage(
             recipeId: recipeId, recipeProvider: recipeProvider)));
   }
 
-  static void reportAction(BuildContext context, int? recipeId, int? commentId,
-      String? violatorId) async {
+  static void reportAction(BuildContext context, int? recipeId, String? info,
+      int? commentId, String? violatorId) async {
     assert(recipeId != null || commentId != null || violatorId != null);
+
+    TextEditingController textController = TextEditingController();
+
     CustomDialog.callDialog(
         context,
-        'Report recipe',
-        '',
+        'Report content',
+        violatorId != null
+            ? 'User : $violatorId'
+            : commentId != null
+                ? 'Comment : $info'
+                : 'Recipe : $info',
         null,
-        Flex(
-            direction: Axis.vertical,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomTextField(
-                  controller: TextEditingController(),
-                  hintText: 'Reason',
-                  obscure: true)
-            ]),
-        'Report',
-        () {});
+        CustomTextField(
+            controller: textController, maxLength: 200, hintText: 'Reason'),
+        'Report', () {
+      if (textController.text.isNotEmpty) {
+        Ticket.addTicket(Ticket(
+            reportId: 0,
+            issuerId: AppState.currentUser!.username,
+            issuerAvatar: AppState.currentUser!.image,
+            violatorId: violatorId,
+            recipeId: recipeId,
+            commentId: commentId,
+            reason: textController.text));
+        return null;
+      } else {
+        return "Reason can't be empty";
+      }
+    });
   }
 
-  static void banAction(BuildContext context, int? recipeId, int? commentId,
-      String? violatorId) async {
+  static void banAction(BuildContext context, int? recipeId, String? info,
+      int? commentId, String? violatorId, void Function() onBan) async {
     assert(recipeId != null || commentId != null || violatorId != null);
+
+    TextEditingController textController = TextEditingController();
+
     CustomDialog.callDialog(
         context,
-        'Ban recipe',
-        '',
+        'Ban content',
+        violatorId != null
+            ? 'User : $violatorId'
+            : commentId != null
+                ? 'Comment : $info'
+                : 'Recipe : $info',
         null,
         Flex(
             direction: Axis.vertical,
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomTextField(
-                  controller: TextEditingController(),
+                  controller: textController,
                   hintText: 'Password',
                   obscure: true)
             ]),
-        'Ban',
-        () {});
+        'Ban', () {
+      if (textController.text == AppState.currentUser!.password) {
+        // TODO ban content
+        onBan();
+        return null;
+      } else {
+        return "Wrong password";
+      }
+    });
   }
 
   static void deleteAction(BuildContext context, int recipeId) async {
@@ -105,7 +134,7 @@ enum PopupMenuAction {
     );
   }
 
-  static void boostAction(BuildContext context) async {
+  static void boostAction(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const PaymentPage(buyingPremium: false)));
   }

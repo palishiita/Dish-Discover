@@ -46,8 +46,7 @@ class CommentTile extends ConsumerWidget {
                           UserPage(username: comment.author))),
                   child: Text(author.username,
                       softWrap: true, overflow: TextOverflow.ellipsis)),
-              trailing: author.username
-                          .compareTo(AppState.currentUser!.username) ==
+              trailing: author.username.compareTo(AppState.currentUser!.username) ==
                       0
                   ? IconButton(
                       onPressed: () => CustomDialog.callDialog(
@@ -69,8 +68,10 @@ class CommentTile extends ConsumerWidget {
                           }),
                       icon: const Icon(Icons.delete))
                   : IconButton(
-                      onPressed: () => PopupMenuAction.reportAction(
-                          context, comment.recipeId, comment.id, null),
+                      onPressed: () => AppState.currentUser!.isModerator
+                          ? PopupMenuAction.banAction(context, comment.recipeId,
+                              comment.content, comment.id, null, onDelete)
+                          : PopupMenuAction.reportAction(context, comment.recipeId, comment.content, comment.id, null),
                       icon: const Icon(Icons.flag))),
           const Divider(height: 1.0),
           Align(

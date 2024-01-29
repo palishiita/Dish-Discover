@@ -47,10 +47,9 @@ class RecipeCard extends ConsumerWidget {
                           title: Text(recipe.title,
                               softWrap: true, overflow: TextOverflow.ellipsis),
                           subtitle: GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          UserPage(username: recipe.author))),
+                              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      UserPage(username: recipe.author))),
                               child: Text(recipe.author, softWrap: true)),
                           trailing: PopupMenu(
                               action1: PopupMenuAction.share,
@@ -71,9 +70,15 @@ class RecipeCard extends ConsumerWidget {
                                       context, recipe.id, recipeProvider)
                                   : AppState.currentUser!.isModerator
                                       ? PopupMenuAction.banAction(
-                                          context, recipe.id, null, null)
+                                          context,
+                                          recipe.id,
+                                          recipe.title,
+                                          null,
+                                          null,
+                                          () { // TODO
+                                            })
                                       : PopupMenuAction.reportAction(
-                                          context, recipe.id, null, null))),
+                                          context, recipe.id, recipe.title, null, null))),
                       const Divider(height: 1.0),
                       Flexible(child: RecipeCover(cover: recipe.image)),
                       const Divider(height: 1.0),

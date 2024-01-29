@@ -56,17 +56,27 @@ class SettingsPage extends StatelessWidget {
               title: const Text("Change password"),
               onTap: () {
                 textController.text = '';
-                textController.text = '';
-                textController.text = '';
+                textController2.text = '';
+                textController3.text = '';
                 CustomDialog.callDialog(
                     context,
                     "Change password",
                     "",
                     null,
-                    CustomTextField(
-                        controller: textController,
-                        hintText: 'Password',
-                        obscure: true),
+                    Flex(direction: Axis.vertical, children: [
+                      CustomTextField(
+                          controller: textController,
+                          hintText: 'Old password',
+                          obscure: true),
+                      CustomTextField(
+                          controller: textController2,
+                          hintText: 'New password',
+                          obscure: true),
+                      CustomTextField(
+                          controller: textController3,
+                          hintText: 'Repeat new password',
+                          obscure: true)
+                    ]),
                     "Change", () {
                   if (!User.checkPassword(textController.text)!) {
                     return "Wrong password";
@@ -102,11 +112,11 @@ class SettingsPage extends StatelessWidget {
                           obscure: true),
                       "Delete", () {
                     if (textController.text == AppState.currentUser!.password) {
-                      User.removeUser(AppState.currentUser!);
                       User.logout();
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          LoginPage.routeName, (route) => route.isFirst);
-                      return null;
+                      Future.microtask(() => Navigator.of(context)
+                          .pushNamedAndRemoveUntil(
+                              LoginPage.routeName, (route) => route.isFirst));
+                      User.removeUser(AppState.currentUser!);
                     } else {
                       return "Wrong password";
                     }

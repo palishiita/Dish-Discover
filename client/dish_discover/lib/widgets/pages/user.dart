@@ -106,9 +106,13 @@ class _UserPageState extends ConsumerState<UserPage> {
                           : PopupMenuAction.report,
                       onPressed2: () => AppState.currentUser!.isModerator
                           ? PopupMenuAction.banAction(
-                              context, null, null, user.username)
-                          : PopupMenuAction.reportAction(
-                              context, null, null, user.username))
+                              context, null, user.username, null, user.username,
+                              () {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            })
+                          : PopupMenuAction.reportAction(context, null,
+                              user.username, null, user.username))
             ]),
         body: Flex(
             direction: Axis.vertical,
@@ -140,13 +144,11 @@ class _UserPageState extends ConsumerState<UserPage> {
                           id: 0,
                           title: titleController.text,
                           author: AppState.currentUser!.username);
-
                       AppState.currentUser!.addRecipe(newRecipe);
-
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              EditRecipePage(recipeId: newRecipe.id)));
-
+                      Future.microtask(() => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  EditRecipePage(recipeId: newRecipe.id))));
                       return null;
                     } else {
                       return "Title cannot be empty";

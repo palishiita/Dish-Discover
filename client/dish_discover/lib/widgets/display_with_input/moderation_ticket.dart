@@ -24,6 +24,10 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
     return FutureBuilder(
         future: Ticket.getAssignedTicket(),
         builder: (context, ticketData) {
+          if (ticketProvider != null) {
+            return done();
+          }
+
           if (ticketData.connectionState != ConnectionState.done) {
             return loading();
           }
@@ -74,6 +78,10 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
   }
 
   Widget done() {
+    if (ticketProvider == null) {
+      return none();
+    }
+
     Ticket ticket = ref.watch(ticketProvider!);
 
     return Padding(
@@ -107,19 +115,23 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                           IconButton(
                               icon: const Icon(Icons.close),
                               onPressed: () {
-                                // TODO release ticket back into queue
+                                setState(() {
+                                  ticketProvider = null;
+                                });
                               }),
                           IconButton(
                               icon: Icon(ticket.accepted
                                   ? Icons.delete
                                   : Icons.check_rounded),
                               onPressed: ticket.accepted
-                                  ? () {
-                                      // TODO finish (delete) ticket
-                                    }
+                                  ? () => setState(() {
+                                        ticketProvider = null;
+                                      })
                                   : () {
-                                      // TODO accept ticket
-                                      ticket.accepted = true;
+                                      ref.read(ticketProvider!).accepted = true;
+                                      ref
+                                          .read(ticketProvider!)
+                                          .notifyListeners();
                                     })
                         ],
                       ))),

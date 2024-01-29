@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (error == null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-          HomePage.routeName, (route) => (route.toString() == '/'));
+          HomePage.routeName, (route) => route.isFirst);
       Navigator.of(context).pushNamed(TutorialPage.routeName);
     } else {
       setState(() {
@@ -93,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     if (AppState.currentUser != null) {
       Future.microtask(
-          () => Navigator.of(context).pushReplacementNamed("/home"));
+          () => Navigator.of(context).pushReplacementNamed(HomePage.routeName));
     }
 
     return Scaffold(

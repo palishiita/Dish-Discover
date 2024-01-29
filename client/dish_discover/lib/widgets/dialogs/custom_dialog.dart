@@ -61,7 +61,8 @@ class _CustomDialogState extends State<CustomDialog> {
             children: [
               widget.subtitle == null
                   ? Container()
-                  : Text(widget.subtitle!, softWrap: true),
+                  : Text(widget.subtitle!,
+                      softWrap: true, overflow: TextOverflow.ellipsis),
               errorMessage == null
                   ? Container()
                   : ValidationMessage(message: errorMessage!),

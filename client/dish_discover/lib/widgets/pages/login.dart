@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (error == null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-          HomePage.routeName, (route) => (route.toString() == '/'));
+          HomePage.routeName, (route) => route.isFirst);
     } else {
       setState(() {
         errorMessage = "Error: ${error!.trim()}!";
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     if (AppState.currentUser != null) {
       Future.microtask(
-          () => Navigator.of(context).pushReplacementNamed("/home"));
+          () => Navigator.of(context).pushReplacementNamed(HomePage.routeName));
     }
 
     return Scaffold(

@@ -15,7 +15,7 @@ class ModerationTab extends StatelessWidget {
           const TabTitle(title: 'Moderation'),
           Expanded(
               child: ListView(
-                  children: [ModerationTicket(), const TagManagementBox()]))
+                  children: const [ModerationTicket(), TagManagementBox()]))
         ]);
   }
 }
