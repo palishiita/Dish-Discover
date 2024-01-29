@@ -211,3 +211,27 @@ def test_cancel_report_ticket_not_authenticated():
     response = client.post(url)
     assert response.status_code == 204
     assert ReportTicket.objects.count() == 0
+
+
+    # @action(detail=False, methods=['GET'], url_name='issueOnUser', url_path='issueOnUser')
+    # def issueOnUser(self, request, pk=None):
+    #     user = request.user
+    #     user_report = ReportTicket.objects.create(
+    #             issuer=user, 
+    #             violator_id=request.data['violator_id'], 
+    #             reason=request.data['reason'], 
+    #             violator=User.objects.get(id=request.data['violator_id']),
+    #         )
+    #     user_report.save()
+    #     return Response(status=status.HTTP_201_CREATED)
+    
+@pytest.mark.django_db
+def test_issue_on_user():
+    user = create_users()[0]
+    client = APIClient()
+    client.force_authenticate(user)
+    url = reverse('reporttickets-issueOnUser')
+    data = {'violator_id': user.id, 'reason': 'Test Reason'}
+    response = client.post(url, data)
+    assert response.status_code == 201
+    assert ReportTicket.objects.count() == 1
