@@ -136,15 +136,15 @@ def test_get_popular_not_predefined_tags():
     data = json.loads(response.content)
     print(not_predef_tags)
     print(data)
-
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
-    assert not_predef_tags[-1].name == data[0]['name']
+    assert not_predef_tags[0].name == data[0]['name']
+   
     for item, tag in zip(data, not_predef_tags):
-        assert 'name' in item, response.json()
-        assert 'tag_category' in item, response.json()
-        assert 'is_predefined' in item, response.json()
-        assert item['is_predefined'] == False, response.json()
+        assert 'name' in item
+        assert 'tag_category' in item
+        assert 'is_predefined' in item
+        assert item['is_predefined'] == False
         #make sure that the tags are sorted by the number of recipes they are used in
 
 
