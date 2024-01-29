@@ -1,3 +1,4 @@
+import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
 class ValidationMessage extends StatelessWidget {
@@ -12,15 +13,12 @@ class ValidationMessage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: RawChip(
             tapEnabled: false,
-            backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+            backgroundColor: errorContainerColor(context),
             label: Text(message,
                 softWrap: true,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onInverseSurface),
+                style: TextStyle(color: onErrorContainerColor(context)),
                 overflow: TextOverflow.visible),
             avatar: Icon(isError ? Icons.error : Icons.check_circle_rounded,
-                color: isError
-                    ? Theme.of(context).colorScheme.error
-                    : Colors.green)));
+                color: isError ? errorColor(context) : checkColor)));
   }
 }

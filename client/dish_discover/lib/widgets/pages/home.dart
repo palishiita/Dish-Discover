@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../entities/app_state.dart';
 import '../../entities/user.dart';
+import '../display/loading_indicator.dart';
 import 'home_tabs/moderation_tab.dart';
 import 'home_tabs/recommended_tab.dart';
 import 'home_tabs/saved_tab.dart';
@@ -14,14 +15,6 @@ class HomePage extends StatefulWidget {
   static const routeName = "/home";
 
   HomePage({super.key}) {
-    if (kDebugMode && AppState.currentUser == null) {
-      AppState.currentUser =
-          User(username: "dummy", isModerator: true, password: '', email: '');
-
-      // TODO get current user's full data
-      // AppState.currentUser =
-      //     await User.getUser(username);
-    }
     assert(AppState.currentUser != null);
   }
 
@@ -42,6 +35,67 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    if (!AppState.userDataLoaded) {
+      return loading();
+    }
+
+    return done();
+  }
+
+  Widget loading() {
+    return FutureBuilder(
+        future:
+            Future<User>(() => User.getUser(AppState.currentUser!.username)),
+        builder: (context, userData) {
+          if (userData.connectionState != ConnectionState.done) {
+            return const LoadingIndicator(
+                showBackButton: false, title: "DishDiscover");
+          } else if (userData.data == null) {
+            if (kDebugMode) {
+              AppState.userDataLoaded = true;
+              return done();
+            } else {
+              return loadError();
+            }
+          }
+
+          AppState.currentUser = userData.data!;
+          AppState.userDataLoaded = true;
+
+          return done();
+        });
+  }
+
+  Widget loadError() {
+    return LoadingErrorIndicator(
+        showBackButton: false,
+        title: "DishDiscover",
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text("Could not load user data.")),
+            Padding(
+                padding: const EdgeInsets.all(10),
+                child: FilledButton(
+                    onPressed: () {
+                      User.logout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/', (route) => route.isFirst);
+                    },
+                    child: const Text("Log out"))),
+            Padding(
+                padding: const EdgeInsets.all(10),
+                child: OutlinedButton(
+                    onPressed: () => setState(() {}),
+                    child: const Text("Reload")))
+          ],
+        )));
+  }
+
+  Widget done() {
     return Scaffold(
         appBar: AppBar(
             toolbarHeight: appBarHeight,
@@ -79,7 +133,7 @@ class _HomePageState extends State<HomePage>
                   child: Icon(Icons.circle, size: 13))),
           indicatorColor: baseColor.withAlpha(0),
           labelColor: buttonColor,
-          unselectedLabelColor: Colors.blueGrey.withAlpha(0x52),
+          unselectedLabelColor: inactiveColor.withAlpha(0x52),
         ));
   }
 }

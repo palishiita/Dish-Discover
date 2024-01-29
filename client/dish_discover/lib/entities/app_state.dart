@@ -9,6 +9,7 @@ abstract class AppState {
       kDebugMode ? "localhost:????" : "localhost:????";
   static String? loginToken;
   static User? currentUser;
+  static bool userDataLoaded = false;
   static Ticket? currentTicket;
 
   static const markdownTestText = """

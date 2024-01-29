@@ -7,19 +7,26 @@ Color likeColor = Colors.red[800]!;
 Color saveColor = Colors.cyan;
 Color imageShadowColor = Colors.transparent;
 Color buttonColor = baseColor;
+Color checkColor = Colors.green;
+Color inactiveColor = Colors.blueGrey;
 
 Color textEditorColor = Colors.white;
 
 Color backgroundColor(BuildContext context) =>
     Theme.of(context).colorScheme.background;
-Color gradientStartColor(BuildContext context) =>
+Color primaryColor(BuildContext context) =>
     Theme.of(context).colorScheme.primary;
-Color gradientEndColor(BuildContext context) =>
+Color inversePrimaryColor(BuildContext context) =>
     Theme.of(context).colorScheme.inversePrimary;
 Color containerColor(BuildContext context) =>
     Theme.of(context).colorScheme.onInverseSurface;
 Color outerContainerColor(BuildContext context) =>
     Theme.of(context).colorScheme.surfaceVariant;
+Color errorColor(BuildContext context) => Theme.of(context).colorScheme.error;
+Color errorContainerColor(BuildContext context) =>
+    Theme.of(context).colorScheme.inverseSurface;
+Color onErrorContainerColor(BuildContext context) =>
+    Theme.of(context).colorScheme.onInverseSurface;
 
 ThemeData appThemeLight = ThemeData(
     colorScheme: ColorScheme.fromSeed(

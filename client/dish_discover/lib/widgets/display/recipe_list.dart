@@ -1,4 +1,3 @@
-import 'package:dish_discover/widgets/display/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_top/scroll_to_top.dart';
@@ -31,15 +30,15 @@ class _RecipeListState extends State<RecipeList> {
         future: widget.getRecipes(),
         builder: (context, recipes) => recipes.connectionState !=
                 ConnectionState.done
-            ? const LoadingIndicator()
-            : Expanded(
-                child: recipes.hasError
+            ? const Center(child: Text("Loading..."))
+            : recipes.hasError
+                ? const SingleChildScrollView(
+                    child: NoResultsCard(timedOut: true))
+                : recipes.data == null || recipes.data!.isEmpty
                     ? const SingleChildScrollView(
-                        child: NoResultsCard(timedOut: true))
-                    : recipes.data == null || recipes.data!.isEmpty
-                        ? const SingleChildScrollView(
-                            child: NoResultsCard(timedOut: false))
-                        : ScrollToTop(
+                        child: NoResultsCard(timedOut: false))
+                    : Expanded(
+                        child: ScrollToTop(
                             mini: true,
                             btnColor: buttonColor,
                             scrollController: scrollController,

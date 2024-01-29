@@ -3,6 +3,7 @@ import 'package:dish_discover/widgets/display_with_input/like_save_indicator.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../entities/app_state.dart';
 import '../../entities/user.dart';
 
 class UserHeader extends ConsumerWidget {
@@ -12,6 +13,7 @@ class UserHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User user = ref.watch(userProvider);
+    bool isCurrentUser = user.username == AppState.currentUser!.username;
     int likeCount = 0; //user.likes();
     int saveCount = 0; //user.saves();
 

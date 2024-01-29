@@ -55,15 +55,23 @@ class _RegisterPageState extends State<RegisterPage> {
       error = await User.register(usernameController.text,
           passwordController.text, emailController.text);
 
-      if (kDebugMode) {
-        error = null;
-      }
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Logging in...')));
 
       if (error == null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Logging in...')));
         await User.login(usernameController.text, passwordController.text);
+      }
+
+      if (error != null && kDebugMode) {
+        error = null;
+
+        AppState.currentUser = User(
+            username: "${usernameController.text}_debug",
+            password: passwordController.text,
+            email: '',
+            isModerator: true);
+        AppState.loginToken = 'FAKE';
       }
     }
     ScaffoldMessenger.of(context).clearSnackBars();

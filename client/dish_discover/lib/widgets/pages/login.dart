@@ -44,12 +44,10 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       error =
           await User.login(usernameController.text, passwordController.text);
-    }
 
-    ScaffoldMessenger.of(context).clearSnackBars();
+      if (error != null && kDebugMode) {
+        error = null;
 
-    if (error == null) {
-      if (kDebugMode) {
         AppState.currentUser = User(
             username: "${usernameController.text}_debug",
             password: passwordController.text,
@@ -57,7 +55,11 @@ class _LoginPageState extends State<LoginPage> {
             isModerator: true);
         AppState.loginToken = 'FAKE';
       }
+    }
 
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    if (error == null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
           '/home', (route) => (route.toString() == '/'));
     } else {

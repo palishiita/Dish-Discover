@@ -29,9 +29,11 @@ class LoadingErrorIndicator extends StatelessWidget {
   final String? title;
   final bool showBackButton;
   final bool timedOut;
+  final Widget? child;
   const LoadingErrorIndicator(
       {super.key,
       this.title,
+      this.child,
       this.showBackButton = true,
       this.timedOut = true});
 
@@ -45,6 +47,6 @@ class LoadingErrorIndicator extends StatelessWidget {
             centerTitle: true,
             leading: showBackButton ? const BackButton() : null),
         body: SingleChildScrollView(
-            child: Center(child: NoResultsCard(timedOut: timedOut))));
+            child: Center(child: child ?? NoResultsCard(timedOut: timedOut))));
   }
 }

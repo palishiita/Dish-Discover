@@ -217,6 +217,13 @@ class User extends ChangeNotifier {
     }
   }
 
+  static void logout() {
+    AppState.currentUser = null;
+    AppState.loginToken = null;
+    AppState.currentTicket = null;
+    AppState.userDataLoaded = false;
+  }
+
   static Future<void> addUser(User user) async {
     try {
       final response = await http.post(

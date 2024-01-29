@@ -4,7 +4,7 @@ import 'package:dish_discover/widgets/pages/payment.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
-import '../../entities/app_state.dart';
+import '../../entities/user.dart';
 import '../dialogs/custom_dialog.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -55,10 +55,9 @@ class SettingsPage extends StatelessWidget {
           ListTile(
               title: const Text("Log out"),
               onTap: () {
-                AppState.currentUser = null;
-                Navigator.of(context).popUntil((route) => route.isFirst);
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed("/");
+                User.logout();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', (route) => route.isFirst);
               }),
           ListTile(
               title: const Text("Delete account"),
@@ -72,7 +71,8 @@ class SettingsPage extends StatelessWidget {
                           hintText: 'Password',
                           obscure: true),
                       "Delete", () {
-                    AppState.currentUser = null;
+                    // TODO Delete account
+                    User.logout();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => route.isFirst);
                   })),
