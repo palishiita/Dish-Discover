@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dish_discover/entities/ingredient.dart';
 import 'package:dish_discover/widgets/dialogs/custom_dialog.dart';
 import 'package:dish_discover/widgets/display/tab_title.dart';
+import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -122,9 +123,9 @@ class _IngredientsBoxState extends ConsumerState<IngredientsBox> {
     } else {
       nameController.text = recipe.ingredients[index!].name;
       quantityController.text = recipe.ingredients[index].quantity.toString();
-      unitController.text = recipe.ingredients[index].unit.toString();
+      unitController.text = recipe.ingredients[index].unit?.toString() ?? '';
       caloricDensityController.text =
-          recipe.ingredients[index].caloricDensity.toString();
+          recipe.ingredients[index].caloricDensity?.toString() ?? '';
     }
 
     CustomDialog.callDialog(
@@ -132,20 +133,31 @@ class _IngredientsBoxState extends ConsumerState<IngredientsBox> {
         add ? 'Add ingredient' : 'Edit ingredient',
         '',
         null,
-        const Placeholder(),
-        // TODO add ingredient dialog
+        Flex(
+          direction: Axis.vertical,
+          children: [
+            CustomTextField(controller: nameController, hintText: 'Name'),
+            CustomTextField(
+                controller: quantityController, hintText: 'Quantity'),
+            CustomTextField(controller: unitController, hintText: 'Units'),
+            CustomTextField(
+                controller: caloricDensityController,
+                hintText: 'Caloric density'),
+          ],
+        ),
         add ? 'Add' : 'Save', () {
+      Ingredient newIngredient = Ingredient(
+          id: index == null ? 0 : recipe.ingredients[index].id,
+          name: nameController.text,
+          quantity: double.tryParse(quantityController.text) ??
+              (index == null ? 1.0 : recipe.ingredients[index].quantity),
+          unit: unitController.text,
+          caloricDensity: int.tryParse(caloricDensityController.text));
+
       if (add) {
-        recipe.addIngredient(Ingredient(id: 0, name: 'name', quantity: 0));
+        recipe.addIngredient(newIngredient);
       } else {
-        recipe.updateIngredient(
-            index!,
-            Ingredient(
-                id: recipe.ingredients[index].id,
-                name: nameController.text,
-                quantity: double.tryParse(quantityController.text) ?? 1.0,
-                unit: unitController.text,
-                caloricDensity: int.tryParse(caloricDensityController.text)));
+        recipe.updateIngredient(index!, newIngredient);
       }
 
       return null;

@@ -33,13 +33,13 @@ class _RecipeHeaderState extends ConsumerState<RecipeHeader> {
 
   @override
   Widget build(BuildContext context) {
-    Recipe recipe = ref.watch(widget.recipeProvider);
     return widget.forEditing
-        ? editable(context, recipe)
-        : notEditable(context, recipe);
+        ? editable(context, ref.read(widget.recipeProvider))
+        : notEditable(context, ref);
   }
 
-  Widget notEditable(BuildContext context, Recipe recipe) {
+  Widget notEditable(BuildContext context, WidgetRef ref) {
+    Recipe recipe = ref.watch(widget.recipeProvider);
     bool likedRecipe = AppState.currentUser!.username == recipe.author
         ? true
         : AppState.currentUser!.likedRecipes.contains(recipe);

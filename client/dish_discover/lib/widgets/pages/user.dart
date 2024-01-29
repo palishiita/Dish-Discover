@@ -125,6 +125,7 @@ class _UserPageState extends ConsumerState<UserPage> {
             ]),
         floatingActionButton: isCurrentUser
             ? FloatingActionButton(
+                shape: const CircleBorder(),
                 mini: true,
                 child: const Icon(Icons.add),
                 onPressed: () {
