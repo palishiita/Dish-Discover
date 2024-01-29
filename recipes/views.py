@@ -75,6 +75,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    
     @action(detail=False, methods=['GET'], url_name='popularnotpredef', url_path='popularnotpredef/(?P<amount>\d+)')
     def getPopularNotPredefinedTags(self, request, amount=10):
         tags = Tag.objects.filter(is_predefined=False).annotate(recipe_count=Count('recipe')).order_by('-recipe_count')[:int(amount)]
@@ -176,6 +177,7 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
                 recipe = Comment.objects.get(id=request.data['comment_id']).recipe,
             )
         user_report.save()
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['GET', 'POST'], url_name='issueOnRecipe', url_path='issueOnRecipe')  
     def issueOnRecipe(self, request, pk=None):
@@ -188,6 +190,7 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
                 recipe = Recipe.objects.get(id=request.data['recipe_id']),
             )
         user_report.save()  
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['GET', 'POST'], url_name='respond', url_path='respond')
     def respond(self, request, pk=None):
@@ -195,17 +198,20 @@ class ReportTicketViewSet(viewsets.ModelViewSet):
         user_report = ReportTicket.objects.get(id=pk)
         user_report.responder = user
         user_report.save()
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['GET', 'POST'], url_name='ban', url_path='ban')
     def ban(self, request, pk=None):
         user_report = ReportTicket.objects.get(id=pk)
         user_report.violator.unban_date = request.data['ban_date']
         user_report.delete()
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['GET', 'POST'], url_name='cancel', url_path='cancel')
     def cancel(self, request, pk=None):
         user_report = ReportTicket.objects.get(id=pk)
         user_report.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     

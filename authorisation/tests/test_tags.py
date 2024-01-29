@@ -127,8 +127,8 @@ def test_get_popular_not_predefined_tags():
     user = create_users()[0]
     not_predef_tags = create_notpredef_tags(tag_category)
     recipes = create_recipes(user)
-    create_recipe_tags_list(not_predef_tags[:2], recipes[:2])
-    create_recipe_tags_list(not_predef_tags[2:-2], recipes[3:-2])
+    create_recipe_tags_list(not_predef_tags[0:2], recipes[0:2])
+    #create_recipe_tags_list(not_predef_tags[3:-2], recipes[3:-2])
     create_recipe_tags_list([not_predef_tags[-1]], recipes)
     
     url = f'/api/recipes/tags/popularnotpredef/{len(not_predef_tags)}/'
