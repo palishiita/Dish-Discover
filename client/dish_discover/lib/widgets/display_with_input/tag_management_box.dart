@@ -30,39 +30,56 @@ class _TagManagementBoxState extends State<TagManagementBox> {
         child: AspectRatio(
             aspectRatio: 0.6,
             child: Card(
-                child: Column(children: [
-              const Center(child: Text('Tag Management Box')),
-              Column(
-                  children: List.generate(
-                      popularNotPredefined.length,
-                      (index) => Row(children: [
-                            TagChip(
-                                tag: popularNotPredefined[index], long: true),
-                            IconButton(
-                                icon: const Icon(Icons.add),
-                                onPressed: () => CustomDialog.callDialog(
-                                        context,
-                                        'Add predefined tag',
-                                        '#${popularNotPredefined[index].name} : ${popularNotPredefined[index].category?.name}',
-                                        null,
-                                        CustomDropdown(
-                                            currentValue:
-                                                popularNotPredefined[index]
-                                                    .category,
-                                            labeledOptions: List.generate(
-                                                TagCategory.values.length,
-                                                (index) => (
-                                                      TagCategory.values[index],
-                                                      TagCategory
-                                                          .values[index].name
-                                                    )),
-                                            onChanged: (selected) {
-                                              // TODO change selected option
-                                            }),
-                                        'Add', () {
-                                      // TODO add tag to predefined
-                                    }))
-                          ])))
-            ]))));
+                child: Flex(
+                    direction: Axis.vertical,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                  const Center(child: Text('Tag Management Box')),
+                  Flex(
+                      direction: Axis.vertical,
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                          popularNotPredefined.length,
+                          (index) => Flex(
+                                  direction: Axis.horizontal,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TagChip(
+                                        tag: popularNotPredefined[index],
+                                        long: true),
+                                    IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: () =>
+                                            CustomDialog.callDialog(
+                                                context,
+                                                'Add predefined tag',
+                                                '#${popularNotPredefined[index].name} : ${popularNotPredefined[index].category?.name}',
+                                                null,
+                                                CustomDropdown(
+                                                    currentValue:
+                                                        popularNotPredefined[
+                                                                index]
+                                                            .category,
+                                                    labeledOptions:
+                                                        List.generate(
+                                                            TagCategory
+                                                                .values.length,
+                                                            (index) => (
+                                                                  TagCategory
+                                                                          .values[
+                                                                      index],
+                                                                  TagCategory
+                                                                      .values[
+                                                                          index]
+                                                                      .name
+                                                                )),
+                                                    onChanged: (selected) {
+                                                      // TODO change selected option
+                                                    }),
+                                                'Add', () {
+                                              // TODO add tag to predefined
+                                            }))
+                                  ])))
+                ]))));
   }
 }

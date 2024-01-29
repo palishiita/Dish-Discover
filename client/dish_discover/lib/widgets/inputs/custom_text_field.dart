@@ -23,30 +23,30 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int lines = obscure || maxLength <= 50 ? 1 : (maxLength / 30).ceil();
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5.0),
-        child: AspectRatio(
-            aspectRatio: 5.5,
-            child: TextField(
-              controller: controller,
-              textAlignVertical: TextAlignVertical.center,
-              focusNode: FocusNode(),
-              obscureText: obscure,
-              maxLength: maxLength,
-              buildCounter: (BuildContext context,
-                      {required int currentLength,
-                      required bool isFocused,
-                      required int? maxLength}) =>
-                  null,
-              style: Theme.of(context).textTheme.bodyMedium,
-              decoration: decoration?.copyWith(hintText: hintText) ??
-                  InputDecoration(
-                      filled: false,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      hintText: hintText,
-                      suffixIcon: trailingAction),
-              onChanged: onChanged,
-            )));
+        child: TextField(
+          controller: controller,
+          textAlignVertical: TextAlignVertical.center,
+          focusNode: FocusNode(),
+          obscureText: obscure,
+          maxLength: maxLength,
+          maxLines: lines,
+          buildCounter: (BuildContext context,
+                  {required int currentLength,
+                  required bool isFocused,
+                  required int? maxLength}) =>
+              null,
+          style: Theme.of(context).textTheme.bodyMedium,
+          decoration: decoration?.copyWith(hintText: hintText) ??
+              InputDecoration(
+                  filled: false,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  hintText: hintText,
+                  suffixIcon: trailingAction),
+          onChanged: onChanged,
+        ));
   }
 }

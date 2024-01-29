@@ -9,9 +9,12 @@ class RecommendedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const TabTitle(title: 'Recommended'),
-      RecipeList(getRecipes: AppState.currentUser!.getRecommendations)
-    ]);
+    return Flex(
+        direction: Axis.vertical,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const TabTitle(title: 'Recommended'),
+          RecipeList(getRecipes: AppState.currentUser!.getRecommendations)
+        ]);
   }
 }

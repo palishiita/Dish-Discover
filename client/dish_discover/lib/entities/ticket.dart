@@ -62,6 +62,11 @@ class Ticket extends ChangeNotifier {
     }
   }
 
+  static Future<Ticket?> getAssignedTicket() async {
+    // TODO get active or get next one from queue
+    return null;
+  }
+
   static Future<void> addTicket(Ticket ticket) async {
     final response = await http.post(
       Uri.parse('http://${AppState.serverDomain}/api/tickets'),

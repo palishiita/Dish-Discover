@@ -12,13 +12,14 @@ class ValidationMessage extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: RawChip(
+            visualDensity: VisualDensity.compact,
             tapEnabled: false,
             backgroundColor: errorContainerColor(context),
             label: Text(message,
                 softWrap: true,
                 style: TextStyle(color: onErrorContainerColor(context)),
-                overflow: TextOverflow.visible),
+                overflow: TextOverflow.ellipsis),
             avatar: Icon(isError ? Icons.error : Icons.check_circle_rounded,
-                color: isError ? errorColor(context) : checkColor)));
+                color: isError ? errorColor(context) : checkColor, size: 18)));
   }
 }

@@ -21,23 +21,28 @@ class TermsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      const Center(
-          child: Padding(
+    return Flex(
+        direction: Axis.vertical,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
               padding: EdgeInsets.symmetric(vertical: 15.0),
-              child: TabTitle(title: "Terms & Conditions"))),
-      Expanded(
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 25.0),
-              child: Card(
-                  color: backgroundColor(context),
-                  elevation: 0,
-                  shape: const RoundedRectangleBorder(
-                      side: BorderSide(),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                  child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: SingleChildScrollView(child: Text('Contents'))))))
-    ]);
+              child: TabTitle(title: "Terms & Conditions")),
+          Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 25.0),
+                  child: Card(
+                      color: backgroundColor(context),
+                      elevation: 0,
+                      shape: const RoundedRectangleBorder(
+                          side: BorderSide(),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                      child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child:
+                              SingleChildScrollView(child: Text('Contents'))))))
+        ]);
   }
 }

@@ -82,22 +82,52 @@ class Recipe extends ChangeNotifier {
   }
 
   void addIngredient(Ingredient ingredient) {
+    addTag(Tag(
+        isPredefined: false,
+        name: ingredient.name,
+        category: TagCategory.ingredient));
     ingredients.add(ingredient);
     notifyListeners();
   }
 
   void removeIngredient(Ingredient ingredient) {
+    removeTag(Tag(
+        isPredefined: false,
+        name: ingredient.name,
+        category: TagCategory.ingredient));
     ingredients.remove(ingredient);
     notifyListeners();
   }
 
+  void updateIngredient(int index, Ingredient ingredient) {
+    if (index < 0 || index > ingredients.length) {
+      return;
+    }
+
+    ingredients[index] = ingredient;
+    notifyListeners();
+  }
+
   void addTag(Tag tag) {
+    if (tags.any((e) => e.name == tag.name)) {
+      return;
+    }
     tags.add(tag);
     notifyListeners();
   }
 
   void removeTag(Tag tag) {
-    tags.remove(tag);
+    tags.removeWhere((e) => e.name == tag.name);
+    notifyListeners();
+  }
+
+  void addComment(Comment comment) {
+    comments.add(comment);
+    notifyListeners();
+  }
+
+  void removeComment(Comment comment) {
+    comments.remove(comment);
     notifyListeners();
   }
 

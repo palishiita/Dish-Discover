@@ -54,12 +54,15 @@ enum PopupMenuAction {
         'Report recipe',
         '',
         null,
-        Column(children: [
-          CustomTextField(
-              controller: TextEditingController(),
-              hintText: 'Reason',
-              obscure: true)
-        ]),
+        Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextField(
+                  controller: TextEditingController(),
+                  hintText: 'Reason',
+                  obscure: true)
+            ]),
         'Report',
         () {});
   }
@@ -72,12 +75,15 @@ enum PopupMenuAction {
         'Ban recipe',
         '',
         null,
-        Column(children: [
-          CustomTextField(
-              controller: TextEditingController(),
-              hintText: 'Password',
-              obscure: true)
-        ]),
+        Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextField(
+                  controller: TextEditingController(),
+                  hintText: 'Password',
+                  obscure: true)
+            ]),
         'Ban',
         () {});
   }
@@ -128,12 +134,12 @@ class PopupMenu extends StatelessWidget {
               PopupMenuItem<PopupMenuAction>(
                 value: action1,
                 onTap: onPressed1,
-                child: Text(action1.name, overflow: TextOverflow.fade),
+                child: Text(action1.name, overflow: TextOverflow.ellipsis),
               ),
               PopupMenuItem<PopupMenuAction>(
                 value: action2,
                 onTap: onPressed2,
-                child: Text(action2.name, overflow: TextOverflow.fade),
+                child: Text(action2.name, overflow: TextOverflow.ellipsis),
               )
             ]);
   }

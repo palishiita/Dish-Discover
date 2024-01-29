@@ -69,7 +69,7 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
   }
 
   Widget done() {
-    Recipe recipe = ref.watch(recipeProvider!);
+    Recipe recipe = ref.read(recipeProvider!);
 
     return Scaffold(
         appBar: AppBar(
@@ -89,8 +89,7 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
         ),
         body: ListView(children: [
           RecipeHeader(recipeProvider: recipeProvider!, forEditing: true),
-          IngredientsBox(
-              recipeProvider: widget.recipeProvider!, forEditing: true),
+          IngredientsBox(recipeProvider: recipeProvider!, forEditing: true),
           StepsBox(recipeProvider: recipeProvider!, forEditing: true),
           TagsBox(recipeProvider: recipeProvider!, forEditing: true)
         ]));

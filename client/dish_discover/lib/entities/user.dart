@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dish_discover/entities/comment.dart';
 import 'package:dish_discover/entities/recipe.dart';
-import 'package:dish_discover/entities/tag.dart';
 import 'package:dish_discover/entities/ticket.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +21,6 @@ class User extends ChangeNotifier {
   late List<Recipe> likedRecipes;
   late List<Recipe> savedRecipes;
   late List<Recipe> addedRecipes;
-  late List<Comment> addedComments;
-  late List<Tag> preferredTags;
 
   User(
       {required this.username,
@@ -36,9 +33,7 @@ class User extends ChangeNotifier {
       this.isModerator = false})
       : likedRecipes = [],
         savedRecipes = [],
-        addedRecipes = [],
-        addedComments = [],
-        preferredTags = [];
+        addedRecipes = [];
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -127,7 +122,7 @@ class User extends ChangeNotifier {
   Comment addComment(int commentId, Recipe recipe, String content) {
     Comment comment = Comment(
         author: username, recipeId: recipe.id, id: commentId, content: content);
-    addedComments.add(comment);
+    recipe.comments.add(comment);
     notifyListeners();
     recipe.notifyListeners();
     return comment;
@@ -222,6 +217,13 @@ class User extends ChangeNotifier {
     AppState.loginToken = null;
     AppState.currentTicket = null;
     AppState.userDataLoaded = false;
+  }
+
+  static bool? checkPassword(String pass) {
+    if (AppState.currentUser == null) {
+      return null;
+    }
+    return pass.compareTo(AppState.currentUser!.password) == 0;
   }
 
   static Future<void> addUser(User user) async {

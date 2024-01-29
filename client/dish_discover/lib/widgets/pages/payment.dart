@@ -19,9 +19,10 @@ class PaymentPage extends StatelessWidget {
         body: const PayPalWebView(),
         bottomNavigationBar: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('Reminder: DishDiscover does not offer refunds!',
-                  softWrap: true, style: TextStyle(fontSize: 13))
-            ])));
+            child: Text('Reminder: DishDiscover does not offer refunds!',
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13))));
   }
 }

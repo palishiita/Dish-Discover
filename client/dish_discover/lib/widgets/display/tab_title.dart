@@ -12,7 +12,8 @@ class TabTitle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Text(title,
             softWrap: true,
-            overflow: TextOverflow.fade,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleMedium));
   }
 }

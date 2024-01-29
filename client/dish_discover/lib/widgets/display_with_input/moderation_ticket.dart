@@ -1,4 +1,5 @@
 import 'package:dish_discover/widgets/pages/view_recipe.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,8 +8,7 @@ import '../display/user_avatar.dart';
 import '../pages/user.dart';
 
 class ModerationTicket extends ConsumerStatefulWidget {
-  final ChangeNotifierProvider<Ticket> ticketProvider;
-  const ModerationTicket({super.key, required this.ticketProvider});
+  const ModerationTicket({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -16,33 +16,75 @@ class ModerationTicket extends ConsumerStatefulWidget {
 }
 
 class _ModerationTicketState extends ConsumerState<ModerationTicket> {
+  ChangeNotifierProvider<Ticket>? ticketProvider;
+
   @override
-  Widget build(BuildContext context) {
-    Ticket ticket = ref.watch(widget.ticketProvider);
+  Widget build(BuildContext) {
+    return FutureBuilder(
+        future: Ticket.getAssignedTicket(),
+        builder: (context, ticketData) {
+          if (ticketData.connectionState != ConnectionState.done) {
+            return loading();
+          }
+
+          Ticket? ticket = ticketData.data;
+
+          if (ticket == null) {
+            if (kDebugMode) {
+              ticket = Ticket(
+                  reportId: 12345,
+                  recipeId: null, //1,
+                  violatorId: 'hells_kitchen_666',
+                  issuerId: 'upstanding_citizen',
+                  issuerAvatar: Image.asset("assets/images/launcher_icon.jpg"),
+                  reason: 'Spreading satanism with their username >:(');
+            } else {
+              return none();
+            }
+          }
+
+          ticketProvider = ChangeNotifierProvider<Ticket>((ref) => ticket!);
+          return done();
+        });
+  }
+
+  Widget none() {
+    return Container();
+  }
+
+  Widget loading() {
+    return const Card(child: Center(child: Text('Loading...')));
+  }
+
+  Widget done() {
+    Ticket ticket = ref.watch(ticketProvider!);
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
-        child: AspectRatio(
-            aspectRatio: 1.2,
-            child: Card(
-                child: Column(children: [
+        child: Card(
+            child: Flex(
+                direction: Axis.vertical,
+                mainAxisSize: MainAxisSize.min,
+                children: [
               ListTile(
-                  dense: false,
+                  dense: true,
                   leading: UserAvatar(
                       username: ticket.issuerId,
-                      image: null, // TODO get User avatar
+                      image: ticket.issuerAvatar,
                       diameter: 30),
-                  title: Text('Ticket #${ticket.reportId}',
-                      softWrap: true, overflow: TextOverflow.fade),
+                  title: Text('Complaint #${ticket.reportId}',
+                      softWrap: true, overflow: TextOverflow.ellipsis),
                   subtitle: GestureDetector(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               UserPage(username: ticket.issuerId))),
                       child: Text(ticket.issuerId,
-                          softWrap: true, overflow: TextOverflow.fade)),
+                          softWrap: true, overflow: TextOverflow.ellipsis)),
                   trailing: AspectRatio(
                       aspectRatio: 2.0,
-                      child: Row(
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
@@ -65,33 +107,40 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
                         ],
                       ))),
               const Divider(height: 1.0),
-              Expanded(
+              AspectRatio(
+                  aspectRatio: 1.9,
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Text(ticket.reason,
-                              softWrap: true, overflow: TextOverflow.fade)))),
+                          child: Text("Reason: ${ticket.reason}",
+                              maxLines: 50,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis)))),
               const Divider(height: 1.0),
               Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 5.0, horizontal: 10.0),
-                  child: Row(children: [
-                    Expanded(
-                        child: Text(
-                            "${ticket.issuerId}:${ticket.violatorId != null ? 'User' : ticket.commentId != null ? 'Comment' : 'Recipe'}",
-                            softWrap: true,
-                            overflow: TextOverflow.fade)),
-                    IconButton(
-                        icon: const Icon(Icons.arrow_right_alt_rounded),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ticket.violatorId != null
-                                  ? UserPage(username: ticket.violatorId!)
-                                  : ViewRecipePage(
-                                      recipeId: ticket.recipeId!)));
-                        })
-                  ]))
-            ]))));
+                  child: Flex(
+                      direction: Axis.horizontal,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                            child: Text(
+                                "${ticket.violatorId != null ? 'User' : ticket.commentId != null ? 'Comment' : 'Recipe'} : ${ticket.violatorId}",
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis)),
+                        IconButton(
+                            icon: const Icon(Icons.arrow_right_alt_rounded),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ticket.violatorId !=
+                                          null
+                                      ? UserPage(username: ticket.violatorId!)
+                                      : ViewRecipePage(
+                                          recipeId: ticket.recipeId!)));
+                            })
+                      ]))
+            ])));
   }
 }

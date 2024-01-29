@@ -26,7 +26,7 @@ class CustomDropdown<T> extends StatelessWidget {
         items: labeledOptions
             .map((entry) => DropdownMenuItem(
                 value: entry.$1,
-                child: Text(entry.$2, overflow: TextOverflow.fade)))
+                child: Text(entry.$2, overflow: TextOverflow.ellipsis)))
             .toList(),
         onChanged: onChanged);
   }

@@ -71,7 +71,9 @@ class _HomePageState extends State<HomePage>
         showBackButton: false,
         title: "DishDiscover",
         child: Center(
-            child: Column(
+            child: Flex(
+          direction: Axis.vertical,
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Padding(
@@ -112,17 +114,20 @@ class _HomePageState extends State<HomePage>
                           UserPage(username: AppState.currentUser!.username))),
                   icon: const Icon(Icons.account_circle_rounded))
             ]),
-        body: Column(children: [
-          const CustomSearchBar(),
-          Expanded(
-              child: TabBarView(
-            controller: tabController,
-            children: [const RecommendedTab(), const SavedTab()] +
-                (AppState.currentUser!.isModerator
-                    ? [const ModerationTab()]
-                    : []),
-          ))
-        ]),
+        body: Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CustomSearchBar(),
+              Expanded(
+                  child: TabBarView(
+                controller: tabController,
+                children: [const RecommendedTab(), const SavedTab()] +
+                    (AppState.currentUser!.isModerator
+                        ? [const ModerationTab()]
+                        : []),
+              ))
+            ]),
         bottomNavigationBar: TabBar(
           padding: const EdgeInsets.symmetric(horizontal: 120),
           controller: tabController,

@@ -76,8 +76,10 @@ class _LoginPageState extends State<LoginPage> {
         "",
         null,
         CustomTextField(controller: TextEditingController(), hintText: "Email"),
-        "Send email",
-        () => {});
+        "Send email", () {
+      // TODO  recover password
+      return null;
+    });
   }
 
   @override
@@ -93,10 +95,12 @@ class _LoginPageState extends State<LoginPage> {
         body: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Center(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                child: Flex(
+                    direction: Axis.vertical,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                       Image.asset('assets/images/logo.png', scale: 0.7),
                       errorMessage == null
                           ? Container()
@@ -121,10 +125,11 @@ class _LoginPageState extends State<LoginPage> {
                           child: OutlinedButton(
                               onPressed: login,
                               child: Text('Login', style: textStyle)))
-                    ])))),
+                    ]))),
         bottomNavigationBar: Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
-            child: Column(
+            child: Flex(
+                direction: Axis.vertical,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

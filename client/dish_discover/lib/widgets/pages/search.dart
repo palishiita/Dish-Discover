@@ -45,15 +45,19 @@ class _SearchPageState extends State<SearchPage> {
                 icon: const Icon(Icons.tune_rounded))
           ],
         ),
-        body: Column(children: [
-          CustomSearchBar(
-              initialSearchPhrase: widget.searchPhrase, goToSearchPage: false),
-          RecipeList(
-              getRecipes: () => Future<List<Recipe>>(() {
-                    // TODO search recipes by phrase
-                    return [];
-                  }))
-        ]),
+        body: Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomSearchBar(
+                  initialSearchPhrase: widget.searchPhrase,
+                  goToSearchPage: false),
+              RecipeList(
+                  getRecipes: () => Future<List<Recipe>>(() {
+                        // TODO search recipes by phrase
+                        return [];
+                      }))
+            ]),
         endDrawer: FilterSideMenu(
             filter: currentFilter,
             onSaved: (newFilter) => setState(() {

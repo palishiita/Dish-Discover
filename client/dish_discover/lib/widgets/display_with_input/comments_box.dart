@@ -16,8 +16,11 @@ import '../pages/user.dart';
 
 class CommentTile extends ConsumerWidget {
   final ChangeNotifierProvider<Comment> commentProvider;
+  final TextEditingController passwordController = TextEditingController();
+  final void Function() onDelete;
 
-  const CommentTile({super.key, required this.commentProvider});
+  CommentTile(
+      {super.key, required this.commentProvider, required this.onDelete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,95 +35,122 @@ class CommentTile extends ConsumerWidget {
 
     return Padding(
         padding: const EdgeInsets.all(8),
-        child: AspectRatio(
-            aspectRatio: 3.5,
-            child: Card(
-                child: Column(children: [
-              ListTile(
-                  leading: UserAvatar(
-                      username: comment.author,
-                      image: author.image,
-                      diameter: 30),
-                  title: GestureDetector(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              UserPage(username: comment.author))),
-                      child: Text(author.username,
-                          softWrap: true, overflow: TextOverflow.fade)),
-                  trailing: author.username
-                              .compareTo(AppState.currentUser!.username) ==
-                          0
-                      ? IconButton(
-                          onPressed: () {
-                            CustomDialog(
-                                title: 'Delete comment',
-                                subtitle: '',
-                                message: null,
-                                buttonLabel: 'Delete',
-                                onPressed: () {
-                                  // TODO delete comment
-                                },
-                                child: CustomTextField(
-                                    controller: TextEditingController(),
-                                    hintText: 'Password',
-                                    obscure: true));
-                          },
-                          icon: const Icon(Icons.delete))
-                      : IconButton(
-                          onPressed: () => PopupMenuAction.reportAction(
-                              context, comment.recipeId, comment.id, null),
-                          icon: const Icon(Icons.flag))),
-              const Divider(height: 1.0),
-              Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(comment.content,
-                          softWrap: true, overflow: TextOverflow.fade)))
-            ]))));
+        child: Card(
+            child: Flex(direction: Axis.vertical, children: [
+          ListTile(
+              leading: UserAvatar(
+                  username: comment.author, image: author.image, diameter: 30),
+              title: GestureDetector(
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          UserPage(username: comment.author))),
+                  child: Text(author.username,
+                      softWrap: true, overflow: TextOverflow.ellipsis)),
+              trailing: author.username
+                          .compareTo(AppState.currentUser!.username) ==
+                      0
+                  ? IconButton(
+                      onPressed: () => CustomDialog.callDialog(
+                              context,
+                              'Delete comment',
+                              '',
+                              null,
+                              CustomTextField(
+                                  controller: passwordController,
+                                  hintText: 'Password',
+                                  obscure: true),
+                              'Delete', () {
+                            if (User.checkPassword(passwordController.text)!) {
+                              onDelete();
+                              return null;
+                            } else {
+                              return 'Passwords do not match';
+                            }
+                          }),
+                      icon: const Icon(Icons.delete))
+                  : IconButton(
+                      onPressed: () => PopupMenuAction.reportAction(
+                          context, comment.recipeId, comment.id, null),
+                      icon: const Icon(Icons.flag))),
+          const Divider(height: 1.0),
+          Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(comment.content,
+                      softWrap: true, overflow: TextOverflow.ellipsis)))
+        ])));
   }
 }
 
-class CommentsBox extends ConsumerWidget {
-  final TextEditingController commentController = TextEditingController();
+class CommentsBox extends ConsumerStatefulWidget {
   final ChangeNotifierProvider<Recipe> recipeProvider;
-  CommentsBox({super.key, required this.recipeProvider});
+
+  const CommentsBox({super.key, required this.recipeProvider});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Recipe recipe = ref.watch(recipeProvider);
+  ConsumerState<ConsumerStatefulWidget> createState() => _CommentsBoxState();
+}
+
+class _CommentsBoxState extends ConsumerState<CommentsBox> {
+  final TextEditingController commentController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    Recipe recipe = ref.watch(widget.recipeProvider);
     List<Comment> comments = recipe.comments;
     if (kDebugMode && comments.isEmpty) {
-      comments = [
-        Comment(author: 'Test_user', recipeId: 0, id: 0, content: '[Testing]')
-      ];
+      comments = comments +
+          [
+            Comment(
+                author: 'Test_user', recipeId: 0, id: 0, content: '[Testing]')
+          ];
     }
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
         child: Card(
-            child: Column(children: [
-          const Align(
-              alignment: Alignment.centerLeft,
-              child: TabTitle(title: "Comments")),
-          CustomTextField(
-              controller: commentController,
-              hintText: 'Comment',
-              trailingAction: IconButton(
-                  icon: const Icon(Icons.arrow_right_alt_rounded),
-                  onPressed: () {
-                    // TODO recipe add comment
-                  })),
-          Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Card(
-                  color: outerContainerColor(context),
-                  child: Column(
-                      children: List.generate(
-                          comments.length,
-                          (index) => CommentTile(
-                              commentProvider: ChangeNotifierProvider<Comment>(
-                                  (ref) => comments[index]))))))
-        ])));
+            child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Flex(
+                    direction: Axis.vertical,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: TabTitle(title: "Comments")),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: CustomTextField(
+                              controller: commentController,
+                              hintText: 'Comment',
+                              trailingAction: IconButton(
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    recipe.addComment(Comment(
+                                        id: 0,
+                                        author: AppState.currentUser!.username,
+                                        recipeId: recipe.id,
+                                        content: commentController.text));
+                                    commentController.text = '';
+                                  }))),
+                      Card(
+                          color: outerContainerColor(context),
+                          child: Flex(
+                              direction: Axis.vertical,
+                              mainAxisSize: MainAxisSize.max,
+                              children: List.generate(
+                                  comments.length,
+                                  (index) => CommentTile(
+                                      onDelete: () =>
+                                          recipe.removeComment(comments[index]),
+                                      commentProvider:
+                                          ChangeNotifierProvider<Comment>(
+                                              (ref) => comments[index])))))
+                    ]))));
   }
 }

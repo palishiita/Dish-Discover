@@ -74,7 +74,7 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                 // TODO suggestions?
                 'suggestions'
               ].map((suggestion) => ListTile(
-                  title: Text(suggestion, overflow: TextOverflow.fade),
+                  title: Text(suggestion, overflow: TextOverflow.ellipsis),
                   onTap: () {
                     setState(() {
                       controller.text = suggestion;

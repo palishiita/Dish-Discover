@@ -35,71 +35,78 @@ class RecipeCard extends ConsumerWidget {
             child: AspectRatio(
                 aspectRatio: 1.2,
                 child: Card(
-                    child: Column(children: [
-                  ListTile(
-                      leading: UserAvatar(
-                          username: recipe.author,
-                          image: recipe.authorAvatar,
-                          diameter: 30),
-                      title: Text(recipe.title,
-                          softWrap: true, overflow: TextOverflow.fade),
-                      subtitle: GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      UserPage(username: recipe.author))),
-                          child: Text(recipe.author, softWrap: true)),
-                      trailing: PopupMenu(
-                          action1: PopupMenuAction.share,
-                          onPressed1: () => PopupMenuAction.shareAction(
-                              context,
-                              "Sharing recipe",
-                              "Have a look at this recipe: ",
-                              recipe.getUrl()), // TODO sharing is bugged
-                          action2: AppState.currentUser!.isModerator
-                              ? PopupMenuAction.ban
-                              : PopupMenuAction.report,
-                          onPressed2: () => AppState.currentUser!.isModerator
-                              ? PopupMenuAction.banAction(
-                                  context, recipe.id, null, null)
-                              : PopupMenuAction.reportAction(
-                                  context, recipe.id, null, null))),
-                  const Divider(height: 1.0),
-                  RecipeCover(cover: recipe.image),
-                  const Divider(height: 1.0),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        LikeSaveIndicator(
-                            likeButtonEnabled: likedRecipe,
-                            likeCount: recipe.likeCount,
-                            onLikePressed:
-                                AppState.currentUser!.username == recipe.author
+                    child: Flex(
+                        direction: Axis.vertical,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                      ListTile(
+                          leading: UserAvatar(
+                              username: recipe.author,
+                              image: recipe.authorAvatar,
+                              diameter: 30),
+                          title: Text(recipe.title,
+                              softWrap: true, overflow: TextOverflow.ellipsis),
+                          subtitle: GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserPage(username: recipe.author))),
+                              child: Text(recipe.author, softWrap: true)),
+                          trailing: PopupMenu(
+                              action1: PopupMenuAction.share,
+                              onPressed1: () => PopupMenuAction.shareAction(
+                                  context,
+                                  "Sharing recipe",
+                                  "Have a look at this recipe: ",
+                                  recipe.getUrl()), // TODO sharing is bugged
+                              action2: AppState.currentUser!.isModerator
+                                  ? PopupMenuAction.ban
+                                  : PopupMenuAction.report,
+                              onPressed2: () => AppState
+                                      .currentUser!.isModerator
+                                  ? PopupMenuAction.banAction(
+                                      context, recipe.id, null, null)
+                                  : PopupMenuAction.reportAction(
+                                      context, recipe.id, null, null))),
+                      const Divider(height: 1.0),
+                      Flexible(child: RecipeCover(cover: recipe.image)),
+                      const Divider(height: 1.0),
+                      Flex(
+                          direction: Axis.horizontal,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LikeSaveIndicator(
+                                likeButtonEnabled: likedRecipe,
+                                likeCount: recipe.likeCount,
+                                onLikePressed: AppState.currentUser!.username ==
+                                        recipe.author
                                     ? null
                                     : () => AppState.currentUser!
                                         .switchLikeRecipe(recipe, !likedRecipe),
-                            saveButtonEnabled: savedRecipe,
-                            saveCount: recipe.saveCount,
-                            onSavePressed: AppState.currentUser!.username ==
-                                    recipe.author
-                                ? null
-                                : () => AppState.currentUser!
-                                    .switchSaveRecipe(recipe, !savedRecipe)),
-                        Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: CustomPopup(
-                              content: Wrap(
-                                  children: List.generate(
-                                      tags.length,
-                                      (index) => Padding(
-                                          padding: const EdgeInsets.all(5),
-                                          child: TagChip(
-                                              tag: tags[index],
-                                              icon: null,
-                                              onPressed: null)))),
-                              child: const Icon(Icons.sell_outlined),
-                            ))
-                      ])
-                ])))));
+                                saveButtonEnabled: savedRecipe,
+                                saveCount: recipe.saveCount,
+                                onSavePressed: AppState.currentUser!.username ==
+                                        recipe.author
+                                    ? null
+                                    : () => AppState.currentUser!
+                                        .switchSaveRecipe(
+                                            recipe, !savedRecipe)),
+                            Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: CustomPopup(
+                                  content: Wrap(
+                                      children: List.generate(
+                                          tags.length,
+                                          (index) => Padding(
+                                              padding: const EdgeInsets.all(5),
+                                              child: TagChip(
+                                                  tag: tags[index],
+                                                  icon: null,
+                                                  onPressed: null)))),
+                                  child: const Icon(Icons.sell_outlined),
+                                ))
+                          ])
+                    ])))));
   }
 }

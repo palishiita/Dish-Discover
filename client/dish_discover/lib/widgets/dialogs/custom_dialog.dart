@@ -1,12 +1,13 @@
+import 'package:dish_discover/widgets/display/validation_message.dart';
 import 'package:flutter/material.dart';
 
-class CustomDialog extends StatelessWidget {
+class CustomDialog extends StatefulWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final Widget? message;
   final Widget child;
   final String buttonLabel;
-  final void Function() onPressed;
+  final String? Function() onPressed;
 
   /// Simple Material dialog for confirmation with custom message.
   /// On cancel or click away, closes the dialog. On confirm, executes onConfirm.
@@ -24,11 +25,11 @@ class CustomDialog extends StatelessWidget {
   static void callDialog(
       BuildContext context,
       String title,
-      String subtitle,
+      String? subtitle,
       Widget? message,
       Widget child,
       String buttonLabel,
-      void Function() onPressed) {
+      String? Function() onPressed) {
     Navigator.of(context).push(DialogRoute(
         context: context,
         builder: (context) => CustomDialog(
@@ -41,30 +42,46 @@ class CustomDialog extends StatelessWidget {
   }
 
   @override
+  State<StatefulWidget> createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  String? errorMessage;
+
+  @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-        aspectRatio: 1.0,
-        child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: AlertDialog(
-                titleTextStyle: Theme.of(context).textTheme.labelLarge,
-                title: Center(child: Text(title, softWrap: true)),
-                content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(subtitle, softWrap: true),
-                      message ?? Container(),
-                      child
-                    ]),
-                actions: [
-                  Center(
-                      child: OutlinedButton(
-                          child: Text(buttonLabel),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onPressed();
-                          }))
-                ])));
+    return AlertDialog(
+        insetPadding: const EdgeInsets.all(8),
+        titleTextStyle: Theme.of(context).textTheme.labelLarge,
+        title: Text(widget.title, textAlign: TextAlign.center, softWrap: true),
+        content: Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              widget.subtitle == null
+                  ? Container()
+                  : Text(widget.subtitle!, softWrap: true),
+              errorMessage == null
+                  ? Container()
+                  : ValidationMessage(message: errorMessage!),
+              widget.child
+            ]),
+        actions: [
+          Center(
+              child: OutlinedButton(
+                  child: Text(widget.buttonLabel),
+                  onPressed: () {
+                    String? error = widget.onPressed();
+
+                    if (error != null) {
+                      setState(() {
+                        errorMessage = error;
+                      });
+                    } else {
+                      Navigator.of(context).pop();
+                    }
+                  }))
+        ]);
   }
 }

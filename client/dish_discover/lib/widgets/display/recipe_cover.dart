@@ -8,10 +8,9 @@ class RecipeCover extends StatelessWidget {
   Widget build(BuildContext context) {
     Image img = cover ?? Image.asset('assets/images/missing_cover.jpg');
 
-    return Expanded(
-        child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.cover, image: img.image, isAntiAlias: true))));
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                fit: BoxFit.cover, image: img.image, isAntiAlias: true)));
   }
 }

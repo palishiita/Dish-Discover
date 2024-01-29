@@ -39,7 +39,9 @@ class LikeSaveIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(5.0),
-        child: Row(
+        child: Flex(
+            direction: Axis.horizontal,
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment:
                 center ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [

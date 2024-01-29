@@ -102,8 +102,9 @@ class _RegisterPageState extends State<RegisterPage> {
         body: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: Flex(
+                    direction: Axis.vertical,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Image.asset('assets/images/logo.png', scale: 0.7),
                       errorMessage == null

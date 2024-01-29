@@ -23,24 +23,29 @@ class RecipeHeader extends ConsumerWidget {
         ? true
         : AppState.currentUser!.savedRecipes.contains(recipe);
 
-    return ConstrainedBox(
-        constraints: const BoxConstraints.tightFor(height: 170),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return Flex(
+        direction: Axis.vertical,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           TabTitle(title: recipe.title),
           GestureDetector(
               child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
                   child: Text(recipe.author,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
                           .textTheme
                           .titleSmall
                           ?.copyWith(color: Colors.black54))),
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => UserPage(username: recipe.author)))),
-          Center(
-              child: Text(recipe.description,
-                  softWrap: true, overflow: TextOverflow.fade)),
+          Padding(
+              padding: const EdgeInsets.all(15),
+              child: Center(
+                  child: Text(recipe.description,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis))),
           LikeSaveIndicator(
               likeButtonEnabled: likedRecipe,
               likeCount: recipe.likeCount,
@@ -55,7 +60,7 @@ class RecipeHeader extends ConsumerWidget {
                   : () => AppState.currentUser!
                       .switchSaveRecipe(recipe, !savedRecipe),
               center: true),
-          const Divider()
-        ]));
+          const Divider(height: 2)
+        ]);
   }
 }

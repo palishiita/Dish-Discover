@@ -110,34 +110,41 @@ class _UserPageState extends ConsumerState<UserPage> {
                           : PopupMenuAction.reportAction(
                               context, null, null, user.username))
             ]),
-        body: Column(children: [
-          UserHeader(userProvider: userProvider!),
-          RecipeList(
-              getRecipes: () => Future<List<Recipe>>(() => (user.addedRecipes)))
-        ]),
-        floatingActionButton: FloatingActionButton(
-            mini: true,
-            child: const Icon(Icons.add),
-            onPressed: () {
-              TextEditingController titleController = TextEditingController();
+        body: Flex(
+            direction: Axis.vertical,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              UserHeader(userProvider: userProvider!),
+              RecipeList(
+                  getRecipes: () =>
+                      Future<List<Recipe>>(() => (user.addedRecipes)))
+            ]),
+        floatingActionButton: isCurrentUser
+            ? FloatingActionButton(
+                mini: true,
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  TextEditingController titleController =
+                      TextEditingController();
 
-              CustomDialog.callDialog(
-                  context,
-                  'Create recipe',
-                  '',
-                  null,
-                  CustomTextField(
-                      controller: titleController, hintText: 'Title'),
-                  'Create', () {
-                Recipe newRecipe = Recipe(
-                    id: 0,
-                    title: titleController.text,
-                    author: AppState.currentUser!.username);
-                AppState.currentUser!.addRecipe(newRecipe);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        EditRecipePage(recipeId: newRecipe.id)));
-              });
-            }));
+                  CustomDialog.callDialog(
+                      context,
+                      'Create recipe',
+                      '',
+                      null,
+                      CustomTextField(
+                          controller: titleController, hintText: 'Title'),
+                      'Create', () {
+                    Recipe newRecipe = Recipe(
+                        id: 0,
+                        title: titleController.text,
+                        author: AppState.currentUser!.username);
+                    AppState.currentUser!.addRecipe(newRecipe);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            EditRecipePage(recipeId: newRecipe.id)));
+                  });
+                })
+            : null);
   }
 }

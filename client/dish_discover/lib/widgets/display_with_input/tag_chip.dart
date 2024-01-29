@@ -25,14 +25,16 @@ class TagChip extends StatelessWidget {
             showCheckmark: false,
             selectedColor: outerContainerColor(context),
             label: long
-                ? Row(
+                ? Flex(
+                    direction: Axis.horizontal,
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                        Text('#${tag.name}', overflow: TextOverflow.fade),
+                        Text('#${tag.name}', overflow: TextOverflow.ellipsis),
                         Text(" 0" // TODO get tags count
                             )
                       ])
-                : Text('#${tag.name}', overflow: TextOverflow.fade),
+                : Text('#${tag.name}', overflow: TextOverflow.ellipsis),
             onSelected: (value) => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SearchPage(
                       searchPhrase: "",
@@ -43,14 +45,16 @@ class TagChip extends StatelessWidget {
             showCheckmark: false,
             selectedColor: outerContainerColor(context),
             label: long
-                ? Row(
+                ? Flex(
+                    direction: Axis.horizontal,
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                        Text('#${tag.name}', overflow: TextOverflow.fade),
+                        Text('#${tag.name}', overflow: TextOverflow.ellipsis),
                         Text(" 0" // TODO get tags count
                             )
                       ])
-                : Text('#${tag.name}', overflow: TextOverflow.fade),
+                : Text('#${tag.name}', overflow: TextOverflow.ellipsis),
             deleteIcon: Icon(icon),
             onDeleted: onPressed);
   }
