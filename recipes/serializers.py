@@ -17,7 +17,7 @@ class TagSerializer(serializers.ModelSerializer):
 class PreferredTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreferredTag  # Fix the model reference
-        fields = 'id, tag, user, weight'
+        fields = '__all__'
         
 class RecipeTagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,3 +56,8 @@ class CommentSerializer(serializers.ModelSerializer):
         
 class LikeCountSerializer(serializers.Serializer):
     number = serializers.IntegerField()
+
+class ReportTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportTicket
+        fields = '__all__'

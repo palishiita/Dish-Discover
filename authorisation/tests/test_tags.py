@@ -1,26 +1,19 @@
 # myapp/tests.py
 from django.test import Client
 from django.urls import reverse
+from authorisation.tests.test_data import *
 from recipes.models import *
 import json
 import pytest 
 from rest_framework.test import APIClient
 
-def create_user():
-    return DishDiscoverUser.objects.create(user_id = 3, username='john_doe', has_mod_rights=True, email='john@example.com', password='password123', is_premium=False)
-    
 # TAGS
 @pytest.mark.django_db
 def test_get_all_tags():
 
-    tag_category = TagCategory.objects.create(category_name='Cousine')
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category, is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category, is_predefined = True)
-        ]
-    user = create_user()
+    tag_category = create_tagcategories()
+    tags = create_tags(tag_category)
+    user = create_users()[0]
     client = Client()
     url = f'/api/recipes/tags/'
     response = client.get(url)
@@ -36,10 +29,7 @@ def test_get_all_tags():
 
 @pytest.mark.django_db
 def test_tag_category():
-    tag_categories = [
-        TagCategory.objects.create(category_name='Test Category 1'),
-        TagCategory.objects.create(category_name='Test Category 2')
-    ]
+    tag_categories = create_tagcategories()
 
     client = Client()
     url = f'/api/recipes/tagcategories/'
@@ -56,20 +46,10 @@ def test_tag_category():
 # PREFERRED TAGS
 @pytest.mark.django_db
 def test_get_preferred_tags():
-    tag_category = TagCategory.objects.create(category_name='Cousine')      
-    user = create_user()
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
-        ]
-    preferred_tags=[
-        PreferredTag.objects.create(user=user, tag=tags[0], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[1], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[2], weight=0.8),
-        PreferredTag.objects.create(user=user, tag=tags[3], weight=0.8),
-    ]
+    tag_category = create_tagcategories()      
+    user = create_users()[0]
+    tags = create_tags(tag_category)
+    preferred_tags= create_preferred_tags(user, tags)
     
 
     client = APIClient(user)
@@ -88,7 +68,7 @@ def test_get_preferred_tags():
         assert 'weight' in item, response.json()
         assert item['id'] == ptag.id, response.json()
         assert item['tag'] == ptag.tag.name, response.json()
-        assert item['user'] == ptag.user.user_id, response.json()
+        assert item['user'] == ptag.user.id, response.json()
         assert item['weight'] == ptag.weight, response.json()
 
 
@@ -97,59 +77,95 @@ def test_get_preferred_tags():
 @pytest.mark.django_db
 def test_get_recipe_tags():
     client =Client()    
-    tag_category = TagCategory.objects.create(category_name='Cousine')      
-    user = create_user()
-    tags = [
-        Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Easy',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Tomato',tag_category=tag_category,is_predefined = True),
-        Tag.objects.create(name='Avocado',tag_category=tag_category,is_predefined = True)
-        ]
+    tag_category = create_tagcategories()   
+    user = create_users()[0]
+    tags = create_tags(tag_category)
     
-    recipe = Recipe.objects.create(
-        recipe_id=10,
-        author_id=user.user_id,
-        recipe_name="Test Recipe",
-        content="Test content",
-        description="Test description",
-        is_boosted=False
-    )
+    recipes = create_recipes(user)
 
-    recipeTags = [
-        RecipeTag.objects.create(recipe=recipe, tag=tags[0], weight=0.8),
-        RecipeTag.objects.create(recipe=recipe, tag=tags[1], weight=0.5),
-        RecipeTag.objects.create(recipe=recipe, tag=tags[2], weight=0.9),
-    ]
+    recipeTags = create_recipe_tags_list(tags, recipes)
 
-    url = f'/api/recipes/{recipe.recipe_id}/tags/'
+    for recipe in recipes:
+        url = f'/api/recipes/recipes/{recipe.id}/tags/'
+        response = client.get(url)
+        data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response['Content-Type'] == 'application/json'
+        for item, tag in zip(data, recipeTags):
+            assert 'id' in item, response.json()
+            assert 'tag' in item, response.json()
+            assert 'weight' in item, response.json()
+
+            assert item['recipe'] == tag.recipe.id,  response.json()
+
+@pytest.mark.django_db
+def add_preferred_tag():
+    client =Client()    
+    tag_category = create_tagcategories()     
+    user = create_users()[0]
+    tags = create_tags(tag_category)
+        
+    for tag in tags:
+        data = {
+            'user':user.id,
+            'tag': tag.id,
+            'weight' : 0.8
+        }
+        
+        url = f'/api/recipes/tags/'
+        response = client.post(url, data)
+        data = json.loads(response.content)
+        client.post()
+
+        assert PreferredTag.objects.all().count() == 1
+
+@pytest.mark.django_db
+def test_get_popular_not_predefined_tags():
+    client =Client()    
+    tag_category = create_tagcategories()     
+    user = create_users()[0]
+    not_predef_tags = create_notpredef_tags(tag_category)
+    recipes = create_recipes(user)
+    create_recipe_tags_list(not_predef_tags[:2], recipes[:2])
+    create_recipe_tags_list(not_predef_tags[2:-2], recipes[3:-2])
+    create_recipe_tags_list([not_predef_tags[-1]], recipes)
+    
+    url = f'/api/recipes/tags/popularnotpredef/{len(not_predef_tags)}/'
     response = client.get(url)
     data = json.loads(response.content)
+    print(not_predef_tags)
+    print(data)
 
     assert response.status_code == 200
     assert response['Content-Type'] == 'application/json'
-    for item, tag in zip(data, recipeTags):
-        assert 'id' in item, response.json()
-        assert 'tag' in item, response.json()
-        assert 'weight' in item, response.json()
+    assert not_predef_tags[-1].name == data[0]['name']
+    for item, tag in zip(data, not_predef_tags):
+        assert 'name' in item, response.json()
+        assert 'tag_category' in item, response.json()
+        assert 'is_predefined' in item, response.json()
+        assert item['is_predefined'] == False, response.json()
+        #make sure that the tags are sorted by the number of recipes they are used in
 
-        assert item['recipe'] == tag.recipe.recipe_id,  response.json()
 
-def add_preferred_tag():
-    client =Client()    
-    tag_category = TagCategory.objects.create(category_name='Cousine')      
-    user = create_user()
-    tag = Tag.objects.create(name='Polish',tag_category=tag_category,is_predefined = True),
+    # @action(detail=True, methods=['GET', ''], url_name='makepredefined', url_path='makepredefined')
+    # def make_predefined(self, request, pk=None):
+    #     tag = self.get_object()
+    #     tag.is_predefined = True
+    #     tag.save()
+    #     serializer = TagSerializer(tag)
+    #     return Response(serializer.data)
         
-    
-    data = {
-        'user':user.user_id,
-        'tag': tag.id,
-        'weight' : 0.8
-    }
-    
-    url = f'/api/recipes/tags/'
-    response = client.post(url, data)
-    data = json.loads(response.content)
-    client.post()
+@pytest.mark.django_db
+def test_make_predefined():
+    client =Client()    
+    tag_category = create_tagcategories()     
+    user = create_users()[0]
+    not_predef_tags = create_notpredef_tags(tag_category)
 
-    assert PreferredTag.objects.all().count() == 1
+    url = f'/api/recipes/tags/{not_predef_tags[0].pk}/makepredefined/'
+    response = client.post(url)
+    assert response.status_code == 200
+    not_predef_tags[0].refresh_from_db()
+    assert not_predef_tags[0].is_predefined == True
+ 

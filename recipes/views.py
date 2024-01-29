@@ -9,7 +9,7 @@ from .serializers import *
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.views.decorators.http import require_http_methods
-
+from django.db.models import Count
 
 # class RegistrationView(APIView):
 #     def post(self, request):
@@ -42,7 +42,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    lookup_field = 'recipe_id'
+    #lookup_field = 'recipe_id'
     # def get_queryset(self):
     #     # # Get the current user
     #     # if self.action == 'created_by_user':
@@ -52,23 +52,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
     #     # return super().get_queryset()  # Return the default queryset if not 'created_by_user'
     
     @action(detail=True, methods=['get'])
-    def tags(self, request, pk=None):
-        recipe = self.get_object()
-        recipe_tags = RecipeTag.objects.filter(recipe=recipe)
+    def tags(self, request, pk=None, recipe_id=None):
+        recipe_tags = RecipeTag.objects.filter(recipe_id=recipe_id)
         serializer = RecipeTagSerializer(recipe_tags, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
-    def ingredients (self, request, pk=None):
+    def ingredients (self, request, pk=None, recipe_id=None):
         recipe = self.get_object()
-        recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        recipe_ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id)
         serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
-    def comments (self, request, pk=None):
+    def comments (self, request, pk=None, recipe_id=None):
         recipe = self.get_object()
-        recipe_comments = Comment.objects.filter(recipe=recipe)
+        recipe_comments = Comment.objects.filter(recipe_id=recipe_id)
         serializer = CommentSerializer(recipe_comments, many=True)
         return Response(serializer.data)
 
@@ -76,8 +75,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    @action(detail=False, methods=['GET'], url_name='popularnotpredef', url_path='popularnotpredef/(?P<amount>\d+)')
+    def getPopularNotPredefinedTags(self, request, amount=10):
+        tags = Tag.objects.filter(is_predefined=False).annotate(recipe_count=Count('recipe')).order_by('-recipe_count')[:int(amount)]
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
 
-class PreferredTag(viewsets.ModelViewSet):
+    @action(detail=True, methods=['GET', 'POST'], url_name='makepredefined', url_path='makepredefined')
+    def make_predefined(self, request, pk=None):
+        tag = self.get_object()
+        tag.is_predefined = True
+        tag.save()
+        serializer = TagSerializer(tag)
+        return Response(serializer.data)
+
+class PreferredTagViewSet(viewsets.ModelViewSet):
     serializer_class = PreferredTagSerializer
 
     def get_queryset(self):
@@ -104,7 +116,7 @@ class SavedRecipeViewSet(viewsets.ModelViewSet):
 
     
     def get_queryset(self):       
-            return SavedRecipe.objects.filter(user=self.request.user)
+            return SavedRecipe.objects.filter(user=self.request.user.id)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -126,33 +138,20 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    @action(detail=True, methods=['GET'])
+    @action(detail=False, methods=['GET'], url_name='byuser', url_path='byuser')
     def by_user(self, request, pk=None):
         user = request.user
         user_comments = Comment.objects.filter(user=user)
-        serializer = CommentSerializer(user_comments, many = True)
+        serializer = CommentSerializer(user_comments, many=True)
         return Response(serializer.data)
 
-class CommentByUserViewSet(viewsets.ModelViewSet):   
-    serializer_class = CommentSerializer
-
-    def get_queryset(self):       
-        return Comment.objects.filter(user=self.request.user)
+    @action(detail=False, methods=['GET'], url_name='byrecipe', url_path='byrecipe/(?P<recipe_id>\d+)')
+    def by_recipe(self, request, recipe_id=None):
+        recipe_comments = Comment.objects.filter(recipe_id=recipe_id)
+        serializer = CommentSerializer(recipe_comments, many=True)
+        return Response(serializer.data)
     
 
-class CommentByRecipeViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
-
-    def get_queryset(self):
-        # Assuming 'recipe_id' is a query parameter in the request
-        recipe_id = self.request.query_params.get('recipe_id')
-
-        # You may want to handle the case when 'recipe_id' is not provided
-        if not recipe_id:
-            return Comment.objects.none()
-
-        # Filter comments based on the provided recipe_id
-        return Comment.objects.filter(recipe__id=recipe_id)
 class LikesOnUsersRecipes(viewsets.GenericViewSet):
     @action(detail=True, methods=['GET'])
 
@@ -162,3 +161,58 @@ class LikesOnUsersRecipes(viewsets.GenericViewSet):
         serializer = LikeCountSerializer({'number': likes})
         return Response(serializer.data)
 
+class ReportTicketViewSet(viewsets.ModelViewSet):
+    queryset = ReportTicket.objects.all()
+    serializer_class = ReportTicketSerializer
+    
+    @action(detail=False, methods=['GET', 'POST'], url_name='issueOnComment', url_path='issueOnComment')
+    def issue(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.create(
+                issuer=user, 
+                comment_id=request.data['comment_id'], 
+                reason=request.data['reason'], 
+                violator=Comment.objects.get(id=request.data['comment_id']).user,
+                recipe = Comment.objects.get(id=request.data['comment_id']).recipe,
+            )
+        user_report.save()
+
+    @action(detail=False, methods=['GET', 'POST'], url_name='issueOnRecipe', url_path='issueOnRecipe')  
+    def issueOnRecipe(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.create(
+                issuer=user, 
+                recipe_id=request.data['recipe_id'], 
+                reason=request.data['reason'], 
+                violator=Recipe.objects.get(id=request.data['recipe_id']).author,
+                recipe = Recipe.objects.get(id=request.data['recipe_id']),
+            )
+        user_report.save()  
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='respond', url_path='respond')
+    def respond(self, request, pk=None):
+        user = request.user
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.responder = user
+        user_report.save()
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='ban', url_path='ban')
+    def ban(self, request, pk=None):
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.violator.unban_date = request.data['ban_date']
+        user_report.delete()
+
+    @action(detail=True, methods=['GET', 'POST'], url_name='cancel', url_path='cancel')
+    def cancel(self, request, pk=None):
+        user_report = ReportTicket.objects.get(id=pk)
+        user_report.delete()
+
+
+    
+    # def get_queryset(self):
+    #     return ReportTicket.objects.filter(user=self.request.user)
+    # def perform_create(self,serializer):
+    #     serializer.save(
+    #     user=self.request.user,
+    #     recipe=self.kwargs.get('pk'),
+    #     )
