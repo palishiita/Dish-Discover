@@ -69,6 +69,11 @@ class Tag {
           'Failed to load tags, status code: ${response.statusCode}');
     }
   }
+
+  static Future<List<(Tag, int)>> getPopularNotPredefinedTags() async {
+    // TODO get most popular not predefined tags as a list of (tag, #occurrences)
+    return [];
+  }
 }
 
 class PreferredTag {

@@ -1,5 +1,7 @@
 import 'package:dish_discover/widgets/display/validation_message.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
+import 'package:dish_discover/widgets/pages/home.dart';
+import 'package:dish_discover/widgets/pages/register.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (error == null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-          '/home', (route) => (route.toString() == '/'));
+          HomePage.routeName, (route) => (route.toString() == '/'));
     } else {
       setState(() {
         errorMessage = "Error: ${error!.trim()}!";
@@ -138,8 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text("Don't have an account?")),
                   OutlinedButton(
                       child: const Text("Register"),
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/register'))
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(RegisterPage.routeName))
                 ])));
   }
 }

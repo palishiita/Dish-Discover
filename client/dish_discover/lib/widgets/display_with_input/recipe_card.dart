@@ -59,15 +59,21 @@ class RecipeCard extends ConsumerWidget {
                                   "Sharing recipe",
                                   "Have a look at this recipe: ",
                                   recipe.getUrl()), // TODO sharing is bugged
-                              action2: AppState.currentUser!.isModerator
-                                  ? PopupMenuAction.ban
-                                  : PopupMenuAction.report,
-                              onPressed2: () => AppState
-                                      .currentUser!.isModerator
-                                  ? PopupMenuAction.banAction(
-                                      context, recipe.id, null, null)
-                                  : PopupMenuAction.reportAction(
-                                      context, recipe.id, null, null))),
+                              action2: recipe.author ==
+                                      AppState.currentUser!.username
+                                  ? PopupMenuAction.edit
+                                  : AppState.currentUser!.isModerator
+                                      ? PopupMenuAction.ban
+                                      : PopupMenuAction.report,
+                              onPressed2: () => recipe.author ==
+                                      AppState.currentUser!.username
+                                  ? PopupMenuAction.editAction(
+                                      context, recipe.id, recipeProvider)
+                                  : AppState.currentUser!.isModerator
+                                      ? PopupMenuAction.banAction(
+                                          context, recipe.id, null, null)
+                                      : PopupMenuAction.reportAction(
+                                          context, recipe.id, null, null))),
                       const Divider(height: 1.0),
                       Flexible(child: RecipeCover(cover: recipe.image)),
                       const Divider(height: 1.0),

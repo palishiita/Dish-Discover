@@ -1,5 +1,7 @@
 import 'package:dish_discover/entities/app_state.dart';
 import 'package:dish_discover/widgets/display/validation_message.dart';
+import 'package:dish_discover/widgets/pages/home.dart';
+import 'package:dish_discover/widgets/pages/tutorial.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -78,8 +80,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (error == null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-          '/home', (route) => (route.toString() == '/'));
-      Navigator.of(context).pushNamed('/tutorial');
+          HomePage.routeName, (route) => (route.toString() == '/'));
+      Navigator.of(context).pushNamed(TutorialPage.routeName);
     } else {
       setState(() {
         errorMessage = "Error: ${error!.trim()}!";

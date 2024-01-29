@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class CustomSearchBar extends StatefulWidget {
   final bool goToSearchPage;
   final String initialSearchPhrase;
+  final void Function(String)? onSearch;
   const CustomSearchBar(
-      {super.key, this.initialSearchPhrase = "", this.goToSearchPage = true});
+      {super.key,
+      this.initialSearchPhrase = "",
+      this.goToSearchPage = true,
+      this.onSearch});
 
   @override
   State<StatefulWidget> createState() => _CustomSearchBar();
@@ -37,8 +41,8 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                         if (widget.goToSearchPage) {
                           Navigator.of(context).pushNamed("/search",
                               arguments: searchController.text);
-                        } else {
-                          // TODO update search results
+                        } else if (widget.onSearch != null) {
+                          widget.onSearch!(searchController.text);
                         }
                       });
                     } else {
@@ -64,8 +68,8 @@ class _CustomSearchBar extends State<CustomSearchBar> {
                         if (widget.goToSearchPage) {
                           Navigator.of(context).pushNamed("/search",
                               arguments: searchController.text);
-                        } else {
-                          // TODO update search results
+                        } else if (widget.onSearch != null) {
+                          widget.onSearch!(searchController.text);
                         }
                       }))
             ],

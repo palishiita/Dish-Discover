@@ -1,9 +1,11 @@
 import 'package:dish_discover/widgets/dialogs/terms_dialog.dart';
 import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
+import 'package:dish_discover/widgets/pages/login.dart';
 import 'package:dish_discover/widgets/pages/payment.dart';
 import 'package:dish_discover/widgets/style/style.dart';
 import 'package:flutter/material.dart';
 
+import '../../entities/app_state.dart';
 import '../../entities/user.dart';
 import '../dialogs/custom_dialog.dart';
 
@@ -14,6 +16,9 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController textController = TextEditingController();
+    TextEditingController textController2 = TextEditingController();
+    TextEditingController textController3 = TextEditingController();
+
     return Scaffold(
         appBar: AppBar(
             toolbarHeight: appBarHeight,
@@ -27,28 +32,53 @@ class SettingsPage extends StatelessWidget {
                       const PaymentPage(buyingPremium: true)))),
           ListTile(
               title: const Text("Change email"),
-              onTap: () => CustomDialog.callDialog(
-                  context,
-                  "Change email",
-                  "",
-                  null,
-                  CustomTextField(
-                      controller: textController, hintText: 'Email'),
-                  "Change",
-                  () {})),
+              onTap: () {
+                textController.text = AppState.currentUser!.email;
+                CustomDialog.callDialog(
+                    context,
+                    "Change email",
+                    "",
+                    null,
+                    CustomTextField(
+                        controller: textController, hintText: 'Email'),
+                    "Change", () {
+                  if (textController.text.isNotEmpty) {
+                    // TODO email validation
+                    AppState.currentUser!
+                        .editProfile(email: textController.text);
+                    return null;
+                  } else {
+                    return "Invalid email format";
+                  }
+                });
+              }),
           ListTile(
               title: const Text("Change password"),
-              onTap: () => CustomDialog.callDialog(
-                  context,
-                  "Change password",
-                  "",
-                  null,
-                  CustomTextField(
-                      controller: textController,
-                      hintText: 'Password',
-                      obscure: true),
-                  "Change",
-                  () {})),
+              onTap: () {
+                textController.text = '';
+                textController.text = '';
+                textController.text = '';
+                CustomDialog.callDialog(
+                    context,
+                    "Change password",
+                    "",
+                    null,
+                    CustomTextField(
+                        controller: textController,
+                        hintText: 'Password',
+                        obscure: true),
+                    "Change", () {
+                  if (!User.checkPassword(textController.text)!) {
+                    return "Wrong password";
+                  } else if (textController2.text != textController3.text) {
+                    return "New passwords don't match";
+                  } else if (textController2.text.isEmpty) {
+                    return "Password cannot be empty";
+                  } else {
+                    return null;
+                  }
+                });
+              }),
           ListTile(
               title: const Text("Terms & Conditions"),
               onTap: () => TermsDialog.callDialog(context)),
@@ -56,8 +86,8 @@ class SettingsPage extends StatelessWidget {
               title: const Text("Log out"),
               onTap: () {
                 User.logout();
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', (route) => route.isFirst);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    LoginPage.routeName, (route) => route.isFirst);
               }),
           ListTile(
               title: const Text("Delete account"),
@@ -71,10 +101,15 @@ class SettingsPage extends StatelessWidget {
                           hintText: 'Password',
                           obscure: true),
                       "Delete", () {
-                    // TODO Delete account
-                    User.logout();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', (route) => route.isFirst);
+                    if (textController.text == AppState.currentUser!.password) {
+                      User.removeUser(AppState.currentUser!);
+                      User.logout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          LoginPage.routeName, (route) => route.isFirst);
+                      return null;
+                    } else {
+                      return "Wrong password";
+                    }
                   })),
         ]));
   }

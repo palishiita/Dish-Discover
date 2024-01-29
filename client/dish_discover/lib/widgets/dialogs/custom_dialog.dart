@@ -76,7 +76,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
                     if (error != null) {
                       setState(() {
-                        errorMessage = error;
+                        errorMessage = '$error!';
                       });
                     } else {
                       Navigator.of(context).pop();

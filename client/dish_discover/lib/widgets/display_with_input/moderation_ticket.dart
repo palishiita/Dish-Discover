@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../entities/ticket.dart';
+import '../display/tab_title.dart';
 import '../display/user_avatar.dart';
 import '../pages/user.dart';
 
@@ -19,7 +20,7 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
   ChangeNotifierProvider<Ticket>? ticketProvider;
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return FutureBuilder(
         future: Ticket.getAssignedTicket(),
         builder: (context, ticketData) {
@@ -49,11 +50,27 @@ class _ModerationTicketState extends ConsumerState<ModerationTicket> {
   }
 
   Widget none() {
-    return Container();
+    return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: Card(
+            child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Flex(
+                    direction: Axis.vertical,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(bottom: 5.0),
+                          child: TabTitle(
+                              title: 'Complaint tickets', small: true)),
+                      Center(child: Text('No complaints found'))
+                    ]))));
   }
 
   Widget loading() {
-    return const Card(child: Center(child: Text('Loading...')));
+    return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: Card(child: Center(child: Text('Loading...'))));
   }
 
   Widget done() {

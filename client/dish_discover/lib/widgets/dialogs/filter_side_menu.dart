@@ -7,9 +7,9 @@ import '../display_with_input/tag_chip.dart';
 
 class FilterSideMenu extends StatefulWidget {
   final List<Tag> filter;
-  final void Function(List<Tag>) onSaved;
+  final void Function(List<Tag>) onFilter;
   const FilterSideMenu(
-      {super.key, required this.filter, required this.onSaved});
+      {super.key, required this.filter, required this.onFilter});
 
   @override
   State<StatefulWidget> createState() => _FilterSideMenuState();
@@ -27,6 +27,7 @@ class _FilterSideMenuState extends State<FilterSideMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+        width: MediaQuery.of(context).size.width * 0.85,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.horizontal(left: Radius.circular(30.0))),
         child: Padding(
@@ -60,7 +61,7 @@ class _FilterSideMenuState extends State<FilterSideMenu> {
                       child: Align(
                           alignment: Alignment.bottomCenter,
                           child: OutlinedButton(
-                              onPressed: () => widget.onSaved(currentFilter),
+                              onPressed: () => widget.onFilter(currentFilter),
                               child: const Text('Filter'))))
                 ])));
   }

@@ -29,7 +29,9 @@ class _TagInputBoxState extends State<TagInputBox> {
         trailingAction: IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              widget.onAdd(inputController.text);
+              if (inputController.text.isNotEmpty) {
+                widget.onAdd(inputController.text);
+              }
               inputController.text = '';
             }));
   }

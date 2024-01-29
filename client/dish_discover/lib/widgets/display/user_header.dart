@@ -12,8 +12,6 @@ class UserHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User user = ref.watch(userProvider);
-    int likeCount = 0; //user.likes();
-    int saveCount = 0; //user.saves();
 
     return Flex(
         direction: Axis.vertical,
@@ -26,14 +24,15 @@ class UserHeader extends ConsumerWidget {
               child: Center(
                   child: Text(user.description,
                       textAlign: TextAlign.center,
+                      maxLines: 50,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis))),
           LikeSaveIndicator(
               likeButtonEnabled: true,
-              likeCount: likeCount,
+              likeCount: user.likesTotal,
               onLikePressed: null,
               saveButtonEnabled: true,
-              saveCount: saveCount,
+              saveCount: user.savesTotal,
               onSavePressed: null,
               center: true),
           const Divider(height: 2)

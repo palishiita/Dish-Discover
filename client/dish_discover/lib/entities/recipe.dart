@@ -154,7 +154,8 @@ class Recipe extends ChangeNotifier {
     return "http://${AppState.clientDomain}/recipe/$id";
   }
 
-  static Future<List<Recipe>> getRecipes() async {
+  static Future<List<Recipe>> getRecipes(String? searchPhrase) async {
+    // TODO pass the searchPhrase
     final response = await http
         .get(Uri.parse('http://${AppState.serverDomain}/api/recipes/recipes/'));
 

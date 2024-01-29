@@ -135,14 +135,22 @@ class _UserPageState extends ConsumerState<UserPage> {
                       CustomTextField(
                           controller: titleController, hintText: 'Title'),
                       'Create', () {
-                    Recipe newRecipe = Recipe(
-                        id: 0,
-                        title: titleController.text,
-                        author: AppState.currentUser!.username);
-                    AppState.currentUser!.addRecipe(newRecipe);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            EditRecipePage(recipeId: newRecipe.id)));
+                    if (titleController.text.trim().isNotEmpty) {
+                      Recipe newRecipe = Recipe(
+                          id: 0,
+                          title: titleController.text,
+                          author: AppState.currentUser!.username);
+
+                      AppState.currentUser!.addRecipe(newRecipe);
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              EditRecipePage(recipeId: newRecipe.id)));
+
+                      return null;
+                    } else {
+                      return "Title cannot be empty";
+                    }
                   });
                 })
             : null);

@@ -10,6 +10,7 @@ import '../display/loading_indicator.dart';
 import 'home_tabs/moderation_tab.dart';
 import 'home_tabs/recommended_tab.dart';
 import 'home_tabs/saved_tab.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = "/home";
@@ -85,7 +86,7 @@ class _HomePageState extends State<HomePage>
                     onPressed: () {
                       User.logout();
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/', (route) => route.isFirst);
+                          LoginPage.routeName, (route) => route.isFirst);
                     },
                     child: const Text("Log out"))),
             Padding(

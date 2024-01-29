@@ -21,6 +21,8 @@ class User extends ChangeNotifier {
   late List<Recipe> likedRecipes;
   late List<Recipe> savedRecipes;
   late List<Recipe> addedRecipes;
+  int likesTotal;
+  int savesTotal;
 
   User(
       {required this.username,
@@ -30,7 +32,9 @@ class User extends ChangeNotifier {
       this.image,
       this.description = '',
       this.unbanDate,
-      this.isModerator = false})
+      this.isModerator = false,
+      this.likesTotal = 0,
+      this.savesTotal = 0})
       : likedRecipes = [],
         savedRecipes = [],
         addedRecipes = [];
@@ -136,6 +140,7 @@ class User extends ChangeNotifier {
   }
 
   Future<List<Recipe>> getRecommendations() async {
+    // TODO
     return [];
   }
 
@@ -249,6 +254,10 @@ class User extends ChangeNotifier {
     }
   }
 
+  static Future<void> removeUser(User user) async {
+    // TODO implement
+  }
+
   static Future<List<User>> getAllUsers() async {
     try {
       final response = await http
@@ -270,6 +279,7 @@ class User extends ChangeNotifier {
   }
 
   static Future<User> getUser(String username) async {
+    // TODO load liked, saved, added, savesTotal and  likesTotal too
     final response = await http.get(
         Uri.parse('http://${AppState.serverDomain}/api/user/users/$username'));
 

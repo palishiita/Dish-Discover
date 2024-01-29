@@ -1,4 +1,5 @@
 import 'package:dish_discover/widgets/display/tab_title.dart';
+import 'package:dish_discover/widgets/inputs/custom_text_field.dart';
 import 'package:dish_discover/widgets/pages/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,15 +8,38 @@ import '../../entities/app_state.dart';
 import '../../entities/recipe.dart';
 import 'like_save_indicator.dart';
 
-class RecipeHeader extends ConsumerWidget {
+class RecipeHeader extends ConsumerStatefulWidget {
   final ChangeNotifierProvider<Recipe> recipeProvider;
   final bool forEditing;
+
   const RecipeHeader(
       {super.key, required this.recipeProvider, this.forEditing = false});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Recipe recipe = ref.watch(recipeProvider);
+  ConsumerState<ConsumerStatefulWidget> createState() => _RecipeHeaderState();
+}
+
+class _RecipeHeaderState extends ConsumerState<RecipeHeader> {
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    titleController = TextEditingController();
+    descriptionController = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Recipe recipe = ref.watch(widget.recipeProvider);
+    return widget.forEditing
+        ? editable(context, recipe)
+        : notEditable(context, recipe);
+  }
+
+  Widget notEditable(BuildContext context, Recipe recipe) {
     bool likedRecipe = AppState.currentUser!.username == recipe.author
         ? true
         : AppState.currentUser!.likedRecipes.contains(recipe);
@@ -44,6 +68,7 @@ class RecipeHeader extends ConsumerWidget {
               child: Center(
                   child: Text(recipe.description,
                       textAlign: TextAlign.center,
+                      maxLines: 50,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis))),
           LikeSaveIndicator(
@@ -60,6 +85,34 @@ class RecipeHeader extends ConsumerWidget {
                   : () => AppState.currentUser!
                       .switchSaveRecipe(recipe, !savedRecipe),
               center: true),
+          const Divider(height: 2)
+        ]);
+  }
+
+  Widget editable(BuildContext context, Recipe recipe) {
+    titleController.text = recipe.title;
+    descriptionController.text = recipe.description;
+
+    return Flex(
+        direction: Axis.vertical,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+              padding: const EdgeInsets.all(15),
+              child: CustomTextField(
+                  controller: titleController,
+                  hintText: 'Title',
+                  maxLength: 50,
+                  onChanged: (value) => recipe.editRecipe(description: value))),
+          Padding(
+              padding: const EdgeInsets.all(15),
+              child: Center(
+                  child: CustomTextField(
+                controller: descriptionController,
+                hintText: 'Description',
+                maxLength: 150,
+                onChanged: (value) => recipe.editRecipe(title: value),
+              ))),
           const Divider(height: 2)
         ]);
   }

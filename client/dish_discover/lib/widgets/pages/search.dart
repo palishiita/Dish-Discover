@@ -20,11 +20,13 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late List<Tag> currentFilter;
+  late String searchPhrase;
 
   @override
   void initState() {
     super.initState();
     currentFilter = widget.filter ?? [];
+    searchPhrase = widget.searchPhrase;
   }
 
   @override
@@ -50,17 +52,16 @@ class _SearchPageState extends State<SearchPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomSearchBar(
-                  initialSearchPhrase: widget.searchPhrase,
-                  goToSearchPage: false),
+                  initialSearchPhrase: searchPhrase, goToSearchPage: false),
               RecipeList(
-                  getRecipes: () => Future<List<Recipe>>(() {
-                        // TODO search recipes by phrase
-                        return [];
-                      }))
+                  getRecipes: () => Future<List<Recipe>>(() async =>
+                      Recipe.filterRecipes(
+                          await Recipe.getRecipes(searchPhrase),
+                          currentFilter)))
             ]),
         endDrawer: FilterSideMenu(
             filter: currentFilter,
-            onSaved: (newFilter) => setState(() {
+            onFilter: (newFilter) => setState(() {
                   currentFilter = newFilter;
                 })));
   }
