@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../entities/tag.dart';
 import '../dialogs/custom_dialog.dart';
 import '../display/tab_title.dart';
-import '../inputs/custom_dropdown.dart';
 
 class TagManagementBox extends StatefulWidget {
   const TagManagementBox({super.key});
@@ -22,6 +21,10 @@ class _TagManagementBoxState extends State<TagManagementBox> {
     return FutureBuilder(
         future: Tag.getPopularNotPredefinedTags(),
         builder: (context, tagList) {
+          if (popularTags != null) {
+            return done();
+          }
+
           if (tagList.connectionState != ConnectionState.done) {
             return loading();
           }
@@ -119,32 +122,14 @@ class _TagManagementBoxState extends State<TagManagementBox> {
                                                     CustomDialog.callDialog(
                                                         context,
                                                         'Add predefined tag',
-                                                        '#${popularTags![index].$1.name} : ${popularTags![index].$1.category?.name}',
+                                                        '#${popularTags![index].$1.name} - ${popularTags![index].$1.category?.name ?? 'null'}',
                                                         null,
-                                                        CustomDropdown(
-                                                            currentValue:
-                                                                popularTags![
-                                                                        index]
-                                                                    .$1
-                                                                    .category,
-                                                            labeledOptions:
-                                                                List.generate(
-                                                                    TagCategory
-                                                                        .values
-                                                                        .length,
-                                                                    (index) => (
-                                                                          TagCategory
-                                                                              .values[index],
-                                                                          TagCategory
-                                                                              .values[index]
-                                                                              .name
-                                                                        )),
-                                                            onChanged:
-                                                                (selected) {
-                                                              // TODO change selected option
-                                                            }),
+                                                        Container(),
                                                         'Add', () {
-                                                      // TODO add tag to predefined
+                                                      setState(() {
+                                                        popularTags!
+                                                            .removeAt(index);
+                                                      });
                                                       return null;
                                                     }))
                                           ])))
