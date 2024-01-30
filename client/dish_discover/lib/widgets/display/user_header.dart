@@ -36,7 +36,7 @@ class UserHeader extends ConsumerWidget {
                 onPressed: () async {
                   await FilePicker.platform
                       .pickFiles(
-                          dialogTitle: 'Please select an output file:',
+                          dialogTitle: 'Please select an image:',
                           type: FileType.image)
                       .then((res) {
                     String? path = res?.files[0].path;

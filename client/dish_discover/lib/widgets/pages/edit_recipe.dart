@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:dish_discover/widgets/inputs/popup_menu.dart';
 import 'package:dish_discover/widgets/style/style.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../entities/recipe.dart';
 import '../display/loading_indicator.dart';
+import '../display/recipe_cover.dart';
 import '../display_with_input/ingredients_box.dart';
 import '../display_with_input/recipe_header.dart';
 import '../display_with_input/steps_box.dart';
@@ -73,20 +77,46 @@ class _EditRecipePageState extends ConsumerState<EditRecipePage> {
 
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: appBarHeight,
-          scrolledUnderElevation: 0.0,
-          leading: const BackButton(),
-          actions: [
-            PopupMenu(
-                action1: PopupMenuAction.boost,
-                onPressed1: recipe.isBoosted
-                    ? null
-                    : () => PopupMenuAction.boostAction(context),
-                action2: PopupMenuAction.delete,
-                onPressed2: () =>
-                    PopupMenuAction.deleteAction(context, recipe.id))
-          ],
-        ),
+            toolbarHeight: appBarHeight,
+            scrolledUnderElevation: 0.0,
+            leading: const BackButton(),
+            actions: [
+              PopupMenu(
+                  action1: PopupMenuAction.boost,
+                  onPressed1: recipe.isBoosted
+                      ? null
+                      : () => PopupMenuAction.boostAction(context),
+                  action2: PopupMenuAction.delete,
+                  onPressed2: () =>
+                      PopupMenuAction.deleteAction(context, recipe.id))
+            ],
+            flexibleSpace: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      RecipeCover(cover: recipe.image),
+                      FloatingActionButton(
+                          shape: const CircleBorder(),
+                          mini: true,
+                          backgroundColor: containerColor(context),
+                          child: Icon(Icons.edit_outlined, color: buttonColor),
+                          onPressed: () async {
+                            await FilePicker.platform
+                                .pickFiles(
+                                    dialogTitle: 'Please select an image:',
+                                    type: FileType.image)
+                                .then((res) {
+                              String? path = res?.files[0].path;
+                              if (path != null) {
+                                setState(() {
+                                  recipe.editRecipe(
+                                      image: Image.file(File(path)));
+                                });
+                              }
+                            });
+                          })
+                    ]))),
         body: ListView(children: [
           RecipeHeader(recipeProvider: recipeProvider!, forEditing: true),
           IngredientsBox(recipeProvider: recipeProvider!, forEditing: true),
