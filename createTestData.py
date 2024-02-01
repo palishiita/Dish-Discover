@@ -1,0 +1,133 @@
+from recipes.models import TagCategory, Tag, DishDiscoverUser, PreferredTag, Comment, SavedRecipe, LikedRecipe, Ingredient, ReportTicket, Recipe, RecipeTag, RecipeIngredient
+
+
+tagCategories = [
+    TagCategory(category_name='Cousine'),
+    TagCategory(category_name='Difficulty'),
+    TagCategory(category_name='Ingredient'),
+    TagCategory(category_name='Other')
+]
+
+for element in tagCategories:
+    element.save()
+
+
+tags = [
+    Tag(name='Polish',tag_category=tagCategories[0],is_predefined = True),
+    Tag(name='Indian',tag_category=tagCategories[0],is_predefined = True),
+    Tag(name='Silesian',tag_category=tagCategories[0],is_predefined = True),
+    Tag(name='Easy',tag_category=tagCategories[1],is_predefined = True),
+    Tag(name='Hard',tag_category=tagCategories[1],is_predefined = True),
+    Tag(name='Tomato',tag_category=tagCategories[2],is_predefined = True),
+    Tag(name='Avocado',tag_category=tagCategories[2],is_predefined = True)
+]
+
+for element in tags:
+    element.save()
+
+
+# Create Users
+users = [
+    DishDiscoverUser(username='john_doe2', has_mod_rights=True, email='john2@example.com', password='password123', is_premium=False),
+    DishDiscoverUser(username='jane_doe2', has_mod_rights=False, email='jane2@example.com', password='password456', is_premium=True)
+]
+
+for element in users:
+    element.save()
+
+
+# Create Preferred Tags
+prefferedTags = [
+    PreferredTag(user=users[0], tag=tags[1], weight=0.8),
+    PreferredTag(user=users[1], tag=tags[0], weight=0.6),
+    PreferredTag(user=users[0], tag=tags[2], weight=0.8),
+    PreferredTag(user=users[1], tag=tags[3], weight=0.6)
+]
+
+for element in prefferedTags:
+    element.save()
+
+
+# Create Ingredients
+ingredients = [
+    Ingredient(name='Tomato', calorie_density=20.0, tag=tags[5]),
+    Ingredient(name='Avocado', calorie_density=50.0, tag=tags[6])
+]
+
+for element in ingredients:
+    element.save()
+
+# Create Recipes
+recipes = [
+    Recipe(author=users[0], recipe_name='Spaghetti Bolognese', content='Delicious spaghetti recipe...',
+                                description='Classic Italian dish', is_boosted=True),
+    Recipe(author=users[1], recipe_name='Chocolate Cake', content='Decadent chocolate cake recipe...',
+                                description='Perfect dessert for any occasion', is_boosted=False)
+]
+
+for element in recipes:
+    element.save()
+
+# Add Recipe Tags
+recipeTags = [
+    RecipeTag(recipe=recipes[0], tag=tags[0], weight=0.8),
+    RecipeTag(recipe=recipes[1], tag=tags[0], weight=0.5),
+    RecipeTag(recipe=recipes[1], tag=tags[1], weight=0.9)
+]
+
+for element in recipeTags:
+    element.save()
+
+# Add Recipe Ingredients
+recipeIngredients = [
+    RecipeIngredient(recipe=recipes[0], ingredient=ingredients[0], amount=200.0, unit='g'),
+    RecipeIngredient(recipe=recipes[1], ingredient=ingredients[1], amount=250.0, unit='g')
+]
+
+for element in recipeIngredients:
+    element.save()
+# Create Comments
+comments = [
+    Comment(user=users[0], recipe=recipes[0], content='This chocolate cake is amazing!'),
+    Comment(user=users[1], recipe=recipes[1], content='I love spaghetti bolognese!')
+]
+
+for element in comments:
+    element.save()
+
+# Create Saved Recipes and Liked Recipes
+savedRecipes = [
+    SavedRecipe(user=users[0], recipe=recipes[1], is_recommendation=True),
+    SavedRecipe(user=users[1], recipe=recipes[0], is_recommendation=False)
+]
+
+for element in savedRecipes:
+    element.save()
+
+
+likedRecipes = [
+    LikedRecipe(user=users[0], recipe=recipes[1], is_recommendation=True),
+    LikedRecipe(user=users[1], recipe=recipes[0], is_recommendation=False)
+]
+
+for element in likedRecipes:
+    element.save()
+
+# Create Report Tickets
+reportTickets = [
+    ReportTicket(recipe=recipes[0], violator=users[0], issuer=users[1],
+                             comment=None, reason='Inappropriate content in the recipe description'),
+
+    ReportTicket(recipe=recipes[1], violator=users[1], issuer=users[0],
+                             comment=None, reason='Spammy comment')
+]
+
+for element in reportTickets:
+    element.save()
+
+
+print("Example data added successfully.")
+# TagCategory(category_name='Cousine3').save()
+# Tag(name='Polish2',tag_category=TagCategory.get(),is_predefined = True).save()
+# User(username='john_doe2', has_mod_rights=True, email='john@example.com2', password='password123', is_premium=False).save()
+# PreferredTags(user=user, tag=tag, weight=0.8).save(),
